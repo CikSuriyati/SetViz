@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SetViz — Learn Sets Visually</title>
+  <meta name="description" content="Interactive Venn diagram to learn set operations. No login, static site.">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div class="name">SetViz <span class="muted">(no login)</span></div>
+    </div>
+    <div class="toolbar">
+      <div class="seg" id="langSeg" role="tablist" aria-label="Language">
+        <button data-lang="en" aria-pressed="true">EN</button>
+        <button data-lang="bm" aria-pressed="false">BM</button>
+      </div>
+      <button class="btn ghost" id="aboutBtn" aria-label="About">?</button>
+      <a class="btn primary" id="startBtn">Start</a>
+    </div>
+  </header>
+
+  <main class="grid" aria-live="polite">
+    <!-- Left: Visualizer -->
+    <section class="card" aria-labelledby="vizTitle">
+      <h2 id="vizTitle" class="h2">🎨 <span data-i18n="Venn Diagram">Venn Diagram</span></h2>
+      <div class="row tiny">
+        <span data-i18n="Choose number of sets">Choose number of sets</span>:
+        <div class="seg" id="setCountSeg" role="tablist" aria-label="Set count">
+          <button data-count="2" aria-pressed="true">2</button>
+          <button data-count="3" aria-pressed="false">3</button>
+        </div>
+      </div>
+
+      <div class="venn-wrap">
+        <svg id="venn" viewBox="0 0 500 320" width="100%" aria-label="Venn diagram">
+          <defs>
+            <circle id="circleA" cx="190" cy="160" r="100"/>
+            <circle id="circleB" cx="310" cy="160" r="100"/>
+            <circle id="circleC" cx="250" cy="80"  r="90"/>
+
+            <clipPath id="clipA"><use href="#circleA"/></clipPath>
+            <clipPath id="clipB"><use href="#circleB"/></clipPath>
+            <clipPath id="clipC"><use href="#circleC"/></clipPath>
+            <clipPath id="clipAB">
+              <use href="#circleA"/>
+              <use href="#circleB" clip-path="url(#clipA)"/>
+            </clipPath>
+            <clipPath id="clipAminusB">
+              <use href="#circleA"/>
+              <rect x="0" y="0" width="500" height="320" clip-path="url(#clipB)" fill="#000"/>
+            </clipPath>
+            <clipPath id="clipBminusA">
+              <use href="#circleB"/>
+              <rect x="0" y="0" width="500" height="320" clip-path="url(#clipA)" fill="#000"/>
+            </clipPath>
+            <mask id="maskComplement">
+              <rect x="0" y="0" width="500" height="320" fill="white"/>
+              <use href="#circleA" fill="black"/>
+              <use href="#circleB" fill="black"/>
+            </mask>
+          </defs>
+
+          <g id="base">
+            <circle cx="190" cy="160" r="100" class="baseA"/>
+            <circle cx="310" cy="160" r="100" class="baseB"/>
+          </g>
+
+          <g id="hl-union" opacity="0">
+            <circle cx="190" cy="160" r="100" class="hlA"/>
+            <circle cx="310" cy="160" r="100" class="hlB"/>
+          </g>
+          <g id="hl-intersection" opacity="0" clip-path="url(#clipAB)">
+            <rect x="0" y="0" width="500" height="320" class="hlAB"/>
+          </g>
+          <g id="hl-AminusB" opacity="0" clip-path="url(#clipAminusB)">
+            <rect x="0" y="0" width="500" height="320" class="hlAonly"/>
+          </g>
+          <g id="hl-BminusA" opacity="0" clip-path="url(#clipBminusA)">
+            <rect x="0" y="0" width="500" height="320" class="hlBonly"/>
+          </g>
+          <g id="hl-complement" opacity="0" mask="url(#maskComplement)">
+            <rect x="0" y="0" width="500" height="320" class="hlComp"/>
+          </g>
+
+          <g id="regionA"></g>
+          <g id="regionAB"></g>
+          <g id="regionB"></g>
+          <g id="regionOut"></g>
+
+          <text x="165" y="44" font-size="16">A</text>
+          <text x="325" y="44" font-size="16">B</text>
+          <rect x="30" y="20" width="440" height="280" class="uBox"/>
+          <text x="40" y="36" font-size="12">U</text>
+        </svg>
+      </div>
+      <p class="tiny" data-i18n="Drag note">Drag-and-drop optional later — this prototype uses clicks to toggle membership.</p>
+    </section>
+
+    <!-- Right: Controls & Practice -->
+    <aside class="card controls" aria-labelledby="ctrlTitle">
+      <h2 id="ctrlTitle" class="h2">🧰 <span data-i18n="Control Panel">Control Panel</span></h2>
+
+      <div>
+        <div class="tiny" data-i18n="Elements U">Elements in Universal Set U</div>
+        <div id="universe" class="chips" aria-label="Universal set"></div>
+        <div class="tiny" data-i18n="Hint select">Hint: select a target set below, then click chips to add/remove.</div>
+      </div>
+
+      <div>
+        <div class="tiny" data-i18n="Target set">Target set</div>
+        <div class="seg" id="targetSeg" role="tablist" aria-label="Target set">
+          <button data-target="A" aria-pressed="true">A</button>
+          <button data-target="B" aria-pressed="false">B</button>
+          <button data-target="OUT" aria-pressed="false">U\(A∪B)</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="tiny" data-i18n="Operation">Operation highlight</div>
+        <select id="opSelect" aria-label="Operation">
+          <option value="none">—</option>
+          <option value="union">A ∪ B</option>
+          <option value="intersection">A ∩ B</option>
+          <option value="AminusB">A \ B</option>
+          <option value="BminusA">B \ A</option>
+          <option value="complement">(A ∪ B)′</option>
+        </select>
+      </div>
+
+      <div class="card soft">
+        <div class="tiny" data-i18n="Practice Question">Practice Question</div>
+        <div id="taskText" class="task"></div>
+        <div class="row">
+          <button class="btn" id="newTaskBtn">🎲 <span data-i18n="New Task">New Task</span></button>
+          <button class="btn" id="checkBtn">✅ <span data-i18n="Check Answer">Check Answer</span></button>
+          <button class="btn" id="resetBtn">♻️ <span data-i18n="Reset">Reset</span></button>
+        </div>
+        <div id="feedback" class="feedback"></div>
+        <div class="tiny" id="answerPeek"></div>
+      </div>
+
+      <div class="tiny">
+        <span class="kbd">Tip</span> <span data-i18n="Tip">Toggle elements quickly by pressing the number key (1–9) matching a chip.</span>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="foot">
+    © 2025 SetViz by Suriyati Ujang — Inspired by ProbViz. No login required. Static deploy (GitHub Pages).
+  </footer>
+
+  <dialog id="aboutDlg">
+    <div class="dialog-body">
+      <h3>About SetViz</h3>
+      <p>This is a no-login, static web app for learning set theory concepts through an interactive Venn diagram, randomized practice, and immediate feedback. Built to mirror the simplicity of ProbViz.</p>
+      <button class="btn" id="closeAbout">Close</button>
+    </div>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
