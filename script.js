@@ -7,15 +7,15 @@ const STRINGS = {
     'Target set':'Target set', 'Operation':'Operation highlight', 'Practice Question':'Practice Question', 'New Task':'New Task', 'Check Answer':'Check Answer', 'Reset':'Reset',
     'Tip':'Toggle elements quickly by pressing the number key (1–9) matching a chip.',
     'Mode':'Mode', 'Practice':'Practice', 'Tutorial':'Tutorial', 'Previous':'Previous', 'Next Step':'Next Step', 'Restart Tutorial':'Restart',
-    'tutorial-intro':'Click "Next Step" to see how each set operation works visually.',
-    'step1-title':'Understanding Sets A and B', 'step1-desc':'These are two sets with some elements. Click chips to add/remove elements from each set.',
-    'step2-title':'Union (A ∪ B)', 'step2-desc':'Union contains ALL elements that are in A OR B (or both). Watch the highlighted area!',
-    'step3-title':'Intersection (A ∩ B)', 'step3-desc':'Intersection contains ONLY elements that are in BOTH A AND B.',
-    'step4-title':'Set Difference A \\ B', 'step4-desc':'A \\ B contains elements that are in A but NOT in B.',
-    'step5-title':'Set Difference B \\ A', 'step5-desc':'B \\ A contains elements that are in B but NOT in A.',
-    'step6-title':'Complement (A ∪ B)′', 'step6-desc':'Complement contains elements that are NOT in A and NOT in B (outside both sets).',
-    'step7-title':'Universal Set U', 'step7-desc':'The universal set U contains ALL possible elements we can work with.',
-    'step8-title':'Complete Understanding', 'step8-desc':'Now you understand all basic set operations! Try practice mode to test your knowledge.'
+    'tutorial-intro':'Learn basic set concepts step by step. Click "Next Step" to continue.',
+    'step1-title':'What is a Set?', 'step1-desc':'A set is a collection of distinct objects. The symbol A represents a set. This circle shows set A.',
+    'step2-title':'Elements in a Set', 'step2-desc':'Elements are the objects inside a set. Click the chip to add element "a" to set A. Notice how it appears inside the circle.',
+    'step3-title':'Two Independent Sets', 'step3-desc':'Here we have two independent sets: A and B. Each set can have its own elements. Click chips to add elements to each set.',
+    'step4-title':'Union Symbol (A ∪ B)', 'step4-desc':'The union symbol ∪ means "OR". A ∪ B means all elements that are in A OR B (or both). The highlighted area shows the union.',
+    'step5-title':'Intersection Symbol (A ∩ B)', 'step5-desc':'The intersection symbol ∩ means "AND". A ∩ B means only elements that are in BOTH A AND B. The highlighted area shows the intersection.',
+    'step6-title':'Set Difference Symbol (A \\ B)', 'step6-desc':'The set difference symbol \\ means "MINUS". A \\ B means elements that are in A but NOT in B. The highlighted area shows A \\ B.',
+    'step7-title':'Complement Symbol (A ∪ B)′', 'step7-desc':'The complement symbol ′ means "NOT". (A ∪ B)′ means elements that are NOT in A and NOT in B. The highlighted area shows the complement.',
+    'step8-title':'Mutually Exclusive Sets', 'step8-desc':'Mutually exclusive sets have NO common elements. Their intersection is empty (A ∩ B = ∅). Notice how the circles don\'t overlap.'
   },
   bm: {
     'Venn Diagram':'Rajah Venn', 'Choose number of sets':'Pilih bilangan set', 'Drag note':'Seret-lepas akan ditambah kemudian — prototaip ini guna klik untuk tambah/buang ahli.',
@@ -23,15 +23,15 @@ const STRINGS = {
     'Target set':'Set sasaran', 'Operation':'Sorotan operasi', 'Practice Question':'Soalan Latihan', 'New Task':'Soalan Baharu', 'Check Answer':'Semak Jawapan', 'Reset':'Set Semula',
     'Tip':'Togol ahli dengan cepat menggunakan kekunci nombor (1–9) sepadan dengan cip.',
     'Mode':'Mod', 'Practice':'Latihan', 'Tutorial':'Tutorial', 'Previous':'Sebelum', 'Next Step':'Langkah Seterusnya', 'Restart Tutorial':'Mula Semula',
-    'tutorial-intro':'Klik "Langkah Seterusnya" untuk melihat bagaimana setiap operasi set berfungsi secara visual.',
-    'step1-title':'Memahami Set A dan B', 'step1-desc':'Ini adalah dua set dengan beberapa elemen. Klik cip untuk menambah/mengeluarkan elemen dari setiap set.',
-    'step2-title':'Kesatuan (A ∪ B)', 'step2-desc':'Kesatuan mengandungi SEMUA elemen yang ada dalam A ATAU B (atau kedua-duanya). Perhatikan kawasan yang disorot!',
-    'step3-title':'Persilangan (A ∩ B)', 'step3-desc':'Persilangan mengandungi HANYA elemen yang ada dalam KEDUA-DUA A DAN B.',
-    'step4-title':'Perbezaan Set A \\ B', 'step4-desc':'A \\ B mengandungi elemen yang ada dalam A tetapi TIDAK dalam B.',
-    'step5-title':'Perbezaan Set B \\ A', 'step5-desc':'B \\ A mengandungi elemen yang ada dalam B tetapi TIDAK dalam A.',
-    'step6-title':'Pelengkap (A ∪ B)′', 'step6-desc':'Pelengkap mengandungi elemen yang TIDAK dalam A dan TIDAK dalam B (di luar kedua-dua set).',
-    'step7-title':'Set Semesta U', 'step7-desc':'Set semesta U mengandungi SEMUA elemen yang mungkin kita boleh gunakan.',
-    'step8-title':'Pemahaman Lengkap', 'step8-desc':'Sekarang anda memahami semua operasi set asas! Cuba mod latihan untuk menguji pengetahuan anda.'
+    'tutorial-intro':'Pelajari konsep set asas langkah demi langkah. Klik "Langkah Seterusnya" untuk meneruskan.',
+    'step1-title':'Apakah Set?', 'step1-desc':'Set adalah koleksi objek yang berbeza. Simbol A mewakili set. Bulatan ini menunjukkan set A.',
+    'step2-title':'Elemen dalam Set', 'step2-desc':'Elemen adalah objek di dalam set. Klik cip untuk menambah elemen "a" ke set A. Perhatikan bagaimana ia muncul di dalam bulatan.',
+    'step3-title':'Dua Set Bebas', 'step3-desc':'Di sini kita ada dua set bebas: A dan B. Setiap set boleh mempunyai elemen sendiri. Klik cip untuk menambah elemen ke setiap set.',
+    'step4-title':'Simbol Kesatuan (A ∪ B)', 'step4-desc':'Simbol kesatuan ∪ bermaksud "ATAU". A ∪ B bermaksud semua elemen yang ada dalam A ATAU B (atau kedua-duanya). Kawasan yang disorot menunjukkan kesatuan.',
+    'step5-title':'Simbol Persilangan (A ∩ B)', 'step5-desc':'Simbol persilangan ∩ bermaksud "DAN". A ∩ B bermaksud HANYA elemen yang ada dalam KEDUA-DUA A DAN B. Kawasan yang disorot menunjukkan persilangan.',
+    'step6-title':'Simbol Perbezaan Set (A \\ B)', 'step6-desc':'Simbol perbezaan set \\ bermaksud "TOLAK". A \\ B bermaksud elemen yang ada dalam A tetapi TIDAK dalam B. Kawasan yang disorot menunjukkan A \\ B.',
+    'step7-title':'Simbol Pelengkap (A ∪ B)′', 'step7-desc':'Simbol pelengkap ′ bermaksud "TIDAK". (A ∪ B)′ bermaksud elemen yang TIDAK dalam A dan TIDAK dalam B. Kawasan yang disorot menunjukkan pelengkap.',
+    'step8-title':'Set Saling Eksklusif', 'step8-desc':'Set saling eksklusif TIDAK mempunyai elemen sepunya. Persilangan mereka kosong (A ∩ B = ∅). Perhatikan bagaimana bulatan tidak bertindih.'
   }
 };
 let LANG = 'en';
@@ -392,58 +392,80 @@ const tutorialSteps = [
     title: 'step1-title',
     desc: 'step1-desc',
     setup: () => {
-      state.A = new Set(['1', '3', '5']);
-      state.B = new Set(['2', '3', '4']);
+      state.A = new Set();
+      state.B = new Set();
       setHighlight('none');
+      showSingleSet();
     }
   },
   {
     title: 'step2-title',
     desc: 'step2-desc',
     setup: () => {
-      setHighlight('union');
+      state.A = new Set(['a']);
+      state.B = new Set();
+      setHighlight('none');
+      showSingleSet();
     }
   },
   {
     title: 'step3-title',
     desc: 'step3-desc',
     setup: () => {
-      setHighlight('intersection');
+      state.A = new Set(['a']);
+      state.B = new Set(['b']);
+      setHighlight('none');
+      showTwoSets();
     }
   },
   {
     title: 'step4-title',
     desc: 'step4-desc',
     setup: () => {
-      setHighlight('AminusB');
+      state.A = new Set(['a']);
+      state.B = new Set(['b']);
+      setHighlight('union');
+      showTwoSets();
     }
   },
   {
     title: 'step5-title',
     desc: 'step5-desc',
     setup: () => {
-      setHighlight('BminusA');
+      state.A = new Set(['a', 'c']);
+      state.B = new Set(['b', 'c']);
+      setHighlight('intersection');
+      showTwoSets();
     }
   },
   {
     title: 'step6-title',
     desc: 'step6-desc',
     setup: () => {
-      setHighlight('complement');
+      state.A = new Set(['a', 'c']);
+      state.B = new Set(['b', 'c']);
+      setHighlight('AminusB');
+      showTwoSets();
     }
   },
   {
     title: 'step7-title',
     desc: 'step7-desc',
     setup: () => {
-      setHighlight('none');
+      state.A = new Set(['a', 'c']);
+      state.B = new Set(['b', 'c']);
+      setHighlight('complement');
+      showTwoSets();
     }
   },
   {
     title: 'step8-title',
     desc: 'step8-desc',
     setup: () => {
+      state.A = new Set(['a']);
+      state.B = new Set(['b']);
       setHighlight('none');
+      showMutuallyExclusive();
     }
   }
 ];
@@ -531,6 +553,79 @@ function prevTutorialStep() {
     state.tutorialStep--;
     updateTutorialStep();
   }
+}
+
+// Helper functions for different set configurations
+function showSingleSet() {
+  const circleB = document.querySelector('.baseB');
+  const textB = document.querySelector('text[style*="display: none"]');
+  const circleC = document.querySelector('.baseC');
+  const textC = document.querySelector('text[style*="display: none"]');
+  const vennEl = document.getElementById('venn');
+  
+  // Hide set B and C
+  circleB.style.display = 'none';
+  textB.style.display = 'none';
+  circleC.style.display = 'none';
+  textC.style.display = 'none';
+  
+  // Remove any special styling
+  vennEl.classList.remove('venn-mutually-exclusive');
+  
+  // Update universe to show only single elements
+  updateUniverseForTutorial(['a', 'b', 'c', 'd']);
+}
+
+function showTwoSets() {
+  const circleB = document.querySelector('.baseB');
+  const textB = document.querySelector('text[style*="display: none"]');
+  const circleC = document.querySelector('.baseC');
+  const textC = document.querySelector('text[style*="display: none"]');
+  const vennEl = document.getElementById('venn');
+  
+  // Show set B, hide set C
+  circleB.style.display = 'block';
+  textB.style.display = 'block';
+  circleC.style.display = 'none';
+  textC.style.display = 'none';
+  
+  // Remove any special styling
+  vennEl.classList.remove('venn-mutually-exclusive');
+  
+  // Update universe to show elements
+  updateUniverseForTutorial(['a', 'b', 'c', 'd']);
+}
+
+function showMutuallyExclusive() {
+  const circleB = document.querySelector('.baseB');
+  const textB = document.querySelector('text[style*="display: none"]');
+  const circleC = document.querySelector('.baseC');
+  const textC = document.querySelector('text[style*="display: none"]');
+  const vennEl = document.getElementById('venn');
+  
+  // Show set B, hide set C
+  circleB.style.display = 'block';
+  textB.style.display = 'block';
+  circleC.style.display = 'none';
+  textC.style.display = 'none';
+  
+  // Apply mutually exclusive styling
+  vennEl.classList.add('venn-mutually-exclusive');
+  
+  // Update universe to show elements
+  updateUniverseForTutorial(['a', 'b', 'c', 'd']);
+}
+
+function updateUniverseForTutorial(elements) {
+  uniEl.innerHTML = '';
+  elements.forEach(x => {
+    const chip = document.createElement('button');
+    chip.className = 'chip';
+    chip.textContent = x;
+    chip.setAttribute('aria-pressed', 'false');
+    chip.addEventListener('click', () => toggleMembership(x));
+    uniEl.appendChild(chip);
+  });
 }
 
 // Init

@@ -171,3 +171,17 @@ body{ margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, 
 /* 3-set Venn diagram styles */
 .venn-3-set .baseC{ fill:#f0f9ff; stroke:#0ea5e9; stroke-width:2; transition: var(--transition) }
 .venn-3-set .hlC{ fill:#0ea5e9; opacity:.5; transition: opacity 0.3s ease }
+
+/* Mutually exclusive sets styling */
+.venn-mutually-exclusive .baseA{ 
+  fill:#fef2f2; 
+  stroke:#dc2626; 
+  stroke-width:3;
+  stroke-dasharray: 5 5;
+}
+.venn-mutually-exclusive .baseB{ 
+  fill:#f0f9ff; 
+  stroke:#2563eb; 
+  stroke-width:3;
+  stroke-dasharray: 5 5;
+}
