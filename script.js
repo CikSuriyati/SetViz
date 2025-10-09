@@ -31,7 +31,8 @@ let state = {
   goal: null, // {labelEN,labelBM,fn}
   answer: new Set(),
   setCount: 2,
-  target: 'A'
+  target: 'A',
+  stats: { totalTasks: 0, correct: 0, streak: 0, maxStreak: 0 }
 };
 
 // Elements
@@ -76,6 +77,21 @@ function toggleMembership(x){
     A.delete(x); B.delete(x);
   }
   renderVenn();
+  
+  // Announce changes for screen readers
+  const announcement = `Element ${x} ${state.target === 'A' ? (A.has(x) ? 'added to' : 'removed from') : 
+                      state.target === 'B' ? (B.has(x) ? 'added to' : 'removed from') : 'moved to outside'} set ${state.target}`;
+  announceToScreenReader(announcement);
+}
+
+function announceToScreenReader(message) {
+  const announcement = document.createElement('div');
+  announcement.setAttribute('aria-live', 'polite');
+  announcement.setAttribute('aria-atomic', 'true');
+  announcement.className = 'sr-only';
+  announcement.textContent = message;
+  document.body.appendChild(announcement);
+  setTimeout(() => document.body.removeChild(announcement), 1000);
 }
 
 // Render Venn placements
@@ -128,6 +144,11 @@ const tasks = [
   {labelEN:'List elements of A ∪ B', labelBM:'Senaraikan ahli bagi A ∪ B', fn:(A,B)=> new Set([...new Set([...A,...B])])},
   {labelEN:'List elements of A \\ B', labelBM:'Senaraikan ahli bagi A \\ B', fn:(A,B)=> new Set([...A].filter(x=>!B.has(x)))},
   {labelEN:'List elements of B \\ A', labelBM:'Senaraikan ahli bagi B \\ A', fn:(A,B)=> new Set([...B].filter(x=>!A.has(x)))},
+  {labelEN:'List elements of (A ∪ B)′', labelBM:'Senaraikan ahli bagi (A ∪ B)′', fn:(A,B)=> new Set([...U].filter(x=>!A.has(x) && !B.has(x)))},
+  {labelEN:'List elements of A′', labelBM:'Senaraikan ahli bagi A′', fn:(A,B)=> new Set([...U].filter(x=>!A.has(x)))},
+  {labelEN:'List elements of B′', labelBM:'Senaraikan ahli bagi B′', fn:(A,B)=> new Set([...U].filter(x=>!B.has(x)))},
+  {labelEN:'List elements of A ∩ B′', labelBM:'Senaraikan ahli bagi A ∩ B′', fn:(A,B)=> new Set([...A].filter(x=>!B.has(x)))},
+  {labelEN:'List elements of A′ ∩ B', labelBM:'Senaraikan ahli bagi A′ ∩ B', fn:(A,B)=> new Set([...B].filter(x=>!A.has(x)))},
 ];
 
 function newTask(){
@@ -137,25 +158,73 @@ function newTask(){
   state.goal = t;
   taskText.textContent = (LANG==='bm'? t.labelBM : t.labelEN);
   feedbackEl.textContent = '';
+  feedbackEl.className = 'feedback';
   renderVenn();
+  
+  // Auto-highlight the relevant operation
   const opKey = taskText.textContent.includes('∩') ? 'intersection'
              : taskText.textContent.includes('∪') ? 'union'
              : taskText.textContent.includes('A \\ B') ? 'AminusB'
-             : taskText.textContent.includes('B \\ A') ? 'BminusA' : 'none';
-  document.getElementById('opSelect').value = opKey; setHighlight(opKey);
+             : taskText.textContent.includes('B \\ A') ? 'BminusA'
+             : taskText.textContent.includes('(A ∪ B)′') ? 'complement'
+             : 'none';
+  document.getElementById('opSelect').value = opKey; 
+  setHighlight(opKey);
+  
+  // Add pulse animation to task text
+  taskText.classList.add('pulse');
+  setTimeout(() => taskText.classList.remove('pulse'), 600);
 }
 
 function checkAnswer(){
-  if(!state.goal){ feedbackEl.className='feedback bad'; feedbackEl.textContent = (LANG==='bm'?'Tiada soalan. Klik Soalan Baharu.':'No task yet. Click New Task.'); return; }
+  if(!state.goal){ 
+    feedbackEl.className='feedback bad'; 
+    feedbackEl.textContent = (LANG==='bm'?'Tiada soalan. Klik Soalan Baharu.':'No task yet. Click New Task.'); 
+    return; 
+  }
+  
+  state.stats.totalTasks++;
   const user = state.goal.fn(state.A, state.B);
   const ok = user.size===state.answer.size && [...user].every(x=>state.answer.has(x));
+  
   if(ok){
+    state.stats.correct++;
+    state.stats.streak++;
+    if(state.stats.streak > state.stats.maxStreak) {
+      state.stats.maxStreak = state.stats.streak;
+    }
+    
     feedbackEl.className='feedback good';
-    feedbackEl.textContent = (LANG==='bm'?'✔ Betul!':'✔ Correct!');
+    const accuracy = Math.round((state.stats.correct / state.stats.totalTasks) * 100);
+    const streakText = state.stats.streak > 1 ? ` (${state.stats.streak} streak!)` : '';
+    feedbackEl.textContent = (LANG==='bm'?'✔ Betul!':'✔ Correct!') + streakText;
+    
+    // Add celebration animation
+    feedbackEl.classList.add('pulse');
+    setTimeout(() => feedbackEl.classList.remove('pulse'), 1000);
   } else {
+    state.stats.streak = 0;
     feedbackEl.className='feedback bad';
     feedbackEl.textContent = (LANG==='bm'?'✘ Belum tepat. Jawapan sebenar: ':'✘ Not yet. True set: ') + '{ ' + [...state.answer].join(', ') + ' }';
   }
+  
+  updateStats();
+}
+
+function updateStats(){
+  const accuracy = state.stats.totalTasks > 0 ? Math.round((state.stats.correct / state.stats.totalTasks) * 100) : 0;
+  const statsText = `Accuracy: ${accuracy}% | Streak: ${state.stats.streak} | Best: ${state.stats.maxStreak}`;
+  
+  // Update or create stats display
+  let statsEl = document.getElementById('statsDisplay');
+  if(!statsEl) {
+    statsEl = document.createElement('div');
+    statsEl.id = 'statsDisplay';
+    statsEl.className = 'tiny';
+    statsEl.style.cssText = 'margin-top: 8px; padding: 8px; background: #f1f5f9; border-radius: 8px; font-family: monospace;';
+    document.querySelector('.card.soft').appendChild(statsEl);
+  }
+  statsEl.textContent = statsText;
 }
 
 // Wiring
