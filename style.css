@@ -104,3 +104,51 @@ body{ margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, 
 }
 
 .task{ margin:4px 0 8px; font-weight:600 }
+
+/* Tutorial Styles */
+.tutorial-content{ 
+  margin: 12px 0; 
+  padding: 12px; 
+  background: #f8fafc; 
+  border-radius: 8px; 
+  border-left: 4px solid var(--blue);
+  min-height: 60px;
+}
+
+.tutorial-progress{ 
+  margin-top: 12px; 
+  text-align: center; 
+}
+
+.progress-bar{ 
+  width: 100%; 
+  height: 8px; 
+  background: #e2e8f0; 
+  border-radius: 4px; 
+  overflow: hidden; 
+  margin-bottom: 8px;
+}
+
+.progress-fill{ 
+  height: 100%; 
+  background: var(--gradient); 
+  width: 12.5%; 
+  transition: width 0.3s ease;
+}
+
+.tutorial-step{ 
+  display: none; 
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.tutorial-step.active{ 
+  display: block; 
+}
+
+.tutorial-highlight{ 
+  animation: pulse 1s ease-in-out infinite;
+}
+
+/* 3-set Venn diagram styles */
+.venn-3-set .baseC{ fill:#f0f9ff; stroke:#0ea5e9; stroke-width:2; transition: var(--transition) }
+.venn-3-set .hlC{ fill:#0ea5e9; opacity:.5; transition: opacity 0.3s ease }

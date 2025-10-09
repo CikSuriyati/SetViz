@@ -5,13 +5,33 @@ const STRINGS = {
     'Venn Diagram':'Venn Diagram', 'Choose number of sets':'Choose number of sets', 'Drag note':'Drag-and-drop optional later — this prototype uses clicks to toggle membership.',
     'Control Panel':'Control Panel', 'Elements U':'Elements in Universal Set U', 'Hint select':'Hint: select a target set below, then click chips to add/remove.',
     'Target set':'Target set', 'Operation':'Operation highlight', 'Practice Question':'Practice Question', 'New Task':'New Task', 'Check Answer':'Check Answer', 'Reset':'Reset',
-    'Tip':'Toggle elements quickly by pressing the number key (1–9) matching a chip.'
+    'Tip':'Toggle elements quickly by pressing the number key (1–9) matching a chip.',
+    'Mode':'Mode', 'Practice':'Practice', 'Tutorial':'Tutorial', 'Previous':'Previous', 'Next Step':'Next Step', 'Restart Tutorial':'Restart',
+    'tutorial-intro':'Click "Next Step" to see how each set operation works visually.',
+    'step1-title':'Understanding Sets A and B', 'step1-desc':'These are two sets with some elements. Click chips to add/remove elements from each set.',
+    'step2-title':'Union (A ∪ B)', 'step2-desc':'Union contains ALL elements that are in A OR B (or both). Watch the highlighted area!',
+    'step3-title':'Intersection (A ∩ B)', 'step3-desc':'Intersection contains ONLY elements that are in BOTH A AND B.',
+    'step4-title':'Set Difference A \\ B', 'step4-desc':'A \\ B contains elements that are in A but NOT in B.',
+    'step5-title':'Set Difference B \\ A', 'step5-desc':'B \\ A contains elements that are in B but NOT in A.',
+    'step6-title':'Complement (A ∪ B)′', 'step6-desc':'Complement contains elements that are NOT in A and NOT in B (outside both sets).',
+    'step7-title':'Universal Set U', 'step7-desc':'The universal set U contains ALL possible elements we can work with.',
+    'step8-title':'Complete Understanding', 'step8-desc':'Now you understand all basic set operations! Try practice mode to test your knowledge.'
   },
   bm: {
     'Venn Diagram':'Rajah Venn', 'Choose number of sets':'Pilih bilangan set', 'Drag note':'Seret-lepas akan ditambah kemudian — prototaip ini guna klik untuk tambah/buang ahli.',
     'Control Panel':'Panel Kawalan', 'Elements U':'Ahli dalam Set Semesta U', 'Hint select':'Pilih set sasaran di bawah, kemudian klik cip untuk tambah/buang.',
     'Target set':'Set sasaran', 'Operation':'Sorotan operasi', 'Practice Question':'Soalan Latihan', 'New Task':'Soalan Baharu', 'Check Answer':'Semak Jawapan', 'Reset':'Set Semula',
-    'Tip':'Togol ahli dengan cepat menggunakan kekunci nombor (1–9) sepadan dengan cip.'
+    'Tip':'Togol ahli dengan cepat menggunakan kekunci nombor (1–9) sepadan dengan cip.',
+    'Mode':'Mod', 'Practice':'Latihan', 'Tutorial':'Tutorial', 'Previous':'Sebelum', 'Next Step':'Langkah Seterusnya', 'Restart Tutorial':'Mula Semula',
+    'tutorial-intro':'Klik "Langkah Seterusnya" untuk melihat bagaimana setiap operasi set berfungsi secara visual.',
+    'step1-title':'Memahami Set A dan B', 'step1-desc':'Ini adalah dua set dengan beberapa elemen. Klik cip untuk menambah/mengeluarkan elemen dari setiap set.',
+    'step2-title':'Kesatuan (A ∪ B)', 'step2-desc':'Kesatuan mengandungi SEMUA elemen yang ada dalam A ATAU B (atau kedua-duanya). Perhatikan kawasan yang disorot!',
+    'step3-title':'Persilangan (A ∩ B)', 'step3-desc':'Persilangan mengandungi HANYA elemen yang ada dalam KEDUA-DUA A DAN B.',
+    'step4-title':'Perbezaan Set A \\ B', 'step4-desc':'A \\ B mengandungi elemen yang ada dalam A tetapi TIDAK dalam B.',
+    'step5-title':'Perbezaan Set B \\ A', 'step5-desc':'B \\ A mengandungi elemen yang ada dalam B tetapi TIDAK dalam A.',
+    'step6-title':'Pelengkap (A ∪ B)′', 'step6-desc':'Pelengkap mengandungi elemen yang TIDAK dalam A dan TIDAK dalam B (di luar kedua-dua set).',
+    'step7-title':'Set Semesta U', 'step7-desc':'Set semesta U mengandungi SEMUA elemen yang mungkin kita boleh gunakan.',
+    'step8-title':'Pemahaman Lengkap', 'step8-desc':'Sekarang anda memahami semua operasi set asas! Cuba mod latihan untuk menguji pengetahuan anda.'
   }
 };
 let LANG = 'en';
@@ -28,10 +48,13 @@ const U = ['1','2','3','4','5','6','7','8'];
 let state = {
   A: new Set(),
   B: new Set(),
+  C: new Set(),
   goal: null, // {labelEN,labelBM,fn}
   answer: new Set(),
   setCount: 2,
   target: 'A',
+  mode: 'practice', // 'practice' or 'tutorial'
+  tutorialStep: 1,
   stats: { totalTasks: 0, correct: 0, streak: 0, maxStreak: 0 }
 };
 
@@ -40,6 +63,10 @@ const uniEl = document.getElementById('universe');
 const regionA = document.getElementById('regionA');
 const regionAB = document.getElementById('regionAB');
 const regionB = document.getElementById('regionB');
+const regionAC = document.getElementById('regionAC');
+const regionBC = document.getElementById('regionBC');
+const regionABC = document.getElementById('regionABC');
+const regionC = document.getElementById('regionC');
 const regionOut = document.getElementById('regionOut');
 const opSelect = document.getElementById('opSelect');
 const feedbackEl = document.getElementById('feedback');
@@ -68,19 +95,22 @@ function setTarget(target){
 
 // Toggle membership
 function toggleMembership(x){
-  const A = state.A, B = state.B;
+  const A = state.A, B = state.B, C = state.C;
   if(state.target==='A'){
     if(A.has(x)) A.delete(x); else A.add(x);
   } else if(state.target==='B'){
     if(B.has(x)) B.delete(x); else B.add(x);
-  } else { // OUT: ensure x not in A nor B
-    A.delete(x); B.delete(x);
+  } else if(state.target==='C'){
+    if(C.has(x)) C.delete(x); else C.add(x);
+  } else { // OUT: ensure x not in A, B, or C
+    A.delete(x); B.delete(x); C.delete(x);
   }
   renderVenn();
   
   // Announce changes for screen readers
   const announcement = `Element ${x} ${state.target === 'A' ? (A.has(x) ? 'added to' : 'removed from') : 
-                      state.target === 'B' ? (B.has(x) ? 'added to' : 'removed from') : 'moved to outside'} set ${state.target}`;
+                      state.target === 'B' ? (B.has(x) ? 'added to' : 'removed from') :
+                      state.target === 'C' ? (C.has(x) ? 'added to' : 'removed from') : 'moved to outside'} set ${state.target}`;
   announceToScreenReader(announcement);
 }
 
@@ -96,29 +126,52 @@ function announceToScreenReader(message) {
 
 // Render Venn placements
 function renderVenn(){
-  [regionA, regionAB, regionB, regionOut].forEach(g=>g.innerHTML='');
-  const stacks = {A:0, AB:0, B:0, OUT:0};
+  const regions = [regionA, regionAB, regionB, regionAC, regionBC, regionABC, regionC, regionOut];
+  regions.forEach(g=>g.innerHTML='');
+  
+  const stacks = {A:0, AB:0, B:0, AC:0, BC:0, ABC:0, C:0, OUT:0};
   U.forEach(x=>{
-    const inA = state.A.has(x), inB = state.B.has(x);
+    const inA = state.A.has(x), inB = state.B.has(x), inC = state.C.has(x);
     let region = 'OUT';
-    if(inA && inB) region='AB'; else if(inA) region='A'; else if(inB) region='B';
+    
+    if(state.setCount === 2) {
+      if(inA && inB) region='AB'; 
+      else if(inA) region='A'; 
+      else if(inB) region='B';
+    } else {
+      // 3-set logic
+      if(inA && inB && inC) region='ABC';
+      else if(inA && inB) region='AB';
+      else if(inA && inC) region='AC';
+      else if(inB && inC) region='BC';
+      else if(inA) region='A';
+      else if(inB) region='B';
+      else if(inC) region='C';
+    }
+    
     const t = document.createElementNS('http://www.w3.org/2000/svg','text');
     t.setAttribute('font-size','14'); t.textContent = x;
+    
+    // Position elements based on region
     if(region==='A'){ t.setAttribute('x',150); t.setAttribute('y',130+stacks.A*18); stacks.A++; regionA.appendChild(t); }
     else if(region==='AB'){ t.setAttribute('x',240); t.setAttribute('y',160+stacks.AB*18); stacks.AB++; regionAB.appendChild(t); }
     else if(region==='B'){ t.setAttribute('x',330); t.setAttribute('y',130+stacks.B*18); stacks.B++; regionB.appendChild(t); }
+    else if(region==='AC'){ t.setAttribute('x',200); t.setAttribute('y',100+stacks.AC*18); stacks.AC++; regionAC.appendChild(t); }
+    else if(region==='BC'){ t.setAttribute('x',280); t.setAttribute('y',100+stacks.BC*18); stacks.BC++; regionBC.appendChild(t); }
+    else if(region==='ABC'){ t.setAttribute('x',250); t.setAttribute('y',140+stacks.ABC*18); stacks.ABC++; regionABC.appendChild(t); }
+    else if(region==='C'){ t.setAttribute('x',250); t.setAttribute('y',60+stacks.C*18); stacks.C++; regionC.appendChild(t); }
     else { t.setAttribute('x',60); t.setAttribute('y',70+stacks.OUT*18); stacks.OUT++; regionOut.appendChild(t); }
   });
 
   document.querySelectorAll('#universe .chip').forEach(ch=>{
     const x = ch.textContent.trim();
-    const inA = state.A.has(x), inB = state.B.has(x);
-    ch.classList.toggle('active', inA || inB);
-    ch.setAttribute('aria-pressed', (inA||inB) ? 'true':'false');
+    const inA = state.A.has(x), inB = state.B.has(x), inC = state.C.has(x);
+    ch.classList.toggle('active', inA || inB || inC);
+    ch.setAttribute('aria-pressed', (inA||inB||inC) ? 'true':'false');
   });
 
   if(state.goal){
-    state.answer = state.goal.fn(state.A, state.B);
+    state.answer = state.goal.fn(state.A, state.B, state.C);
     answerPeek.textContent = '{ ' + [...state.answer].join(', ') + ' }';
   } else {
     answerPeek.textContent = '';
@@ -230,14 +283,48 @@ function updateStats(){
 // Wiring
 document.getElementById('newTaskBtn').addEventListener('click', newTask);
 document.getElementById('checkBtn').addEventListener('click', checkAnswer);
-document.getElementById('resetBtn').addEventListener('click', ()=>{ state.A.clear(); state.B.clear(); renderVenn(); feedbackEl.textContent=''; });
+document.getElementById('resetBtn').addEventListener('click', ()=>{ state.A.clear(); state.B.clear(); state.C.clear(); renderVenn(); feedbackEl.textContent=''; });
 
 document.getElementById('setCountSeg').addEventListener('click', (e)=>{
   if(e.target.tagName!=='BUTTON') return;
   const count = e.target.dataset.count;
   document.querySelectorAll('#setCountSeg button').forEach(b=>b.setAttribute('aria-pressed', b===e.target?'true':'false'));
   state.setCount = +count;
-  // 3-set visual is placeholder-ready; core logic remains 2-set in this prototype
+  
+  // Show/hide 3rd circle and update target options
+  const circleC = document.querySelector('.baseC');
+  const textC = document.querySelector('text[style*="display: none"]');
+  const targetSeg = document.getElementById('targetSeg');
+  
+  if(count === '3') {
+    circleC.style.display = 'block';
+    textC.style.display = 'block';
+    document.getElementById('venn').classList.add('venn-3-set');
+    
+    // Add C option to target selector
+    if(!document.querySelector('[data-target="C"]')) {
+      const cBtn = document.createElement('button');
+      cBtn.setAttribute('data-target', 'C');
+      cBtn.setAttribute('aria-pressed', 'false');
+      cBtn.textContent = 'C';
+      targetSeg.appendChild(cBtn);
+    }
+  } else {
+    circleC.style.display = 'none';
+    textC.style.display = 'none';
+    document.getElementById('venn').classList.remove('venn-3-set');
+    
+    // Remove C option and reset target if needed
+    const cBtn = document.querySelector('[data-target="C"]');
+    if(cBtn) cBtn.remove();
+    if(state.target === 'C') setTarget('A');
+  }
+  
+  // Clear sets and re-render
+  state.A.clear();
+  state.B.clear();
+  state.C.clear();
+  renderVenn();
 });
 
 document.getElementById('targetSeg').addEventListener('click', (e)=>{
@@ -256,12 +343,155 @@ const aboutDlg = document.getElementById('aboutDlg');
 document.getElementById('aboutBtn').addEventListener('click', ()=> aboutDlg.showModal());
 document.getElementById('closeAbout').addEventListener('click', ()=> aboutDlg.close());
 
+// Tutorial controls
+document.getElementById('tutorialBtn').addEventListener('click', () => setMode('tutorial'));
+document.getElementById('modeSeg').addEventListener('click', (e) => {
+  if (e.target.tagName === 'BUTTON') {
+    setMode(e.target.dataset.mode);
+  }
+});
+document.getElementById('nextStepBtn').addEventListener('click', nextTutorialStep);
+document.getElementById('prevStepBtn').addEventListener('click', prevTutorialStep);
+document.getElementById('resetTutorialBtn').addEventListener('click', startTutorial);
+
 // Keyboard shortcuts 1–9 => toggle membership in current target
 window.addEventListener('keydown', (e)=>{
   if(e.key>='1' && e.key<='9'){
     const idx = parseInt(e.key,10)-1; if(idx>=0 && idx<U.length){ toggleMembership(U[idx]); }
   }
 });
+
+// Tutorial functionality
+const tutorialSteps = [
+  {
+    title: 'step1-title',
+    desc: 'step1-desc',
+    setup: () => {
+      state.A = new Set(['1', '3', '5']);
+      state.B = new Set(['2', '3', '4']);
+      setHighlight('none');
+    }
+  },
+  {
+    title: 'step2-title',
+    desc: 'step2-desc',
+    setup: () => {
+      setHighlight('union');
+    }
+  },
+  {
+    title: 'step3-title',
+    desc: 'step3-desc',
+    setup: () => {
+      setHighlight('intersection');
+    }
+  },
+  {
+    title: 'step4-title',
+    desc: 'step4-desc',
+    setup: () => {
+      setHighlight('AminusB');
+    }
+  },
+  {
+    title: 'step5-title',
+    desc: 'step5-desc',
+    setup: () => {
+      setHighlight('BminusA');
+    }
+  },
+  {
+    title: 'step6-title',
+    desc: 'step6-desc',
+    setup: () => {
+      setHighlight('complement');
+    }
+  },
+  {
+    title: 'step7-title',
+    desc: 'step7-desc',
+    setup: () => {
+      setHighlight('none');
+    }
+  },
+  {
+    title: 'step8-title',
+    desc: 'step8-desc',
+    setup: () => {
+      setHighlight('none');
+    }
+  }
+];
+
+function setMode(mode) {
+  state.mode = mode;
+  document.querySelectorAll('#modeSeg button').forEach(b => {
+    b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false');
+  });
+  
+  const practicePanel = document.getElementById('practicePanel');
+  const tutorialPanel = document.getElementById('tutorialPanel');
+  
+  if (mode === 'tutorial') {
+    practicePanel.style.display = 'none';
+    tutorialPanel.style.display = 'block';
+    startTutorial();
+  } else {
+    practicePanel.style.display = 'block';
+    tutorialPanel.style.display = 'none';
+  }
+}
+
+function startTutorial() {
+  state.tutorialStep = 1;
+  updateTutorialStep();
+}
+
+function updateTutorialStep() {
+  const step = tutorialSteps[state.tutorialStep - 1];
+  const titleEl = document.getElementById('tutorialTitle');
+  const contentEl = document.getElementById('tutorialContent');
+  const stepCounter = document.getElementById('stepCounter');
+  const progressFill = document.getElementById('progressFill');
+  const prevBtn = document.getElementById('prevStepBtn');
+  const nextBtn = document.getElementById('nextStepBtn');
+  
+  // Update content
+  titleEl.textContent = (LANG === 'bm' ? STRINGS.bm[step.title] : STRINGS.en[step.title]);
+  contentEl.innerHTML = `<p>${LANG === 'bm' ? STRINGS.bm[step.desc] : STRINGS.en[step.desc]}</p>`;
+  
+  // Update progress
+  const progress = (state.tutorialStep / tutorialSteps.length) * 100;
+  progressFill.style.width = `${progress}%`;
+  stepCounter.textContent = `Step ${state.tutorialStep} of ${tutorialSteps.length}`;
+  
+  // Update buttons
+  prevBtn.disabled = state.tutorialStep === 1;
+  nextBtn.textContent = state.tutorialStep === tutorialSteps.length ? 
+    (LANG === 'bm' ? '✅ Selesai' : '✅ Complete') : 
+    (LANG === 'bm' ? '➡️ Langkah Seterusnya' : '➡️ Next Step');
+  
+  // Setup the step
+  step.setup();
+  renderVenn();
+}
+
+function nextTutorialStep() {
+  if (state.tutorialStep < tutorialSteps.length) {
+    state.tutorialStep++;
+    updateTutorialStep();
+  } else {
+    // Tutorial complete - switch to practice mode
+    setMode('practice');
+  }
+}
+
+function prevTutorialStep() {
+  if (state.tutorialStep > 1) {
+    state.tutorialStep--;
+    updateTutorialStep();
+  }
+}
 
 // Init
 buildUniverse();
