@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About SetViz — Learn Set Theory Fundamentals</title>
+  <meta name="description" content="Learn about SetViz - an interactive tool for learning set theory concepts through visualizations.">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .about-page {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .hero-section {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+      padding: 40px;
+      border-radius: 16px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .hero-title {
+      font-size: 36px;
+      font-weight: bold;
+      margin: 0 0 16px 0;
+    }
+    .hero-subtitle {
+      font-size: 18px;
+      opacity: 0.9;
+      margin: 0;
+    }
+    .content-section {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    .content-section h2 {
+      color: var(--blue);
+      margin: 0 0 16px 0;
+      font-size: 24px;
+    }
+    .content-section h3 {
+      color: var(--ink);
+      margin: 20px 0 12px 0;
+      font-size: 18px;
+    }
+    .content-section p {
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0 0 16px 0;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    .feature-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .feature-item h4 {
+      color: var(--blue);
+      margin: 0 0 8px 0;
+      font-size: 16px;
+    }
+    .feature-item p {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0;
+      line-height: 1.5;
+    }
+    .back-button {
+      display: inline-block;
+      padding: 12px 24px;
+      background: var(--blue);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: var(--transition);
+      margin-bottom: 20px;
+    }
+    .back-button:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="about-page">
+    <a href="index.html" class="back-button">← Back to SetViz</a>
+    
+    <div class="hero-section">
+      <h1 class="hero-title">About SetViz</h1>
+      <p class="hero-subtitle">An interactive learning tool for set theory concepts through visualizations</p>
+    </div>
+
+    <div class="content-section">
+      <h2>What is SetViz?</h2>
+      <p>SetViz is a static web app for learning set theory concepts through interactive visualizations. We focus on understanding basic set concepts, operations, and relationships through our 3-stage learning approach. Built to mirror the simplicity of ProbViz.</p>
+      
+      <h3>Our Mission</h3>
+      <p>To make set theory accessible and understandable through visual learning. We believe that seeing mathematical concepts in action helps build deeper understanding than abstract notation alone.</p>
+    </div>
+
+    <div class="content-section">
+      <h2>Learning Approach</h2>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h4>🎯 Stage 1: One Set</h4>
+          <p>Learn what a set is and understand the basic concept of set A and its complement A′</p>
+        </div>
+        <div class="feature-item">
+          <h4>🔄 Stage 2: Two Independent Sets</h4>
+          <p>Explore relationships between two separate sets with union, intersection, and complements</p>
+        </div>
+        <div class="feature-item">
+          <h4>🔗 Stage 3: Set Relationships</h4>
+          <p>Discover different relationships: Independent, Overlapping, and Mutually Exclusive sets</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>How to Use SetViz</h2>
+      <ol>
+        <li><strong>Start Learning:</strong> Click "Learn Basic Concepts" to begin your journey</li>
+        <li><strong>Follow the Stages:</strong> Progress through our 3-stage learning system</li>
+        <li><strong>Interactive Exploration:</strong> Click operation buttons to see visual highlights</li>
+        <li><strong>Explore Relationships:</strong> Use the relationship toggle to see different set types</li>
+        <li><strong>Visual Understanding:</strong> Watch how areas highlight to understand each concept</li>
+      </ol>
+    </div>
+
+    <div class="content-section">
+      <h2>What You'll Learn</h2>
+      <ul>
+        <li><strong>Basic Set Concepts:</strong> Understanding what sets are and how they work</li>
+        <li><strong>Set Notation:</strong> Learning symbols like A, A′, ∪, ∩, and their meanings</li>
+        <li><strong>Set Operations:</strong> Union (∪), Intersection (∩), Complement (′), and Set Difference</li>
+        <li><strong>Set Relationships:</strong> Independent, Overlapping, and Mutually Exclusive sets</li>
+        <li><strong>Visual Intuition:</strong> Building understanding through interactive visualizations</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>Features</h2>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h4>🎨 Interactive Visualizations</h4>
+          <p>Click buttons to see exactly which areas represent each set operation</p>
+        </div>
+        <div class="feature-item">
+          <h4>📚 Progressive Learning</h4>
+          <p>Structured 3-stage approach that builds understanding step by step</p>
+        </div>
+        <div class="feature-item">
+          <h4>🔄 Relationship Exploration</h4>
+          <p>Toggle between different set relationships to see how they affect operations</p>
+        </div>
+        <div class="feature-item">
+          <h4>📱 Responsive Design</h4>
+          <p>Works perfectly on desktop, tablet, and mobile devices</p>
+        </div>
+        <div class="feature-item">
+          <h4>♿ Accessible</h4>
+          <p>Built with accessibility in mind, supporting screen readers and keyboard navigation</p>
+        </div>
+        <div class="feature-item">
+          <h4>🌐 No Login Required</h4>
+          <p>Start learning immediately - no registration or account needed</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <h2>Technical Details</h2>
+      <p><strong>Built with:</strong> HTML5, CSS3, JavaScript (ES6+), SVG</p>
+      <p><strong>Deployment:</strong> Static site, perfect for GitHub Pages</p>
+      <p><strong>Browser Support:</strong> Modern browsers (Chrome, Firefox, Safari, Edge)</p>
+      <p><strong>License:</strong> Open source, inspired by ProbViz</p>
+    </div>
+
+    <div class="content-section">
+      <h2>Credits</h2>
+      <p><strong>Created by:</strong> Suriyati Ujang</p>
+      <p><strong>Inspired by:</strong> ProbViz - for the clean, educational approach</p>
+      <p><strong>Built with:</strong> ❤️ + JavaScript</p>
+    </div>
+
+    <div class="content-section" style="text-align: center; background: #f8fafc;">
+      <h2>Ready to Start Learning?</h2>
+      <p>Jump into the interactive world of set theory with our visual learning tool.</p>
+      <a href="index.html" class="back-button" style="font-size: 18px; padding: 16px 32px;">Start Learning Now →</a>
+    </div>
+  </div>
+</body>
+</html>

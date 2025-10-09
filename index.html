@@ -2,73 +2,243 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SetViz — Learn Sets Visually</title>
-  <meta name="description" content="Interactive Venn diagram to learn set operations">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>SetViz Basic Concepts — Learn Set Theory Fundamentals</title>
+  <meta name="description" content="Learn basic set theory concepts step by step. Understand sets, symbols, and relationships visually.">
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .concept-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .stage-header {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .stage-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 0 0 8px 0;
+    }
+    .stage-description {
+      font-size: 16px;
+      opacity: 0.9;
+      margin: 0;
+    }
+    .symbol-display {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .operation-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .op-btn {
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .op-btn:hover {
+      border-color: #3b82f6;
+      background: #eff6ff;
+    }
+    .op-btn.active {
+      border-color: #3b82f6;
+      background: #3b82f6;
+      color: white;
+    }
+    .teaching-point {
+      background: #f0f9ff;
+      border-left: 4px solid #0ea5e9;
+      padding: 12px 16px;
+      margin: 12px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .venn-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 400px;
+      background: #f8fafc;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+    .stage-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0;
+    }
+    .stage-nav {
+      display: flex;
+      gap: 12px;
+    }
+    .nav-btn {
+      padding: 10px 20px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .nav-btn:hover:not(:disabled) {
+      border-color: #3b82f6;
+      background: #eff6ff;
+    }
+    .nav-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .nav-btn.primary {
+      background: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+    }
+  </style>
 </head>
 <body>
+  <div class="concept-page">
   <header class="topbar">
     <div class="brand">
       <div class="logo" aria-hidden="true"></div>
-      <div class="name">SetViz <span class="muted">(no login)</span></div>
+        <div class="name">SetViz <span class="muted">Basic Concepts</span></div>
     </div>
     <div class="toolbar">
-      <div class="seg" id="langSeg" role="tablist" aria-label="Language">
-        <button data-lang="en" aria-pressed="true">EN</button>
-        <button data-lang="bm" aria-pressed="false">BM</button>
+        <div class="language-selector">
+          <select id="languageSelect" onchange="changeLanguage()">
+            <option value="en">English</option>
+            <option value="ms">Bahasa Melayu</option>
+          </select>
+        </div>
+        <a href="about.html" class="btn ghost">About</a>
       </div>
-      <a href="basic-concepts.html" class="btn ghost">📖 Basic Concepts</a>
-      <button class="btn ghost" id="tutorialBtn" aria-label="Tutorial">📚 Tutorial</button>
-      <button class="btn ghost" id="aboutBtn" aria-label="About">?</button>
-      <a class="btn primary" id="startBtn">Start</a>
+    </header>
+    
+    <div class="main-content">
+      <!-- Left Sidebar Navigation -->
+      <nav class="sidebar" aria-label="Stage Navigation">
+        <h3 class="sidebar-title">Learning Stages</h3>
+        <ul class="stage-list" role="tablist">
+          <li class="stage-item" data-stage="0">
+            <button class="stage-btn" role="tab" aria-selected="true" aria-controls="stage-content">
+              <span class="stage-name">Orientation</span>
+              <span class="stage-desc">Universal Set U</span>
+            </button>
+          </li>
+          <li class="stage-item" data-stage="1">
+            <button class="stage-btn" role="tab" aria-selected="false" aria-controls="stage-content">
+              <span class="stage-name">One Set A</span>
+              <span class="stage-desc">Set & Complement</span>
+            </button>
+          </li>
+          <li class="stage-item" data-stage="2">
+            <button class="stage-btn" role="tab" aria-selected="false" aria-controls="stage-content">
+              <span class="stage-name">Two Sets Overlapping</span>
+              <span class="stage-desc">Union & Intersection</span>
+            </button>
+          </li>
+          <li class="stage-item" data-stage="3">
+            <button class="stage-btn" role="tab" aria-selected="false" aria-controls="stage-content">
+              <span class="stage-name">Mutually Exclusive</span>
+              <span class="stage-desc">Empty Set ∅</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- Main Content Area -->
+      <main class="content-area" id="stage-content" role="tabpanel">
+    
+    <div class="stage-header">
+      <h1 class="stage-title" id="stageTitle">Stage 1: One Set (A)</h1>
+      <p class="stage-description" id="stageDescription">Learn what a set is and understand the basic concept of set A</p>
     </div>
-  </header>
 
-  <main class="grid" aria-live="polite">
-    <!-- Left: Visualizer -->
-    <section class="card" aria-labelledby="vizTitle">
-      <h2 id="vizTitle" class="h2">🎨 <span data-i18n="Venn Diagram">Venn Diagram</span></h2>
-      <div class="row tiny">
-        <span data-i18n="Mode">Mode</span>:
-        <div class="seg" id="modeSeg" role="tablist" aria-label="Mode">
-          <button data-mode="practice" aria-pressed="true">🎯 <span data-i18n="Practice">Practice</span></button>
-          <button data-mode="tutorial" aria-pressed="false">📚 <span data-i18n="Tutorial">Tutorial</span></button>
+    <div class="symbol-display" id="symbolDisplay">
+      U
+    </div>
+
+
+    <div class="operation-buttons" id="operationButtons">
+      <button class="op-btn" data-operation="A">A</button>
+      <button class="op-btn" data-operation="A-complement">A′</button>
         </div>
-      </div>
-      
-      <div class="row tiny">
-        <span data-i18n="Choose number of sets">Choose number of sets</span>:
-        <div class="seg" id="setCountSeg" role="tablist" aria-label="Set count">
-          <button data-count="1" aria-pressed="false">1</button>
-          <button data-count="2" aria-pressed="true">2</button>
-          <button data-count="3" aria-pressed="false">3</button>
-        </div>
-      </div>
-      
-      <div class="row tiny" id="relationshipToggle" style="display: none;">
-        <span data-i18n="Set Relationship">Set Relationship</span>:
-        <div class="seg" id="relationshipSeg" role="tablist" aria-label="Set relationship">
-          <button data-relationship="independent" aria-pressed="true">🔘 <span data-i18n="Independent">Independent</span></button>
-          <button data-relationship="overlapping" aria-pressed="false">🔘 <span data-i18n="Overlapping">Overlapping</span></button>
-          <button data-relationship="mutually-exclusive" aria-pressed="false">🔘 <span data-i18n="Mutually Exclusive">Mutually Exclusive</span></button>
-        </div>
+
+    <div class="teaching-point" id="teachingPoint">
+      <strong>Teaching Point:</strong> This is set A — all elements belonging to A. A′ (complement of A) represents everything outside A.
       </div>
 
-      <div class="venn-wrap">
-        <svg id="venn" viewBox="0 0 500 320" width="100%" aria-label="Venn diagram">
+    <div class="venn-container">
+        <svg id="venn" viewBox="0 0 500 320" width="100%" height="320" max-width="100%" preserveAspectRatio="xMidYMid meet" aria-label="Venn diagram">
           <defs>
             <circle id="circleA" cx="190" cy="160" r="100"/>
             <circle id="circleB" cx="310" cy="160" r="100"/>
-            <circle id="circleC" cx="250" cy="80"  r="90"/>
 
             <clipPath id="clipA"><use href="#circleA"/></clipPath>
             <clipPath id="clipB"><use href="#circleB"/></clipPath>
-            <clipPath id="clipC"><use href="#circleC"/></clipPath>
             <clipPath id="clipAB">
+              <use href="#circleA"/>
+              <use href="#circleB"/>
+            </clipPath>
+            <clipPath id="clipIntersection">
+              <use href="#circleA"/>
+              <use href="#circleB"/>
+            </clipPath>
+            <clipPath id="clipIntersectionOnly">
+              <use href="#circleA"/>
+              <use href="#circleB"/>
+            </clipPath>
+            <clipPath id="clipTrueIntersection">
               <use href="#circleA"/>
               <use href="#circleB" clip-path="url(#clipA)"/>
             </clipPath>
+            <clipPath id="clipAB">
+              <use href="#circleB" clip-path="url(#clipA)"/>
+            </clipPath>
+            <mask id="maskIntersectionOnly">
+              <rect x="0" y="0" width="500" height="320" fill="black"/>
+              <use href="#circleA" fill="white"/>
+              <use href="#circleB" fill="white"/>
+            </mask>
+            <mask id="maskTrueIntersection">
+              <rect x="0" y="0" width="500" height="320" fill="black"/>
+              <use href="#circleA" fill="white"/>
+              <use href="#circleB" fill="white"/>
+            </mask>
+            <mask id="maskExactIntersection">
+              <rect x="0" y="0" width="500" height="320" fill="black"/>
+              <use href="#circleA" fill="white"/>
+              <use href="#circleB" fill="white"/>
+            </mask>
+            <mask id="maskIntersection">
+              <rect x="0" y="0" width="500" height="320" fill="black"/>
+              <use href="#circleA" fill="white"/>
+              <use href="#circleB" fill="white"/>
+            </mask>
+            <mask id="maskIntersectionCorrect">
+              <rect x="0" y="0" width="500" height="320" fill="black"/>
+              <use href="#circleA" fill="white"/>
+              <use href="#circleB" fill="white"/>
+            </mask>
             <clipPath id="clipAminusB">
               <use href="#circleA"/>
               <rect x="0" y="0" width="500" height="320" clip-path="url(#clipB)" fill="#000"/>
@@ -82,132 +252,557 @@
               <use href="#circleA" fill="black"/>
               <use href="#circleB" fill="black"/>
             </mask>
+          <mask id="maskAComplement">
+            <rect x="0" y="0" width="500" height="320" fill="white"/>
+            <use href="#circleA" fill="black"/>
+          </mask>
+          <mask id="maskBComplement">
+            <rect x="0" y="0" width="500" height="320" fill="white"/>
+            <use href="#circleB" fill="black"/>
+          </mask>
+          <clipPath id="clipUniverse">
+            <rect x="30" y="20" width="440" height="280"/>
+          </clipPath>
           </defs>
 
           <g id="base">
             <circle cx="190" cy="160" r="100" class="baseA"/>
-            <circle cx="310" cy="160" r="100" class="baseB"/>
-            <circle cx="250" cy="80" r="90" class="baseC" style="display: none;"/>
-          </g>
+          <circle cx="310" cy="160" r="100" class="baseB" style="display: none;"/>
+        </g>
 
-          <g id="hl-union" opacity="0">
+        <g id="hl-A" opacity="0">
+          <circle cx="190" cy="160" r="100" class="hlA"/>
+        </g>
+        <g id="hl-B" opacity="0">
+          <circle cx="310" cy="160" r="100" class="hlB"/>
+        </g>
+        <g id="hl-A-complement" opacity="0" mask="url(#maskAComplement)" clip-path="url(#clipUniverse)">
+          <rect x="0" y="0" width="500" height="320" class="hlComp"/>
+        </g>
+        <g id="hl-B-complement" opacity="0" mask="url(#maskBComplement)" clip-path="url(#clipUniverse)">
+          <rect x="0" y="0" width="500" height="320" class="hlComp"/>
+        </g>
+        <g id="hl-A-union-B" opacity="0">
             <circle cx="190" cy="160" r="100" class="hlA"/>
             <circle cx="310" cy="160" r="100" class="hlB"/>
           </g>
-          <g id="hl-intersection" opacity="0" clip-path="url(#clipAB)">
-            <rect x="0" y="0" width="500" height="320" class="hlAB"/>
-          </g>
-          <g id="hl-AminusB" opacity="0" clip-path="url(#clipAminusB)">
-            <rect x="0" y="0" width="500" height="320" class="hlAonly"/>
-          </g>
-          <g id="hl-BminusA" opacity="0" clip-path="url(#clipBminusA)">
-            <rect x="0" y="0" width="500" height="320" class="hlBonly"/>
-          </g>
-          <g id="hl-complement" opacity="0" mask="url(#maskComplement)">
-            <rect x="0" y="0" width="500" height="320" class="hlComp"/>
+        <g id="hl-A-union-B-independent" opacity="0">
+          <circle cx="190" cy="160" r="100" class="hlA"/>
+          <circle cx="350" cy="160" r="100" class="hlB"/>
+        </g>
+        <g id="hl-A-intersection-B" opacity="0">
+            <circle cx="310" cy="160" r="100" class="hlIntersection" clip-path="url(#clipA)"/>
           </g>
 
           <g id="regionA"></g>
           <g id="regionAB"></g>
           <g id="regionB"></g>
-          <g id="regionAC"></g>
-          <g id="regionBC"></g>
-          <g id="regionABC"></g>
-          <g id="regionC"></g>
           <g id="regionOut"></g>
 
-          <text x="165" y="44" font-size="16">A</text>
-          <text x="325" y="44" font-size="16">B</text>
-          <text x="250" y="20" font-size="16" style="display: none;">C</text>
+        <text x="190" y="60" font-size="20" text-anchor="middle" style="display: none;">A</text>
+        <text x="310" y="60" font-size="20" text-anchor="middle" style="display: none;">B</text>
+        <text x="190" y="60" font-size="16" text-anchor="middle" class="placeholder-label" style="display: none;">A</text>
+        <text x="310" y="60" font-size="16" text-anchor="middle" class="placeholder-label" style="display: none;">B</text>
+        <text x="250" y="160" font-size="24" text-anchor="middle" class="empty-set-indicator" style="display: none;">∅</text>
           <rect x="30" y="20" width="440" height="280" class="uBox"/>
           <text x="40" y="36" font-size="12">U</text>
         </svg>
       </div>
-      <p class="tiny" data-i18n="Drag note">Drag-and-drop optional later — this prototype uses clicks to toggle membership.</p>
-    </section>
 
-    <!-- Right: Controls & Practice -->
-    <aside class="card controls" aria-labelledby="ctrlTitle">
-      <h2 id="ctrlTitle" class="h2">🧰 <span data-i18n="Control Panel">Control Panel</span></h2>
-
+    <div class="stage-controls">
+      <div class="stage-nav">
+        <button class="nav-btn" id="prevStageBtn" disabled>← Previous Stage</button>
+        <button class="nav-btn" id="nextStageBtn">Next Stage →</button>
+      </div>
       <div>
-        <div class="tiny" data-i18n="Elements U">Elements in Universal Set U</div>
-        <div id="universe" class="chips" aria-label="Universal set"></div>
-        <div class="tiny" data-i18n="Hint select">Hint: select a target set below, then click chips to add/remove.</div>
+        <button class="nav-btn" id="resetBtn">Reset</button>
+        <a href="about.html" class="nav-btn">About SetViz</a>
+      </div>
       </div>
 
-      <div>
-        <div class="tiny" data-i18n="Target set">Target set</div>
-        <div class="seg" id="targetSeg" role="tablist" aria-label="Target set">
-          <button data-target="A" aria-pressed="true">A</button>
-          <button data-target="B" aria-pressed="false">B</button>
-          <button data-target="OUT" aria-pressed="false">U\(A∪B)</button>
-        </div>
+      </main>
       </div>
-
-      <div>
-        <div class="tiny" data-i18n="Operation">Operation highlight</div>
-        <select id="opSelect" aria-label="Operation">
-          <option value="none">—</option>
-          <option value="union">A ∪ B</option>
-          <option value="intersection">A ∩ B</option>
-          <option value="AminusB">A \ B</option>
-          <option value="BminusA">B \ A</option>
-          <option value="complement">(A ∪ B)′</option>
-        </select>
-      </div>
-
-      <!-- Practice Mode -->
-      <div class="card soft" id="practicePanel">
-        <div class="tiny" data-i18n="Practice Question">Practice Question</div>
-        <div id="taskText" class="task"></div>
-        <div class="row">
-          <button class="btn" id="newTaskBtn">🎲 <span data-i18n="New Task">New Task</span></button>
-          <button class="btn" id="checkBtn">✅ <span data-i18n="Check Answer">Check Answer</span></button>
-          <button class="btn" id="resetBtn">♻️ <span data-i18n="Reset">Reset</span></button>
-        </div>
-        <div id="feedback" class="feedback"></div>
-        <div class="tiny" id="answerPeek"></div>
-      </div>
-
-      <!-- Tutorial Mode -->
-      <div class="card soft" id="tutorialPanel" style="display: none;">
-        <div class="tiny" data-i18n="Tutorial">Tutorial</div>
-        <div id="tutorialTitle" class="task">Learn Set Operations Step by Step</div>
-        <div id="tutorialContent" class="tutorial-content">
-          <p data-i18n="tutorial-intro">Click "Next Step" to see how each set operation works visually.</p>
-        </div>
-        <div class="row">
-          <button class="btn" id="prevStepBtn" disabled>⬅️ <span data-i18n="Previous">Previous</span></button>
-          <button class="btn" id="nextStepBtn">➡️ <span data-i18n="Next Step">Next Step</span></button>
-          <button class="btn" id="resetTutorialBtn">🔄 <span data-i18n="Restart Tutorial">Restart</span></button>
-        </div>
-        <div class="tutorial-progress">
-          <div class="progress-bar">
-            <div id="progressFill" class="progress-fill"></div>
-          </div>
-          <div class="tiny" id="stepCounter">Step 1 of 8</div>
-        </div>
-      </div>
-
-      <div class="tiny">
-        <span class="kbd">Tip</span> <span data-i18n="Tip">Toggle elements quickly by pressing the number key (1–9) matching a chip.</span>
-      </div>
-    </aside>
-  </main>
 
   <footer class="foot">
-    © 2026 SetViz by Suriyati Ujang |   Inspired by ProbViz | Built with ❤️ + JS 
+      © 2026 SetViz by Suriyati Ujang | Inspired by ProbViz | Built with ❤️ + JS
   </footer>
 
-  <dialog id="aboutDlg">
-    <div class="dialog-body">
-      <h3>About SetViz</h3>
-      <p>This is a static web app for learning set theory concepts through an interactive Venn diagram, randomized practice, and immediate feedback. Built to mirror the simplicity of ProbViz.</p>
-      <button class="btn" id="closeAbout">Close</button>
-    </div>
-  </dialog>
+  <script>
+    // Basic Concepts Page Script
+    let currentStage = 0;
+    let currentOperation = null;
+    let setRelationship = 'independent';
 
-  <script src="script.js"></script>
+    const stages = {
+      0: {
+        title: 'Stage 0: Orientation',
+        description: 'Learn about the universal set U and what a set is',
+        operations: [],
+        teachingPoint: 'A set is a collection of things. The box is the universal set U.',
+        relationship: 'none'
+      },
+      1: {
+        title: 'Stage 1: One Set (A)',
+        description: 'Learn what a set is and understand the basic concept of set A',
+        operations: ['A', 'A-complement'],
+        teachingPoint: 'This is set A — all elements belonging to A. A′ (complement of A) represents everything outside A.',
+        relationship: 'single'
+      },
+      2: {
+        title: 'Stage 2: Two Sets (A, B) Overlapping',
+        description: 'Learn to read A, B, A∪B, A∩B, A′, B′ from shading',
+        operations: ['A', 'B', 'A-complement', 'B-complement', 'A-union-B', 'A-intersection-B'],
+        teachingPoint: 'A ∪ B (union) = in A or B (or both). A ∩ B (intersection) = overlap only. Show both complements to contrast.',
+        relationship: 'overlapping'
+      },
+      3: {
+        title: 'Stage 3: Two Sets Mutually Exclusive',
+        description: 'See A ∩ B = ∅ visually',
+        operations: ['A', 'B', 'A-union-B', 'A-intersection-B'],
+        teachingPoint: 'Mutually exclusive = no element in common. A ∩ B = ∅ (empty set).',
+        relationship: 'mutually-exclusive'
+      }
+    };
+
+    // Language strings
+    const languageStrings = {
+      en: {
+        stages: {
+          0: {
+            title: 'Stage 0: Orientation',
+            description: 'Learn about the universal set U and what a set is',
+            teachingPoint: 'A set is a collection of things. The box is the universal set U.'
+          },
+          1: {
+            title: 'Stage 1: One Set (A)',
+            description: 'Learn what a set is and understand the basic concept of set A',
+            teachingPoint: 'This is set A — all elements belonging to A. A′ (complement of A) represents everything outside A.'
+          },
+          2: {
+            title: 'Stage 2: Two Sets (A, B) Overlapping',
+            description: 'Learn to read A, B, A∪B, A∩B, A′, B′ from shading',
+            teachingPoint: 'A ∪ B (union) = in A or B (or both). A ∩ B (intersection) = overlap only. Show both complements to contrast.'
+          },
+          3: {
+            title: 'Stage 3: Two Sets Mutually Exclusive',
+            description: 'See A ∩ B = ∅ visually',
+            teachingPoint: 'Mutually exclusive = no element in common. A ∩ B = ∅ (empty set).'
+          }
+        },
+        operations: {
+          'A': 'A',
+          'B': 'B',
+          'A-complement': 'A′',
+          'B-complement': 'B′',
+          'A-union-B': 'A ∪ B',
+          'A-intersection-B': 'A ∩ B'
+        },
+        ui: {
+          reset: 'Reset',
+          about: 'About SetViz',
+          emptySet: '∅ (empty)',
+          miniTaskHint: 'Mini task: Shade the overlap only for A ∩ B',
+          emptySetMessage: 'A ∩ B = ∅ (empty set) - no overlap!'
+        }
+      },
+      ms: {
+        stages: {
+          0: {
+            title: 'Tahap 0: Orientasi',
+            description: 'Pelajari tentang set universal U dan apa itu set',
+            teachingPoint: 'Set ialah koleksi benda. Kotak ialah set universal U.'
+          },
+          1: {
+            title: 'Tahap 1: Satu Set (A)',
+            description: 'Pelajari apa itu set dan fahami konsep asas set A',
+            teachingPoint: 'Ini ialah set A — semua unsur yang tergolong dalam A. A′ (pelengkap A) mewakili semua yang di luar A.'
+          },
+          2: {
+            title: 'Tahap 2: Dua Set (A, B) Bertindih',
+            description: 'Pelajari membaca A, B, A∪B, A∩B, A′, B′ dari lorekan',
+            teachingPoint: 'A ∪ B (gabungan) = dalam A atau B (atau kedua-duanya). A ∩ B (persilangan) = kawasan bertindih sahaja. Tunjukkan kedua-dua pelengkap untuk kontras.'
+          },
+          3: {
+            title: 'Tahap 3: Dua Set Saling Eksklusif',
+            description: 'Lihat A ∩ B = ∅ secara visual',
+            teachingPoint: 'Saling eksklusif = tiada unsur sepunya. A ∩ B = ∅ (set kosong).'
+          }
+        },
+        operations: {
+          'A': 'A',
+          'B': 'B',
+          'A-complement': 'A′',
+          'B-complement': 'B′',
+          'A-union-B': 'A ∪ B',
+          'A-intersection-B': 'A ∩ B'
+        },
+        ui: {
+          reset: 'Set Semula',
+          about: 'Tentang SetViz',
+          emptySet: '∅ (kosong)',
+          miniTaskHint: 'Tugas mini: Lorek kawasan bertindih sahaja untuk A ∩ B',
+          emptySetMessage: 'A ∩ B = ∅ (set kosong) - tiada pertindihan!'
+        }
+      }
+    };
+
+    let currentLanguage = 'en';
+
+    // Language switching function
+    function changeLanguage() {
+      const select = document.getElementById('languageSelect');
+      currentLanguage = select.value;
+      
+      // Save language preference
+      localStorage.setItem('setviz-language', currentLanguage);
+      
+      // Update all UI elements
+      updateStage();
+      updateSidebar();
+      updateUIElements();
+    }
+
+    // Update UI elements that need translation
+    function updateUIElements() {
+      const lang = languageStrings[currentLanguage];
+      
+      // Update reset button
+      const resetBtn = document.getElementById('resetBtn');
+      if (resetBtn) resetBtn.textContent = lang.ui.reset;
+      
+      // Update about link
+      const aboutLink = document.querySelector('a[href="about.html"]');
+      if (aboutLink) aboutLink.textContent = lang.ui.about;
+    }
+
+    function updateStage() {
+      const stage = stages[currentStage];
+      const lang = languageStrings[currentLanguage];
+      const stageLang = lang.stages[currentStage];
+      
+      document.getElementById('stageTitle').textContent = stageLang.title;
+      document.getElementById('stageDescription').textContent = stageLang.description;
+      document.getElementById('teachingPoint').innerHTML = `<strong>Teaching Point:</strong> ${stageLang.teachingPoint}`;
+      
+      // Set relationship for the stage
+      setRelationship = stage.relationship;
+      
+      // Update operation buttons
+      updateOperationButtons(stage.operations);
+      
+      // Update symbol display
+      updateSymbolDisplay();
+      
+      // Reset teaching point to stage default
+      let teachingContent = `<strong>Teaching Point:</strong> ${stage.teachingPoint}`;
+      
+      // Add quick check for mutually exclusive sets
+      if (setRelationship === 'mutually-exclusive') {
+        teachingContent += '<br><br><strong>Quick Check:</strong> In this view, what is A ∩ B? <em>Answer: ∅ (empty set)</em>';
+      }
+      
+      document.getElementById('teachingPoint').innerHTML = teachingContent;
+      
+      // Update Venn diagram
+      updateVennDiagram();
+      
+      // Add special styling for different relationships
+      const vennEl = document.getElementById('venn');
+      vennEl.classList.remove('stage-2-overlapping', 'stage-3-mutually-exclusive');
+      
+      if (setRelationship === 'overlapping') {
+        vennEl.classList.add('stage-2-overlapping');
+      } else if (setRelationship === 'mutually-exclusive') {
+        vennEl.classList.add('stage-3-mutually-exclusive');
+      }
+      
+      // Update navigation buttons
+      document.getElementById('prevStageBtn').disabled = currentStage === 0;
+      document.getElementById('nextStageBtn').disabled = currentStage === 3;
+      
+      // Update sidebar
+      updateSidebar();
+    }
+
+    function updateOperationButtons(operations) {
+      const container = document.getElementById('operationButtons');
+      container.innerHTML = '';
+      
+      operations.forEach(op => {
+        const btn = document.createElement('button');
+        btn.className = 'op-btn';
+        btn.setAttribute('data-operation', op);
+        btn.textContent = languageStrings[currentLanguage].operations[op] || getOperationSymbol(op);
+        btn.addEventListener('click', () => selectOperation(op));
+        container.appendChild(btn);
+      });
+    }
+
+    function getOperationSymbol(operation) {
+      const symbols = {
+        'A': 'A',
+        'B': 'B',
+        'A-complement': 'A′',
+        'B-complement': 'B′',
+        'A-union-B': 'A ∪ B',
+        'A-intersection-B': 'A ∩ B'
+      };
+      return symbols[operation] || operation;
+    }
+
+    function updateSymbolDisplay() {
+      const symbolDisplay = document.getElementById('symbolDisplay');
+      if (currentStage === 0) {
+        symbolDisplay.textContent = 'U';
+      } else if (currentOperation) {
+        symbolDisplay.textContent = getOperationSymbol(currentOperation);
+      } else {
+        symbolDisplay.textContent = 'U';
+      }
+    }
+
+    function selectOperation(operation) {
+      currentOperation = operation;
+      
+      // Update button states
+      document.querySelectorAll('.op-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.operation === operation);
+      });
+      
+      // Update symbol display
+      updateSymbolDisplay();
+      
+      // Update Venn diagram highlighting
+      updateVennDiagram();
+      
+      // Show mini task hints for Stage 2
+      if (currentStage === 2) {
+        showMiniTaskHint(operation);
+      }
+      
+      // Show empty set message for mutually exclusive intersection
+      if (operation === 'A-intersection-B' && setRelationship === 'mutually-exclusive') {
+        showEmptySetMessage();
+      }
+    }
+
+    function showMiniTaskHint(operation) {
+      const teachingPoint = document.getElementById('teachingPoint');
+      const lang = languageStrings[currentLanguage];
+      let hint = '';
+      
+      switch(operation) {
+        case 'A-intersection-B':
+          hint = lang.ui.miniTaskHint;
+          break;
+        case 'A-union-B':
+          hint = '<strong>Mini Task:</strong> Shade A ∪ B. <em>Hint: This includes both circles - everything in A or B (or both)!</em>';
+          break;
+        case 'A-complement':
+          hint = '<strong>Teaching Point:</strong> A′ is everything outside A. Notice how it includes the part of B that doesn\'t overlap with A.';
+          break;
+        case 'B-complement':
+          hint = '<strong>Teaching Point:</strong> B′ is everything outside B. Notice how it includes the part of A that doesn\'t overlap with B.';
+          break;
+        case 'A':
+          hint = '<strong>Teaching Point:</strong> Set A includes the entire left circle, including the overlapping part.';
+          break;
+        case 'B':
+          hint = '<strong>Teaching Point:</strong> Set B includes the entire right circle, including the overlapping part.';
+          break;
+        default:
+          hint = '<strong>Teaching Point:</strong> A ∪ B (union) = in A or B (or both). A ∩ B (intersection) = overlap only. Show both complements to contrast.';
+      }
+      
+      teachingPoint.innerHTML = hint;
+    }
+
+    function showEmptySetMessage() {
+      const teachingPoint = document.getElementById('teachingPoint');
+      const lang = languageStrings[currentLanguage];
+      const emptyMessage = lang.ui.emptySetMessage;
+      teachingPoint.innerHTML = emptyMessage;
+      
+      // Add a visual indicator in the symbol display
+      const symbolDisplay = document.getElementById('symbolDisplay');
+      symbolDisplay.innerHTML = 'A ∩ B = <span style="color: #ef4444; font-weight: bold;">∅</span>';
+    }
+
+    function updateVennDiagram() {
+      // Reset all highlights
+      document.querySelectorAll('[id^="hl-"]').forEach(el => {
+        el.setAttribute('opacity', '0');
+      });
+      
+      // Show/hide circles based on stage
+      const circleA = document.querySelector('.baseA');
+      const circleB = document.querySelector('.baseB');
+      const textA = document.querySelector('text[style*="display: none"]');
+      const textB = document.querySelector('text[style*="display: none"]');
+      const placeholderA = document.querySelector('.placeholder-label[style*="display: none"]');
+      const placeholderB = document.querySelectorAll('.placeholder-label[style*="display: none"]')[1];
+      const emptySetIndicator = document.querySelector('.empty-set-indicator');
+      
+      if (setRelationship === 'none') {
+        // Orientation stage - show placeholders
+        if (circleA) circleA.style.display = 'none';
+        if (circleB) circleB.style.display = 'none';
+        if (textA) textA.style.display = 'none';
+        if (textB) textB.style.display = 'none';
+        if (placeholderA) placeholderA.style.display = 'block';
+        if (placeholderB) placeholderB.style.display = 'block';
+        if (emptySetIndicator) emptySetIndicator.style.display = 'none';
+      } else if (setRelationship === 'single') {
+        // Single set mode
+        if (circleA) circleA.style.display = 'block';
+        if (circleB) circleB.style.display = 'none';
+        if (textA) textA.style.display = 'block';
+        if (textB) textB.style.display = 'none';
+        if (placeholderA) placeholderA.style.display = 'none';
+        if (placeholderB) placeholderB.style.display = 'none';
+        if (emptySetIndicator) emptySetIndicator.style.display = 'none';
+      } else {
+        // Two set mode
+        if (circleA) circleA.style.display = 'block';
+        if (circleB) circleB.style.display = 'block';
+        if (textA) textA.style.display = 'block';
+        if (textB) textB.style.display = 'block';
+        if (placeholderA) placeholderA.style.display = 'none';
+        if (placeholderB) placeholderB.style.display = 'none';
+        
+        // Show empty set indicator for mutually exclusive sets
+        if (emptySetIndicator) {
+          emptySetIndicator.style.display = (setRelationship === 'mutually-exclusive') ? 'block' : 'none';
+        }
+        
+        // Adjust circle positions based on relationship
+        if (setRelationship === 'overlapping') {
+          // Circles slightly overlapping
+          circleB.setAttribute('cx', '310');
+        } else if (setRelationship === 'mutually-exclusive') {
+          // Circles close but not overlapping
+          circleB.setAttribute('cx', '320');
+        }
+        
+        // Update the intersection circle to match the new circle B position
+        const intersectionCircle = document.querySelector('#hl-A-intersection-B circle');
+        if (intersectionCircle) {
+          intersectionCircle.setAttribute('cx', circleB.getAttribute('cx'));
+        }
+      }
+      
+      // Apply highlighting based on current operation
+      if (currentOperation) {
+        let highlightId = `hl-${currentOperation}`;
+        
+        // Special handling for union when sets are independent
+        if (currentOperation === 'A-union-B' && setRelationship === 'independent') {
+          highlightId = 'hl-A-union-B-independent';
+        }
+        
+        // Special handling for intersection when sets are mutually exclusive
+        if (currentOperation === 'A-intersection-B' && setRelationship === 'mutually-exclusive') {
+          // Don't highlight anything - show empty set message instead
+          return;
+        }
+        
+        const highlightEl = document.getElementById(highlightId);
+        if (highlightEl) {
+          highlightEl.setAttribute('opacity', '1');
+        }
+      }
+    }
+
+    // Event listeners
+    document.getElementById('prevStageBtn').addEventListener('click', () => {
+      if (currentStage > 0) {
+        currentStage--;
+        currentOperation = null;
+        updateStage();
+      }
+    });
+
+    document.getElementById('nextStageBtn').addEventListener('click', () => {
+      if (currentStage < 3) {
+        currentStage++;
+        currentOperation = null;
+        updateStage();
+      }
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      currentOperation = null;
+      updateStage();
+    });
+
+
+    // Responsive SVG handling
+    function adjustSVGSize() {
+      const vennContainer = document.querySelector('.venn-container');
+      const svg = document.getElementById('venn');
+      
+      if (vennContainer && svg) {
+        const containerWidth = vennContainer.clientWidth;
+        const containerHeight = vennContainer.clientHeight;
+        
+        // Calculate appropriate size while maintaining aspect ratio
+        const aspectRatio = 500 / 320; // viewBox aspect ratio
+        let newWidth = Math.min(containerWidth - 20, 500);
+        let newHeight = newWidth / aspectRatio;
+        
+        // Ensure minimum height
+        if (newHeight < 200) {
+          newHeight = 200;
+          newWidth = newHeight * aspectRatio;
+        }
+        
+        svg.style.width = newWidth + 'px';
+        svg.style.height = newHeight + 'px';
+      }
+    }
+
+    // Sidebar navigation
+    function updateSidebar() {
+      const lang = languageStrings[currentLanguage];
+      
+      document.querySelectorAll('.stage-btn').forEach((btn, index) => {
+        const isActive = index === currentStage;
+        btn.setAttribute('aria-selected', isActive);
+        btn.classList.toggle('active', isActive);
+        
+        // Update button text with translated stage names
+        const stageLang = lang.stages[index];
+        if (stageLang) {
+          btn.textContent = stageLang.title;
+        }
+      });
+    }
+
+    // Add event listeners for sidebar navigation
+    document.querySelectorAll('.stage-btn').forEach((btn, index) => {
+      btn.addEventListener('click', () => {
+        currentStage = index;
+        currentOperation = null;
+        updateStage();
+        updateSidebar();
+      });
+    });
+
+    // Initialize language preference
+    const savedLanguage = localStorage.getItem('setviz-language');
+    if (savedLanguage && languageStrings[savedLanguage]) {
+      currentLanguage = savedLanguage;
+      document.getElementById('languageSelect').value = currentLanguage;
+    }
+
+    // Initialize
+    updateStage();
+    updateSidebar();
+    updateUIElements();
+    
+    // Adjust SVG size on load and resize
+    window.addEventListener('load', adjustSVGSize);
+    window.addEventListener('resize', adjustSVGSize);
+  </script>
 </body>
 </html>
