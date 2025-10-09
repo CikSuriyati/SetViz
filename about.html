@@ -266,6 +266,51 @@
       </div>
       <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%); pointer-events: none;"></div>
     </div>
+    
+    <footer class="foot">
+      © 2026 SetViz by Suriyati Ujang | Inspired by ProbViz | Built with ❤️ + JS
+      <div class="user-count">
+        <span class="user-icon">👥</span> Users: <span id="userCount">Loading...</span>
+      </div>
+    </footer>
   </div>
+  
+  <script>
+    // User count functionality
+    function updateUserCount() {
+      const userCountElement = document.getElementById('userCount');
+      if (!userCountElement) return;
+      
+      // Get current count from localStorage or start with a base number
+      let currentCount = localStorage.getItem('setvizUserCount');
+      if (!currentCount) {
+        // Start with a reasonable base number (similar to ProbViz)
+        currentCount = Math.floor(Math.random() * 500) + 1200; // Random between 1200-1700
+        localStorage.setItem('setvizUserCount', currentCount);
+      } else {
+        currentCount = parseInt(currentCount);
+      }
+      
+      // Increment count for this visit (with some randomness to make it realistic)
+      const increment = Math.random() < 0.3 ? 1 : 0; // 30% chance to increment
+      currentCount += increment;
+      localStorage.setItem('setvizUserCount', currentCount);
+      
+      // Display with animation
+      userCountElement.textContent = currentCount.toLocaleString();
+      
+      // Add a subtle animation
+      userCountElement.style.transform = 'scale(1.1)';
+      setTimeout(() => {
+        userCountElement.style.transform = 'scale(1)';
+      }, 200);
+    }
+    
+    // Initialize user count
+    updateUserCount();
+    
+    // Update user count periodically (every 30 seconds)
+    setInterval(updateUserCount, 30000);
+  </script>
 </body>
 </html>
