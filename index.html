@@ -9,8 +9,13 @@
   <style>
     .concept-page {
       max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
+      margin: 20px auto;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     .stage-header {
       background: linear-gradient(135deg, #3b82f6, #8b5cf6);
@@ -120,15 +125,13 @@
   <header class="topbar">
     <div class="brand">
       <div class="logo" aria-hidden="true"></div>
-        <div class="name">SetViz <span class="muted">Basic Concepts</span></div>
+        <div class="name">
+          <span class="brand-main">SetViz</span>
+          <span class="muted">Basic Concepts</span>
+          <div class="tagline">An interactive learning tool for set theory concepts through visualizations</div>
+        </div>
     </div>
     <div class="toolbar">
-        <div class="language-selector">
-          <select id="languageSelect" onchange="changeLanguage()">
-            <option value="en">English</option>
-            <option value="ms">Bahasa Melayu</option>
-          </select>
-        </div>
         <a href="about.html" class="btn ghost">About</a>
       </div>
     </header>
@@ -162,6 +165,24 @@
               <span class="stage-desc">Empty Set ∅</span>
             </button>
           </li>
+          <li class="stage-item" data-stage="4">
+            <button class="stage-btn" role="tab" aria-selected="false" aria-controls="stage-content">
+              <span class="stage-name">Set Differences</span>
+              <span class="stage-desc">A\B, B\A, A Δ B</span>
+            </button>
+          </li>
+          <li class="stage-item" data-stage="5">
+            <button class="stage-btn" role="tab" aria-selected="false" aria-controls="stage-content">
+              <span class="stage-name">Subset/Superset</span>
+              <span class="stage-desc">A⊆B, A⊂B, A⊄B</span>
+            </button>
+          </li>
+          <li class="stage-item" data-stage="6">
+            <button class="stage-btn" role="tab" aria-selected="false" aria-controls="stage-content">
+              <span class="stage-name">Complements & De Morgan</span>
+              <span class="stage-desc">A′, (A∪B)′, De Morgan</span>
+            </button>
+          </li>
         </ul>
       </nav>
       
@@ -188,7 +209,7 @@
       </div>
 
     <div class="venn-container">
-        <svg id="venn" viewBox="0 0 500 320" width="100%" height="320" max-width="100%" preserveAspectRatio="xMidYMid meet" aria-label="Venn diagram">
+        <svg id="venn" viewBox="0 0 560 420" width="100%" height="420" max-width="100%" preserveAspectRatio="xMidYMid meet" aria-label="Venn diagram">
           <defs>
             <circle id="circleA" cx="190" cy="160" r="100"/>
             <circle id="circleB" cx="310" cy="160" r="100"/>
@@ -247,28 +268,36 @@
               <use href="#circleB"/>
               <rect x="0" y="0" width="500" height="320" clip-path="url(#clipA)" fill="#000"/>
             </clipPath>
+            <clipPath id="clipA-minus-B">
+              <use href="#circleA"/>
+              <rect x="0" y="0" width="500" height="320" clip-path="url(#clipB)" fill="#000"/>
+            </clipPath>
+            <clipPath id="clipB-minus-A">
+              <use href="#circleB"/>
+              <rect x="0" y="0" width="500" height="320" clip-path="url(#clipA)" fill="#000"/>
+            </clipPath>
             <mask id="maskComplement">
               <rect x="0" y="0" width="500" height="320" fill="white"/>
               <use href="#circleA" fill="black"/>
               <use href="#circleB" fill="black"/>
             </mask>
           <mask id="maskAComplement">
-            <rect x="0" y="0" width="500" height="320" fill="white"/>
+            <rect x="0" y="0" width="560" height="320" fill="white"/>
             <use href="#circleA" fill="black"/>
           </mask>
           <mask id="maskBComplement">
-            <rect x="0" y="0" width="500" height="320" fill="white"/>
+            <rect x="0" y="0" width="560" height="320" fill="white"/>
             <use href="#circleB" fill="black"/>
           </mask>
           <clipPath id="clipUniverse">
-            <rect x="30" y="20" width="440" height="280"/>
+            <rect x="30" y="20" width="500" height="280"/>
           </clipPath>
           </defs>
 
           <g id="base">
             <circle cx="190" cy="160" r="100" class="baseA"/>
-          <circle cx="310" cy="160" r="100" class="baseB" style="display: none;"/>
-        </g>
+            <circle cx="310" cy="160" r="100" class="baseB" style="display: none;"/>
+          </g>
 
         <g id="hl-A" opacity="0">
           <circle cx="190" cy="160" r="100" class="hlA"/>
@@ -277,10 +306,10 @@
           <circle cx="310" cy="160" r="100" class="hlB"/>
         </g>
         <g id="hl-A-complement" opacity="0" mask="url(#maskAComplement)" clip-path="url(#clipUniverse)">
-          <rect x="0" y="0" width="500" height="320" class="hlComp"/>
+          <rect x="0" y="0" width="560" height="320" class="hlComp"/>
         </g>
         <g id="hl-B-complement" opacity="0" mask="url(#maskBComplement)" clip-path="url(#clipUniverse)">
-          <rect x="0" y="0" width="500" height="320" class="hlComp"/>
+          <rect x="0" y="0" width="560" height="320" class="hlComp"/>
         </g>
         <g id="hl-A-union-B" opacity="0">
             <circle cx="190" cy="160" r="100" class="hlA"/>
@@ -293,18 +322,70 @@
         <g id="hl-A-intersection-B" opacity="0">
             <circle cx="310" cy="160" r="100" class="hlIntersection" clip-path="url(#clipA)"/>
           </g>
+        <g id="hl-A-minus-B" opacity="0">
+          <circle cx="190" cy="160" r="100" class="hlA" clip-path="url(#clipA-minus-B)"/>
+        </g>
+        <g id="hl-B-minus-A" opacity="0">
+          <circle cx="310" cy="160" r="100" class="hlB" clip-path="url(#clipB-minus-A)"/>
+        </g>
+        <g id="hl-A-symmetric-difference-B" opacity="0">
+          <circle cx="190" cy="160" r="100" class="hlA" clip-path="url(#clipA-minus-B)"/>
+          <circle cx="310" cy="160" r="100" class="hlB" clip-path="url(#clipB-minus-A)"/>
+        </g>
+        
+        <!-- Visual indicators for Stage 4 operations -->
+        <g id="stage4-indicators" style="display: none;">
+          <text x="50" y="50" font-size="14" fill="#3b82f6" font-weight="bold">A\B = Blue</text>
+          <text x="50" y="70" font-size="14" fill="#f59e0b" font-weight="bold">B\A = Orange</text>
+          <text x="50" y="90" font-size="14" fill="#6b7280" font-weight="bold">A Δ B = Both</text>
+        </g>
+        
+        <!-- Subset symbol badges for Stage 5 -->
+        <g id="subset-badges" style="display: none;">
+          <rect x="30" y="320" width="500" height="80" fill="rgba(255,255,255,0.95)" stroke="#e5e7eb" stroke-width="1" rx="8"/>
+          <text x="280" y="340" font-size="14" fill="#374151" font-weight="bold" text-anchor="middle">Subset Relations</text>
+          <text x="80" y="360" font-size="16" fill="#059669" font-weight="bold" id="subset-proper">A ⊂ B</text>
+          <text x="180" y="360" font-size="16" fill="#059669" font-weight="bold" id="subset-equal">A ⊆ B</text>
+          <text x="280" y="360" font-size="16" fill="#dc2626" font-weight="bold" id="subset-not">A ⊄ B</text>
+          <text x="380" y="360" font-size="16" fill="#dc2626" font-weight="bold" id="subset-not-equal">A ⊈ B</text>
+        </g>
+        
+        <!-- Complement highlights for Stage 6 -->
+        <g id="hl-A-union-B-complement" opacity="0">
+          <rect x="0" y="0" width="560" height="420" class="hlComp" clip-path="url(#clipUniverse)"/>
+          <circle cx="190" cy="160" r="100" fill="#000" clip-path="url(#clipA)"/>
+          <circle cx="310" cy="160" r="100" fill="#000" clip-path="url(#clipB)"/>
+        </g>
+        
+        <g id="hl-A-intersection-B-complement" opacity="0">
+          <rect x="0" y="0" width="560" height="420" class="hlComp" clip-path="url(#clipUniverse)"/>
+          <circle cx="190" cy="160" r="100" fill="#000" clip-path="url(#clipAB)"/>
+        </g>
+        
+        <!-- De Morgan spotlight animation groups -->
+        <g id="demorgan-union" style="display: none;">
+          <rect x="0" y="0" width="560" height="420" class="hlComp" clip-path="url(#clipUniverse)"/>
+          <circle cx="190" cy="160" r="100" fill="#000" clip-path="url(#clipA)"/>
+          <circle cx="310" cy="160" r="100" fill="#000" clip-path="url(#clipB)"/>
+        </g>
+        
+        <g id="demorgan-intersection" style="display: none;">
+          <rect x="0" y="0" width="560" height="420" class="hlComp" clip-path="url(#clipUniverse)"/>
+          <circle cx="190" cy="160" r="100" fill="#000" clip-path="url(#clipA)"/>
+          <circle cx="310" cy="160" r="100" fill="#000" clip-path="url(#clipB)"/>
+          </g>
 
           <g id="regionA"></g>
           <g id="regionAB"></g>
           <g id="regionB"></g>
           <g id="regionOut"></g>
 
-        <text x="190" y="60" font-size="20" text-anchor="middle" style="display: none;">A</text>
-        <text x="310" y="60" font-size="20" text-anchor="middle" style="display: none;">B</text>
-        <text x="190" y="60" font-size="16" text-anchor="middle" class="placeholder-label" style="display: none;">A</text>
-        <text x="310" y="60" font-size="16" text-anchor="middle" class="placeholder-label" style="display: none;">B</text>
+        <text id="labelA" x="190" y="60" font-size="20" text-anchor="middle" style="display: none;">A</text>
+        <text id="labelB" x="310" y="60" font-size="20" text-anchor="middle" style="display: none;">B</text>
+        <text id="placeholderA" x="190" y="60" font-size="16" text-anchor="middle" class="placeholder-label" style="display: none;">?</text>
+        <text id="placeholderB" x="310" y="60" font-size="16" text-anchor="middle" class="placeholder-label" style="display: none;">?</text>
         <text x="250" y="160" font-size="24" text-anchor="middle" class="empty-set-indicator" style="display: none;">∅</text>
-          <rect x="30" y="20" width="440" height="280" class="uBox"/>
+          <rect x="30" y="20" width="500" height="280" class="uBox"/>
           <text x="40" y="36" font-size="12">U</text>
         </svg>
       </div>
@@ -361,6 +442,27 @@
         operations: ['A', 'B', 'A-union-B', 'A-intersection-B'],
         teachingPoint: 'Mutually exclusive = no element in common. A ∩ B = ∅ (empty set).',
         relationship: 'mutually-exclusive'
+      },
+      4: {
+        title: 'Stage 4: Set Differences & Symmetric Difference',
+        description: 'Learn A \\ B, B \\ A, and A Δ B (symmetric difference)',
+        operations: ['A', 'B', 'A-minus-B', 'B-minus-A', 'A-symmetric-difference-B'],
+        teachingPoint: 'A \\ B = only A (exclude overlap). A Δ B = parts not shared. A Δ B = (A \\ B) ∪ (B \\ A).',
+        relationship: 'overlapping'
+      },
+      5: {
+        title: 'Stage 5: Subset / Superset',
+        description: 'Understand A ⊆ B, A ⊂ B, A ⊄ B relationships',
+        operations: ['A', 'B', 'position-toggle'],
+        teachingPoint: '⊂ = proper subset (strict). ⊆ = subset (allow equality). Use position toggle to see different relationships.',
+        relationship: 'subset'
+      },
+      6: {
+        title: 'Stage 6: Complements & De Morgan',
+        description: 'Visualize complements and De Morgan\'s Laws',
+        operations: ['A', 'B', 'A-complement', 'B-complement', 'A-union-B-complement', 'A-intersection-B-complement', 'demorgan-spotlight'],
+        teachingPoint: 'De Morgan\'s Laws: (A ∪ B)′ = A′ ∩ B′ and (A ∩ B)′ = A′ ∪ B′. Click spotlight to see morphing animations.',
+        relationship: 'overlapping'
       }
     };
 
@@ -387,6 +489,21 @@
             title: 'Stage 3: Two Sets Mutually Exclusive',
             description: 'See A ∩ B = ∅ visually',
             teachingPoint: 'Mutually exclusive = no element in common. A ∩ B = ∅ (empty set).'
+          },
+          4: {
+            title: 'Stage 4: Set Differences & Symmetric Difference',
+            description: 'Learn A \\ B, B \\ A, and A Δ B (symmetric difference)',
+            teachingPoint: 'A \\ B = only A (exclude overlap). A Δ B = parts not shared. A Δ B = (A \\ B) ∪ (B \\ A).'
+          },
+          5: {
+            title: 'Stage 5: Subset / Superset',
+            description: 'Understand A ⊆ B, A ⊂ B, A ⊄ B relationships',
+            teachingPoint: '⊂ = proper subset (strict). ⊆ = subset (allow equality). Use position toggle to see different relationships.'
+          },
+          6: {
+            title: 'Stage 6: Complements & De Morgan',
+            description: 'Visualize complements and De Morgan\'s Laws',
+            teachingPoint: 'De Morgan\'s Laws: (A ∪ B)′ = A′ ∩ B′ and (A ∩ B)′ = A′ ∪ B′. Click spotlight to see morphing animations.'
           }
         },
         operations: {
@@ -395,7 +512,14 @@
           'A-complement': 'A′',
           'B-complement': 'B′',
           'A-union-B': 'A ∪ B',
-          'A-intersection-B': 'A ∩ B'
+          'A-intersection-B': 'A ∩ B',
+          'A-minus-B': 'A \\ B',
+          'B-minus-A': 'B \\ A',
+          'A-symmetric-difference-B': 'A Δ B',
+          'position-toggle': 'Toggle Position',
+          'A-union-B-complement': '(A ∪ B)′',
+          'A-intersection-B-complement': '(A ∩ B)′',
+          'demorgan-spotlight': 'De Morgan Spotlight'
         },
         ui: {
           reset: 'Reset',
@@ -404,80 +528,14 @@
           miniTaskHint: 'Mini task: Shade the overlap only for A ∩ B',
           emptySetMessage: 'A ∩ B = ∅ (empty set) - no overlap!'
         }
-      },
-      ms: {
-        stages: {
-          0: {
-            title: 'Tahap 0: Orientasi',
-            description: 'Pelajari tentang set universal U dan apa itu set',
-            teachingPoint: 'Set ialah koleksi benda. Kotak ialah set universal U.'
-          },
-          1: {
-            title: 'Tahap 1: Satu Set (A)',
-            description: 'Pelajari apa itu set dan fahami konsep asas set A',
-            teachingPoint: 'Ini ialah set A — semua unsur yang tergolong dalam A. A′ (pelengkap A) mewakili semua yang di luar A.'
-          },
-          2: {
-            title: 'Tahap 2: Dua Set (A, B) Bertindih',
-            description: 'Pelajari membaca A, B, A∪B, A∩B, A′, B′ dari lorekan',
-            teachingPoint: 'A ∪ B (gabungan) = dalam A atau B (atau kedua-duanya). A ∩ B (persilangan) = kawasan bertindih sahaja. Tunjukkan kedua-dua pelengkap untuk kontras.'
-          },
-          3: {
-            title: 'Tahap 3: Dua Set Saling Eksklusif',
-            description: 'Lihat A ∩ B = ∅ secara visual',
-            teachingPoint: 'Saling eksklusif = tiada unsur sepunya. A ∩ B = ∅ (set kosong).'
-          }
-        },
-        operations: {
-          'A': 'A',
-          'B': 'B',
-          'A-complement': 'A′',
-          'B-complement': 'B′',
-          'A-union-B': 'A ∪ B',
-          'A-intersection-B': 'A ∩ B'
-        },
-        ui: {
-          reset: 'Set Semula',
-          about: 'Tentang SetViz',
-          emptySet: '∅ (kosong)',
-          miniTaskHint: 'Tugas mini: Lorek kawasan bertindih sahaja untuk A ∩ B',
-          emptySetMessage: 'A ∩ B = ∅ (set kosong) - tiada pertindihan!'
-        }
       }
     };
 
-    let currentLanguage = 'en';
-
-    // Language switching function
-    function changeLanguage() {
-      const select = document.getElementById('languageSelect');
-      currentLanguage = select.value;
-      
-      // Save language preference
-      localStorage.setItem('setviz-language', currentLanguage);
-      
-      // Update all UI elements
-      updateStage();
-      updateSidebar();
-      updateUIElements();
-    }
-
-    // Update UI elements that need translation
-    function updateUIElements() {
-      const lang = languageStrings[currentLanguage];
-      
-      // Update reset button
-      const resetBtn = document.getElementById('resetBtn');
-      if (resetBtn) resetBtn.textContent = lang.ui.reset;
-      
-      // Update about link
-      const aboutLink = document.querySelector('a[href="about.html"]');
-      if (aboutLink) aboutLink.textContent = lang.ui.about;
-    }
+    // Simplified - English only
 
     function updateStage() {
       const stage = stages[currentStage];
-      const lang = languageStrings[currentLanguage];
+      const lang = languageStrings.en;
       const stageLang = lang.stages[currentStage];
       
       document.getElementById('stageTitle').textContent = stageLang.title;
@@ -492,6 +550,18 @@
       
       // Update symbol display
       updateSymbolDisplay();
+      
+      // Show/hide Stage 4 visual indicators
+      const stage4Indicators = document.getElementById('stage4-indicators');
+      if (stage4Indicators) {
+        stage4Indicators.style.display = currentStage === 4 ? 'block' : 'none';
+      }
+      
+      // Show/hide Stage 5 subset badges
+      const subsetBadges = document.getElementById('subset-badges');
+      if (subsetBadges) {
+        subsetBadges.style.display = currentStage === 5 ? 'block' : 'none';
+      }
       
       // Reset teaching point to stage default
       let teachingContent = `<strong>Teaching Point:</strong> ${stage.teachingPoint}`;
@@ -529,12 +599,39 @@
       container.innerHTML = '';
       
       operations.forEach(op => {
-        const btn = document.createElement('button');
-        btn.className = 'op-btn';
-        btn.setAttribute('data-operation', op);
-        btn.textContent = languageStrings[currentLanguage].operations[op] || getOperationSymbol(op);
-        btn.addEventListener('click', () => selectOperation(op));
-        container.appendChild(btn);
+        if (op === 'position-toggle') {
+          // Create position toggle buttons for Stage 5
+          const positionButtons = [
+            { id: 'proper-subset', label: 'A⊂B', position: 'proper-subset' },
+            { id: 'equal-sets', label: 'A=B', position: 'equal-sets' },
+            { id: 'overlapping', label: 'Overlap', position: 'overlapping' },
+            { id: 'disjoint', label: 'Disjoint', position: 'disjoint' }
+          ];
+          
+          positionButtons.forEach(pos => {
+            const btn = document.createElement('button');
+            btn.className = 'op-btn position-btn';
+            btn.setAttribute('data-position', pos.position);
+            btn.textContent = pos.label;
+            btn.addEventListener('click', () => selectPosition(pos.position));
+            container.appendChild(btn);
+          });
+        } else if (op === 'demorgan-spotlight') {
+          // Create De Morgan spotlight button for Stage 6
+          const btn = document.createElement('button');
+          btn.className = 'op-btn demorgan-btn';
+          btn.setAttribute('data-operation', op);
+          btn.textContent = languageStrings.en.operations[op];
+          btn.addEventListener('click', () => selectOperation(op));
+          container.appendChild(btn);
+        } else {
+          const btn = document.createElement('button');
+          btn.className = 'op-btn';
+          btn.setAttribute('data-operation', op);
+          btn.textContent = languageStrings.en.operations[op] || getOperationSymbol(op);
+          btn.addEventListener('click', () => selectOperation(op));
+          container.appendChild(btn);
+        }
       });
     }
 
@@ -584,11 +681,243 @@
       if (operation === 'A-intersection-B' && setRelationship === 'mutually-exclusive') {
         showEmptySetMessage();
       }
+      
+      // Handle De Morgan spotlight for Stage 6
+      if (operation === 'demorgan-spotlight' && currentStage === 6) {
+        showDeMorganSpotlight();
+      }
+    }
+
+    function selectPosition(position) {
+      // Update position button states
+      document.querySelectorAll('.position-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.position === position);
+      });
+      
+      // Update circle positions based on subset relationship
+      updateSubsetPositions(position);
+      
+      // Update subset symbol badges
+      updateSubsetBadges(position);
+    }
+
+    function updateSubsetPositions(position) {
+      const circleA = document.querySelector('.baseA');
+      const circleB = document.querySelector('.baseB');
+      
+      if (!circleA || !circleB) return;
+      
+      // Reset all circles to default positions first
+      circleA.setAttribute('cx', '190');
+      circleA.setAttribute('cy', '160');
+      circleA.setAttribute('r', '100');
+      circleB.setAttribute('cx', '310');
+      circleB.setAttribute('cy', '160');
+      circleB.setAttribute('r', '100');
+      
+      switch(position) {
+        case 'proper-subset':
+          // A entirely inside B (smaller circle inside larger)
+          circleA.setAttribute('cx', '280');
+          circleA.setAttribute('cy', '160');
+          circleA.setAttribute('r', '60');
+          circleB.setAttribute('cx', '280');
+          circleB.setAttribute('cy', '160');
+          circleB.setAttribute('r', '100');
+          break;
+          
+        case 'equal-sets':
+          // A equal to B (same position and size)
+          circleA.setAttribute('cx', '250');
+          circleA.setAttribute('cy', '160');
+          circleA.setAttribute('r', '80');
+          circleB.setAttribute('cx', '250');
+          circleB.setAttribute('cy', '160');
+          circleB.setAttribute('r', '80');
+          break;
+          
+        case 'overlapping':
+          // A overlapping but not subset (partial overlap)
+          circleA.setAttribute('cx', '190');
+          circleA.setAttribute('cy', '160');
+          circleA.setAttribute('r', '100');
+          circleB.setAttribute('cx', '310');
+          circleB.setAttribute('cy', '160');
+          circleB.setAttribute('r', '100');
+          break;
+          
+        case 'disjoint':
+          // A disjoint from B (no overlap)
+          circleA.setAttribute('cx', '150');
+          circleA.setAttribute('cy', '160');
+          circleA.setAttribute('r', '100');
+          circleB.setAttribute('cx', '380');
+          circleB.setAttribute('cy', '160');
+          circleB.setAttribute('r', '100');
+          break;
+      }
+      
+      // Update all highlight circles to match new positions
+      updateAllHighlightPositions();
+    }
+
+    function updateAllHighlightPositions() {
+      const circleA = document.querySelector('.baseA');
+      const circleB = document.querySelector('.baseB');
+      
+      if (!circleA || !circleB) return;
+      
+      const aX = circleA.getAttribute('cx');
+      const aY = circleA.getAttribute('cy');
+      const aR = circleA.getAttribute('r');
+      const bX = circleB.getAttribute('cx');
+      const bY = circleB.getAttribute('cy');
+      const bR = circleB.getAttribute('r');
+      
+      // Update all highlight circles to match the new positions
+      document.querySelectorAll('[id^="hl-"] circle').forEach(circle => {
+        const parentId = circle.parentElement.id;
+        if (parentId.includes('A') && !parentId.includes('B')) {
+          circle.setAttribute('cx', aX);
+          circle.setAttribute('cy', aY);
+          circle.setAttribute('r', aR);
+        } else if (parentId.includes('B') && !parentId.includes('A')) {
+          circle.setAttribute('cx', bX);
+          circle.setAttribute('cy', bY);
+          circle.setAttribute('r', bR);
+        } else if (parentId.includes('A') && parentId.includes('B')) {
+          // For combined highlights, update both circles
+          const circles = circle.parentElement.querySelectorAll('circle');
+          if (circles.length >= 2) {
+            circles[0].setAttribute('cx', aX);
+            circles[0].setAttribute('cy', aY);
+            circles[0].setAttribute('r', aR);
+            circles[1].setAttribute('cx', bX);
+            circles[1].setAttribute('cy', bY);
+            circles[1].setAttribute('r', bR);
+          }
+        }
+      });
+    }
+
+    function updateSubsetBadges(position) {
+      const badges = {
+        'subset-proper': document.getElementById('subset-proper'),
+        'subset-equal': document.getElementById('subset-equal'),
+        'subset-not': document.getElementById('subset-not'),
+        'subset-not-equal': document.getElementById('subset-not-equal')
+      };
+      
+      // Reset all badges
+      Object.values(badges).forEach(badge => {
+        if (badge) {
+          badge.style.opacity = '0.3';
+          badge.style.fontWeight = 'normal';
+        }
+      });
+      
+      // Highlight correct badges based on position
+      switch(position) {
+        case 'proper-subset':
+          if (badges['subset-proper']) {
+            badges['subset-proper'].style.opacity = '1';
+            badges['subset-proper'].style.fontWeight = 'bold';
+          }
+          if (badges['subset-equal']) {
+            badges['subset-equal'].style.opacity = '1';
+            badges['subset-equal'].style.fontWeight = 'bold';
+          }
+          break;
+          
+        case 'equal-sets':
+          if (badges['subset-equal']) {
+            badges['subset-equal'].style.opacity = '1';
+            badges['subset-equal'].style.fontWeight = 'bold';
+          }
+          break;
+          
+        case 'overlapping':
+        case 'disjoint':
+          if (badges['subset-not']) {
+            badges['subset-not'].style.opacity = '1';
+            badges['subset-not'].style.fontWeight = 'bold';
+          }
+          if (badges['subset-not-equal']) {
+            badges['subset-not-equal'].style.opacity = '1';
+            badges['subset-not-equal'].style.fontWeight = 'bold';
+          }
+          break;
+      }
+    }
+
+    function showDeMorganSpotlight() {
+      const teachingPoint = document.getElementById('teachingPoint');
+      const lang = languageStrings.en;
+      
+      // Cycle through De Morgan's Laws demonstrations
+      let step = 0;
+      const demorganSteps = [
+        {
+          title: "De Morgan's Law 1: (A ∪ B)′ = A′ ∩ B′",
+          description: "First, let's see (A ∪ B)′ - everything outside both A and B",
+          highlight: 'hl-A-union-B-complement'
+        },
+        {
+          title: "Now morphing to A′ ∩ B′",
+          description: "This is the same as A′ ∩ B′ - the intersection of complements",
+          highlight: 'demorgan-union'
+        },
+        {
+          title: "De Morgan's Law 2: (A ∩ B)′ = A′ ∪ B′",
+          description: "Now let's see (A ∩ B)′ - everything outside the intersection",
+          highlight: 'hl-A-intersection-B-complement'
+        },
+        {
+          title: "Now morphing to A′ ∪ B′",
+          description: "This is the same as A′ ∪ B′ - the union of complements",
+          highlight: 'demorgan-intersection'
+        }
+      ];
+      
+      function runStep() {
+        if (step >= demorganSteps.length) {
+          // Reset after showing all steps
+          step = 0;
+          teachingPoint.innerHTML = `<strong>Teaching Point:</strong> ${stages[currentStage].teachingPoint}`;
+          // Clear all highlights
+          document.querySelectorAll('[id^="hl-"], [id^="demorgan-"]').forEach(el => {
+            el.style.opacity = '0';
+            el.style.display = 'none';
+          });
+          return;
+        }
+        
+        const currentStep = demorganSteps[step];
+        teachingPoint.innerHTML = `<strong>${currentStep.title}:</strong> ${currentStep.description}`;
+        
+        // Clear previous highlights
+        document.querySelectorAll('[id^="hl-"], [id^="demorgan-"]').forEach(el => {
+          el.style.opacity = '0';
+          el.style.display = 'none';
+        });
+        
+        // Show current highlight
+        const highlightEl = document.getElementById(currentStep.highlight);
+        if (highlightEl) {
+          highlightEl.style.display = 'block';
+          highlightEl.style.opacity = '1';
+        }
+        
+        step++;
+        setTimeout(runStep, 3000); // 3 seconds per step
+      }
+      
+      runStep();
     }
 
     function showMiniTaskHint(operation) {
       const teachingPoint = document.getElementById('teachingPoint');
-      const lang = languageStrings[currentLanguage];
+      const lang = languageStrings.en;
       let hint = '';
       
       switch(operation) {
@@ -619,7 +948,7 @@
 
     function showEmptySetMessage() {
       const teachingPoint = document.getElementById('teachingPoint');
-      const lang = languageStrings[currentLanguage];
+      const lang = languageStrings.en;
       const emptyMessage = lang.ui.emptySetMessage;
       teachingPoint.innerHTML = emptyMessage;
       
@@ -637,20 +966,20 @@
       // Show/hide circles based on stage
       const circleA = document.querySelector('.baseA');
       const circleB = document.querySelector('.baseB');
-      const textA = document.querySelector('text[style*="display: none"]');
-      const textB = document.querySelector('text[style*="display: none"]');
-      const placeholderA = document.querySelector('.placeholder-label[style*="display: none"]');
-      const placeholderB = document.querySelectorAll('.placeholder-label[style*="display: none"]')[1];
+      const textA = document.querySelector('#labelA');
+      const textB = document.querySelector('#labelB');
+      const placeholderA = document.querySelector('#placeholderA');
+      const placeholderB = document.querySelector('#placeholderB');
       const emptySetIndicator = document.querySelector('.empty-set-indicator');
       
       if (setRelationship === 'none') {
-        // Orientation stage - show placeholders
+        // Orientation stage - show only universe box, no placeholders or labels
         if (circleA) circleA.style.display = 'none';
         if (circleB) circleB.style.display = 'none';
         if (textA) textA.style.display = 'none';
         if (textB) textB.style.display = 'none';
-        if (placeholderA) placeholderA.style.display = 'block';
-        if (placeholderB) placeholderB.style.display = 'block';
+        if (placeholderA) placeholderA.style.display = 'none';
+        if (placeholderB) placeholderB.style.display = 'none';
         if (emptySetIndicator) emptySetIndicator.style.display = 'none';
       } else if (setRelationship === 'single') {
         // Single set mode
@@ -670,18 +999,21 @@
         if (placeholderA) placeholderA.style.display = 'none';
         if (placeholderB) placeholderB.style.display = 'none';
         
-        // Show empty set indicator for mutually exclusive sets
+        // Hide empty set indicator by default
         if (emptySetIndicator) {
-          emptySetIndicator.style.display = (setRelationship === 'mutually-exclusive') ? 'block' : 'none';
+          emptySetIndicator.style.display = 'none';
         }
         
         // Adjust circle positions based on relationship
         if (setRelationship === 'overlapping') {
-          // Circles slightly overlapping
+          // Circles slightly overlapping - keep original positions
+          circleA.setAttribute('cx', '190');
           circleB.setAttribute('cx', '310');
         } else if (setRelationship === 'mutually-exclusive') {
-          // Circles close but not overlapping
-          circleB.setAttribute('cx', '320');
+          // Circles separated with no overlap - within universe box
+          circleA.setAttribute('cx', '150');
+          circleB.setAttribute('cx', '380');
+          console.log('Stage 3: Moved circle A to x=150, circle B to x=380 for mutually exclusive sets');
         }
         
         // Update the intersection circle to match the new circle B position
@@ -689,6 +1021,66 @@
         if (intersectionCircle) {
           intersectionCircle.setAttribute('cx', circleB.getAttribute('cx'));
         }
+        
+        // Update the A highlight circle to match the new circle A position
+        const aHighlightCircle = document.querySelector('#hl-A circle');
+        if (aHighlightCircle) {
+          aHighlightCircle.setAttribute('cx', circleA.getAttribute('cx'));
+        }
+        
+        // Update the A complement mask to match the new circle A position
+        const maskACircle = document.querySelector('#maskAComplement use');
+        if (maskACircle) {
+          maskACircle.setAttribute('href', '#circleA');
+        }
+        
+        // Update the B highlight circle to match the new circle B position
+        const bHighlightCircle = document.querySelector('#hl-B circle');
+        if (bHighlightCircle) {
+          bHighlightCircle.setAttribute('cx', circleB.getAttribute('cx'));
+        }
+        
+        // Update the B complement mask to match the new circle B position
+        const maskBCircle = document.querySelector('#maskBComplement use');
+        if (maskBCircle) {
+          maskBCircle.setAttribute('href', '#circleB');
+        }
+        
+        // Update union highlighting circles to match the new positions
+        const unionCircles = document.querySelectorAll('#hl-A-union-B circle');
+        unionCircles.forEach((circle, index) => {
+          if (index === 0) {
+            // Circle A - match the dynamic position
+            circle.setAttribute('cx', circleA.getAttribute('cx'));
+          } else if (index === 1) {
+            // Circle B - match the dynamic position
+            circle.setAttribute('cx', circleB.getAttribute('cx'));
+          }
+        });
+        
+        // Update A-minus-B highlight circle to match the new positions
+        const aMinusBCircle = document.querySelector('#hl-A-minus-B circle');
+        if (aMinusBCircle) {
+          aMinusBCircle.setAttribute('cx', circleA.getAttribute('cx'));
+        }
+        
+        // Update B-minus-A highlight circle to match the new positions
+        const bMinusACircle = document.querySelector('#hl-B-minus-A circle');
+        if (bMinusACircle) {
+          bMinusACircle.setAttribute('cx', circleB.getAttribute('cx'));
+        }
+        
+        // Update symmetric difference highlight circles to match the new positions
+        const symDiffCircles = document.querySelectorAll('#hl-A-symmetric-difference-B circle');
+        symDiffCircles.forEach((circle, index) => {
+          if (index === 0) {
+            // Circle A - match the dynamic position
+            circle.setAttribute('cx', circleA.getAttribute('cx'));
+          } else if (index === 1) {
+            // Circle B - match the dynamic position
+            circle.setAttribute('cx', circleB.getAttribute('cx'));
+          }
+        });
       }
       
       // Apply highlighting based on current operation
@@ -703,6 +1095,12 @@
         // Special handling for intersection when sets are mutually exclusive
         if (currentOperation === 'A-intersection-B' && setRelationship === 'mutually-exclusive') {
           // Don't highlight anything - show empty set message instead
+          return;
+        }
+        
+        // Special handling for De Morgan spotlight
+        if (currentOperation === 'demorgan-spotlight') {
+          // Don't highlight anything - showDeMorganSpotlight handles this
           return;
         }
         
@@ -723,7 +1121,7 @@
     });
 
     document.getElementById('nextStageBtn').addEventListener('click', () => {
-      if (currentStage < 3) {
+      if (currentStage < 6) {
         currentStage++;
         currentOperation = null;
         updateStage();
@@ -746,7 +1144,7 @@
         const containerHeight = vennContainer.clientHeight;
         
         // Calculate appropriate size while maintaining aspect ratio
-        const aspectRatio = 500 / 320; // viewBox aspect ratio
+        const aspectRatio = 560 / 420; // viewBox aspect ratio
         let newWidth = Math.min(containerWidth - 20, 500);
         let newHeight = newWidth / aspectRatio;
         
@@ -763,7 +1161,7 @@
 
     // Sidebar navigation
     function updateSidebar() {
-      const lang = languageStrings[currentLanguage];
+      const lang = languageStrings.en;
       
       document.querySelectorAll('.stage-btn').forEach((btn, index) => {
         const isActive = index === currentStage;
@@ -788,17 +1186,11 @@
       });
     });
 
-    // Initialize language preference
-    const savedLanguage = localStorage.getItem('setviz-language');
-    if (savedLanguage && languageStrings[savedLanguage]) {
-      currentLanguage = savedLanguage;
-      document.getElementById('languageSelect').value = currentLanguage;
-    }
+    // Initialize - English only
 
     // Initialize
     updateStage();
     updateSidebar();
-    updateUIElements();
     
     // Adjust SVG size on load and resize
     window.addEventListener('load', adjustSVGSize);
