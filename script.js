@@ -176,14 +176,39 @@ function renderVenn(){
   } else {
     answerPeek.textContent = '';
   }
+  
+  // Update highlight styling based on current state
+  const currentOp = document.getElementById('opSelect').value;
+  setHighlight(currentOp);
 }
 
 // Highlights
 function setHighlight(op){
   const ids = ['hl-union','hl-intersection','hl-AminusB','hl-BminusA','hl-complement'];
   ids.forEach(id=>{ document.getElementById(id).setAttribute('opacity','0'); });
+  
+  // Check if sets are identical for special styling
+  const setsIdentical = state.A.size === state.B.size && 
+                       [...state.A].every(x => state.B.has(x)) && 
+                       [...state.B].every(x => state.A.has(x));
+  
+  const vennEl = document.getElementById('venn');
+  if(setsIdentical) {
+    vennEl.classList.add('venn-identical');
+  } else {
+    vennEl.classList.remove('venn-identical');
+  }
+  
   if(op==='union') document.getElementById('hl-union').setAttribute('opacity','1');
-  if(op==='intersection') document.getElementById('hl-intersection').setAttribute('opacity','1');
+  if(op==='intersection') {
+    document.getElementById('hl-intersection').setAttribute('opacity','1');
+    // Add extra emphasis for intersection when sets are identical
+    if(setsIdentical) {
+      document.getElementById('hl-intersection').classList.add('tutorial-highlight');
+    } else {
+      document.getElementById('hl-intersection').classList.remove('tutorial-highlight');
+    }
+  }
   if(op==='AminusB') document.getElementById('hl-AminusB').setAttribute('opacity','1');
   if(op==='BminusA') document.getElementById('hl-BminusA').setAttribute('opacity','1');
   if(op==='complement') document.getElementById('hl-complement').setAttribute('opacity','1');
@@ -458,7 +483,22 @@ function updateTutorialStep() {
   
   // Update content
   titleEl.textContent = (LANG === 'bm' ? STRINGS.bm[step.title] : STRINGS.en[step.title]);
-  contentEl.innerHTML = `<p>${LANG === 'bm' ? STRINGS.bm[step.desc] : STRINGS.en[step.desc]}</p>`;
+  
+  // Check if sets are identical and add special note for intersection step
+  const setsIdentical = state.A.size === state.B.size && 
+                       [...state.A].every(x => state.B.has(x)) && 
+                       [...state.B].every(x => state.A.has(x));
+  
+  let content = `<p>${LANG === 'bm' ? STRINGS.bm[step.desc] : STRINGS.en[step.desc]}</p>`;
+  
+  if(setsIdentical && state.tutorialStep === 3) { // Intersection step
+    const identicalNote = LANG === 'bm' ? 
+      '<p style="background: #fef3c7; padding: 8px; border-radius: 6px; border-left: 4px solid #f59e0b; margin-top: 8px;"><strong>Nota:</strong> Set A dan B adalah sama! Intersection (A ∩ B) = A = B. Perhatikan kawasan yang disorot dengan warna ungu.</p>' :
+      '<p style="background: #fef3c7; padding: 8px; border-radius: 6px; border-left: 4px solid #f59e0b; margin-top: 8px;"><strong>Note:</strong> Sets A and B are identical! Intersection (A ∩ B) = A = B. Notice the highlighted purple area.</p>';
+    content += identicalNote;
+  }
+  
+  contentEl.innerHTML = content;
   
   // Update progress
   const progress = (state.tutorialStep / tutorialSteps.length) * 100;
