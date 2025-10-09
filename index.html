@@ -18,6 +18,7 @@
         <button data-lang="en" aria-pressed="true">EN</button>
         <button data-lang="bm" aria-pressed="false">BM</button>
       </div>
+      <a href="basic-concepts.html" class="btn ghost">📖 Basic Concepts</a>
       <button class="btn ghost" id="tutorialBtn" aria-label="Tutorial">📚 Tutorial</button>
       <button class="btn ghost" id="aboutBtn" aria-label="About">?</button>
       <a class="btn primary" id="startBtn">Start</a>
@@ -39,8 +40,18 @@
       <div class="row tiny">
         <span data-i18n="Choose number of sets">Choose number of sets</span>:
         <div class="seg" id="setCountSeg" role="tablist" aria-label="Set count">
+          <button data-count="1" aria-pressed="false">1</button>
           <button data-count="2" aria-pressed="true">2</button>
           <button data-count="3" aria-pressed="false">3</button>
+        </div>
+      </div>
+      
+      <div class="row tiny" id="relationshipToggle" style="display: none;">
+        <span data-i18n="Set Relationship">Set Relationship</span>:
+        <div class="seg" id="relationshipSeg" role="tablist" aria-label="Set relationship">
+          <button data-relationship="independent" aria-pressed="true">🔘 <span data-i18n="Independent">Independent</span></button>
+          <button data-relationship="overlapping" aria-pressed="false">🔘 <span data-i18n="Overlapping">Overlapping</span></button>
+          <button data-relationship="mutually-exclusive" aria-pressed="false">🔘 <span data-i18n="Mutually Exclusive">Mutually Exclusive</span></button>
         </div>
       </div>
 
