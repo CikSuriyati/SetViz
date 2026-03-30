@@ -1,1803 +1,474 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>SetViz Basic Concepts — Learn Set Theory Fundamentals</title>
-  <meta name="description" content="Learn basic set theory concepts step by step. Understand sets, symbols, and relationships visually.">
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .concept-page {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 24px;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
-      backdrop-filter: blur(20px);
-      border-radius: 24px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .concept-page::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
-    }
-    .stage-header {
-      background: linear-gradient(135deg, #319795, #2d7dd2);
-      color: white;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .stage-title {
-      font-size: 24px;
-      font-weight: bold;
-      margin: 0 0 8px 0;
-    }
-    .stage-description {
-      font-size: 16px;
-      opacity: 0.9;
-      margin: 0;
-    }
-    .symbol-display {
-      background: #f8fafc;
-      border: 2px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 16px;
-      margin: 16px 0;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 600;
-    }
-    .operation-buttons {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 8px;
-      margin: 16px 0;
-    }
-    .op-btn {
-      padding: 12px 16px;
-      border: 2px solid #e2e8f0;
-      background: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-    .op-btn:hover {
-      border-color: #3b82f6;
-      background: #eff6ff;
-    }
-    .op-btn.active {
-      border-color: #3b82f6;
-      background: #3b82f6;
-      color: white;
-    }
-    .demorgan-btn {
-      font-size: 14px;
-      padding: 10px 12px;
-      min-width: 100px;
-    }
-    .teaching-point {
-      background: #f0f9ff;
-      border-left: 4px solid #0ea5e9;
-      padding: 12px 16px;
-      margin: 12px 0;
-      border-radius: 0 8px 8px 0;
-    }
-    .venn-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 400px;
-      background: #f8fafc;
-      border-radius: 12px;
-      margin: 20px 0;
-    }
-    .stage-controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 20px 0;
-    }
-    .stage-nav {
-      display: flex;
-      gap: 12px;
-    }
-    .nav-btn {
-      padding: 10px 20px;
-      border: 2px solid #e2e8f0;
-      background: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-    .nav-btn:hover:not(:disabled) {
-      border-color: #3b82f6;
-      background: #eff6ff;
-    }
-    .nav-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .nav-btn.primary {
-      background: #3b82f6;
-      color: white;
-      border-color: #3b82f6;
-    }
-    
-    /* Teaching Mode Styles */
-    .teaching-controls {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    
-    .teaching-mode-active {
-      background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
-      border-color: #f59e0b !important;
-      color: #92400e !important;
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
-    }
-    
-    .guided-tour-active {
-      background: linear-gradient(135deg, #ddd6fe, #c4b5fd) !important;
-      border-color: #8b5cf6 !important;
-      color: #5b21b6 !important;
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3) !important;
-    }
-    
-    /* Annotations Overlay */
-    .annotations-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 10;
-    }
-    
-    .annotation-tooltip {
-      position: absolute;
-      background: rgba(255, 255, 255, 0.95);
-      border: 2px solid #3b82f6;
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-      backdrop-filter: blur(10px);
-      max-width: 280px;
-      pointer-events: auto;
-      animation: tooltipFadeIn 0.3s ease-out;
-    }
-    
-    .annotation-tooltip h4 {
-      margin: 0 0 8px 0;
-      color: #1e40af;
-      font-size: 16px;
-      font-weight: 600;
-    }
-    
-    .annotation-tooltip p {
-      margin: 0;
-      color: #374151;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-    
-    .tooltip-arrow {
-      position: absolute;
-      width: 0;
-      height: 0;
-      border: 8px solid transparent;
-      border-top-color: #3b82f6;
-      top: -16px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    
-    /* Guided Tour Overlay */
-    .guided-tour-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 20;
-      pointer-events: auto;
-    }
-    
-    .tour-step {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      max-width: 400px;
-      margin: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-      animation: tourSlideIn 0.4s ease-out;
-    }
-    
-    .tour-content h3 {
-      margin: 0 0 12px 0;
-      color: #1e40af;
-      font-size: 20px;
-      font-weight: 600;
-    }
-    
-    .tour-content p {
-      margin: 0 0 20px 0;
-      color: #374151;
-      font-size: 16px;
-      line-height: 1.5;
-    }
-    
-    .tour-actions {
-      display: flex;
-      gap: 12px;
-      justify-content: flex-end;
-    }
-    
-    .tour-btn {
-      padding: 10px 20px;
-      border: 2px solid #3b82f6;
-      background: #3b82f6;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-    
-    .tour-btn:hover {
-      background: #2563eb;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
-    
-    .tour-btn.secondary {
-      background: transparent;
-      color: #6b7280;
-      border-color: #d1d5db;
-    }
-    
-    .tour-btn.secondary:hover {
-      background: #f3f4f6;
-      color: #374151;
-      border-color: #9ca3af;
-    }
-    
-    /* Animations */
-    @keyframes tooltipFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-    
-    @keyframes tourSlideIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-    
-    /* Stage 0 specific enhancements */
-    .stage-0-universe-highlight {
-      stroke: #3b82f6 !important;
-      stroke-width: 4 !important;
-      stroke-dasharray: 8 4 !important;
-      animation: universePulse 2s ease-in-out infinite;
-    }
-    
-    @keyframes universePulse {
-      0%, 100% {
-        stroke-opacity: 0.8;
-      }
-      50% {
-        stroke-opacity: 1;
-      }
-    }
-    
-    /* Mobile responsive for teaching mode */
-    @media (max-width: 600px) {
-      .teaching-controls {
-        flex-direction: column;
-        gap: 8px;
-        align-items: stretch;
-      }
-      
-      .teaching-controls .nav-btn {
-        width: 100%;
-        text-align: center;
-      }
-      
-      .annotation-tooltip {
-        max-width: 250px;
-        padding: 12px;
-        font-size: 13px;
-      }
-      
-      .tour-step {
-        margin: 10px;
-        padding: 20px;
-      }
-      
-      .tour-actions {
-        flex-direction: column;
-        gap: 8px;
-      }
-      
-      .tour-btn {
-        width: 100%;
-        padding: 12px 20px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SetViz – Basic Concepts</title>
+    <meta name="description" content="Learn basic set theory concepts step by step. Understand sets, symbols, and relationships visually.">
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body { height: 100%; }
+        body {
+            margin: 0;
+            font-family: "Manrope", sans-serif;
+            transition: background 400ms ease, color 400ms ease;
+        }
+
+        /* ===== LIGHT MODE (default) ===== */
+        body.light {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+            color: #1e293b;
+        }
+        body.light .glass-panel {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+        body.light .eyebrow-text { color: #b45309; }
+        body.light .heading-text { color: #0f172a; }
+        body.light .sub-text { color: #475569; }
+        body.light .muted-text { color: #64748b; }
+        body.light .note-panel { background: rgba(251, 191, 36, 0.08); border-color: rgba(251, 191, 36, 0.2); }
+        body.light .note-icon-bg { background: rgba(251, 191, 36, 0.15); color: #b45309; }
+        body.light .note-heading { color: #92400e; }
+        body.light .note-body { color: #475569; }
+        body.light .status-panel { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
+        body.light .canvas-outer { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
+        body.light .canvas-inner { background: #ffffff; border-color: rgba(0,0,0,0.1); }
+        body.light .stage-item-active { background-color: rgba(251,191,36,0.12) !important; border-color: rgba(251,191,36,0.5) !important; }
+        body.light .stage-item-active .stage-num { background: #f59e0b !important; color: #fff !important; }
+        body.light .stage-item-active .stage-title-text { color: #92400e !important; }
+        body.light .stage-item-active .stage-desc-text { color: #b45309 !important; }
+        body.light .stage-item-inactive { background-color: rgba(0,0,0,0.02) !important; border-color: rgba(0,0,0,0.06) !important; }
+        body.light .stage-item-inactive .stage-num { background: rgba(59,130,246,0.1) !important; color: #3b82f6 !important; }
+        body.light .stage-item-inactive .stage-title-text { color: #1e293b !important; }
+        body.light .stage-item-inactive .stage-desc-text { color: #64748b !important; }
+        body.light .choice-active { background: #f59e0b !important; border-color: #f59e0b !important; color: #fff !important; box-shadow: 0 4px 16px rgba(245,158,11,0.25) !important; }
+        body.light .choice-inactive { background: rgba(0,0,0,0.02) !important; border-color: rgba(0,0,0,0.08) !important; color: #334155 !important; }
+        body.light .symbol-box { background: rgba(0,0,0,0.04); }
+        body.light .symbol-text-color { color: #0f172a; }
+        body.light .universe-label { fill: #94a3b8; }
+        body.light .grid-lines { stroke: rgba(0,0,0,0.04); }
+        body.light .footer-text { color: #94a3b8; }
+        body.light .theme-toggle { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.1); color: #475569; }
+        body.light .theme-toggle:hover { background: rgba(0,0,0,0.1); }
+        body.light .dot-color { background-color: #f59e0b; }
+
+        /* ===== DARK MODE ===== */
+        body.dark {
+            background:
+                radial-gradient(circle at top left, rgba(232, 196, 104, 0.16), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(90, 138, 198, 0.18), transparent 30%),
+                linear-gradient(135deg, #0f172a 0%, #111827 45%, #1f2937 100%);
+            color: #e5eef9;
+        }
+        body.dark .glass-panel {
+            background: rgba(22, 29, 45, 0.72);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+        }
+        body.dark .eyebrow-text { color: rgba(251,191,36,0.8); }
+        body.dark .heading-text { color: #ffffff; }
+        body.dark .sub-text { color: #cbd5e1; }
+        body.dark .muted-text { color: #94a3b8; }
+        body.dark .note-panel { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
+        body.dark .note-icon-bg { background: rgba(232,196,104,0.2); color: #fde68a; }
+        body.dark .note-heading { color: #fde68a; }
+        body.dark .note-body { color: #cbd5e1; }
+        body.dark .status-panel { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
+        body.dark .canvas-outer { background: rgba(15,23,42,0.45); border-color: rgba(255,255,255,0.1); }
+        body.dark .canvas-inner { background: rgba(15,23,42,0.5); border-color: rgba(255,255,255,0.1); }
+        body.dark .stage-item-active { background-color: rgba(232,196,104,0.14) !important; border-color: rgba(232,196,104,0.5) !important; }
+        body.dark .stage-item-active .stage-num { background: #e8c468 !important; color: #1f2937 !important; }
+        body.dark .stage-item-active .stage-title-text { color: #fff7dd !important; }
+        body.dark .stage-item-active .stage-desc-text { color: #e2d6aa !important; }
+        body.dark .stage-item-inactive { background-color: rgba(255,255,255,0.03) !important; border-color: rgba(255,255,255,0.08) !important; }
+        body.dark .stage-item-inactive .stage-num { background: rgba(124,198,255,0.16) !important; color: #bfe5ff !important; }
+        body.dark .stage-item-inactive .stage-title-text { color: #e5eef9 !important; }
+        body.dark .stage-item-inactive .stage-desc-text { color: #97a6ba !important; }
+        body.dark .choice-active { background: #e8c468 !important; border-color: #e8c468 !important; color: #1f2937 !important; box-shadow: 0 8px 22px rgba(232,196,104,0.28) !important; }
+        body.dark .choice-inactive { background: rgba(255,255,255,0.03) !important; border-color: rgba(255,255,255,0.1) !important; color: #d9e5f5 !important; }
+        body.dark .symbol-box { background: rgba(0,0,0,0.2); }
+        body.dark .symbol-text-color { color: #ffffff; }
+        body.dark .universe-label { fill: #475569; }
+        body.dark .grid-lines { stroke: rgba(255,255,255,0.04); }
+        body.dark .footer-text { color: #475569; }
+        body.dark .theme-toggle { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); color: #cbd5e1; }
+        body.dark .theme-toggle:hover { background: rgba(255,255,255,0.12); }
+        body.dark .dot-color { background-color: #e8c468; }
+
+        /* ===== Shared ===== */
+        .stage-item { transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease; }
+        .stage-item:hover { transform: translateX(3px); }
+        .choice-btn { transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease; }
+        .choice-btn:hover { transform: translateY(-1px); }
+        .fade-up { animation: fadeUp 500ms ease both; }
+        .fade-up-delay { animation: fadeUp 650ms ease both; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+        .dot-pulse { animation: pulseSoft 1400ms ease-in-out infinite; }
+        @keyframes pulseSoft { 0%,100% { transform:scale(1); opacity:0.95; } 50% { transform:scale(1.08); opacity:1; } }
+        .shading-label {
+            font-family: "Fraunces", serif; font-size: 16px; font-weight: 600;
+            text-shadow: 0 1px 6px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+    </style>
 </head>
-<body>
-  <div class="concept-page">
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
-        <div class="name">
-          <span class="brand-main">SetViz</span>
-          <span class="muted">Basic Concepts</span>
-          <div class="tagline">An interactive learning tool for set theory concepts through visualizations</div>
+<body class="h-full light">
+    <div id="app" class="h-full w-full overflow-auto">
+        <div class="w-full h-full p-4 md:p-6">
+            <div class="mx-auto flex h-full w-full max-w-7xl flex-col gap-4 lg:flex-row">
+                <!-- Sidebar -->
+                <aside class="glass-panel fade-up w-full rounded-[28px] p-4 md:p-5 lg:w-[290px] lg:shrink-0 flex flex-col lg:max-h-[calc(100vh-3rem)]">
+                    <div class="mb-5 shrink-0">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-xs font-semibold uppercase tracking-[0.26em] eyebrow-text">SetViz path</p>
+                            <button id="themeToggle" class="theme-toggle rounded-full px-3 py-1.5 text-xs font-semibold border cursor-pointer" title="Toggle light/dark mode">🌙 Dark</button>
+                        </div>
+                        <h1 class="text-2xl font-semibold heading-text" style="font-family:'Fraunces',serif;">SetViz – Basic Concepts</h1>
+                        <p class="mt-2 text-sm leading-6 sub-text">An interactive learning tool for set theory concepts through visualizations.</p>
+                    </div>
+                    <nav class="overflow-y-auto flex-1 min-h-0"><ol id="stageList" class="space-y-2 pb-1"></ol></nav>
+                </aside>
+
+                <!-- Main -->
+                <main class="glass-panel fade-up-delay flex w-full flex-1 flex-col rounded-[28px] p-4 md:p-6">
+                    <header class="mb-5">
+                        <p id="stageEyebrow" class="mb-2 text-xs font-semibold uppercase tracking-[0.26em] eyebrow-text">Stage 0</p>
+                        <h2 id="conceptTitle" class="text-3xl font-semibold heading-text md:text-4xl" style="font-family:'Fraunces',serif;">Orientation</h2>
+                        <p id="conceptDescription" class="mt-3 max-w-3xl text-sm leading-7 sub-text md:text-base">Learn about the universal set U.</p>
+                    </header>
+
+                    <!-- Operations -->
+                    <section class="mb-4">
+                        <h3 class="mb-3 text-sm font-semibold uppercase tracking-[0.22em] muted-text">Choose an operation</h3>
+                        <div id="choiceRow" class="flex flex-wrap gap-2"></div>
+                    </section>
+
+                    <!-- Teaching note -->
+                    <section class="mb-4 rounded-3xl note-panel border p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="mt-1 rounded-full note-icon-bg p-2">💡</div>
+                            <div>
+                                <h3 class="text-sm font-semibold uppercase tracking-[0.2em] note-heading">Teaching note</h3>
+                                <p id="teachingNote" class="mt-2 text-sm leading-7 note-body">A set is a collection of things.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Visualization - PURE SVG -->
+                    <section class="flex-1">
+                        <div class="mb-3 flex items-center justify-between">
+                            <h3 class="text-sm font-semibold uppercase tracking-[0.22em] muted-text">Visualization canvas</h3>
+                            <div class="text-xs muted-text">Universal set U</div>
+                        </div>
+                        <div class="relative rounded-[30px] canvas-outer border p-3 md:p-4">
+                            <div class="relative rounded-[24px] canvas-inner border border-dashed overflow-hidden" style="height:420px;">
+                                <svg id="vennSvg" viewBox="0 0 800 420" width="100%" height="100%" preserveAspectRatio="none" style="display:block;">
+                                    <defs>
+                                        <!-- Grid pattern -->
+                                        <pattern id="gridPattern" width="24" height="24" patternUnits="userSpaceOnUse">
+                                            <path d="M 24 0 L 0 0 0 24" fill="none" class="grid-lines" stroke-width="0.5"/>
+                                        </pattern>
+                                        <!-- Clip paths and masks use these def circles -->
+                                        <circle id="defA" cx="280" cy="210" r="130"/>
+                                        <circle id="defB" cx="520" cy="210" r="130"/>
+                                        <clipPath id="clipA"><use href="#defA"/></clipPath>
+                                        <clipPath id="clipB"><use href="#defB"/></clipPath>
+                                        <clipPath id="clipU"><rect x="0" y="0" width="800" height="420"/></clipPath>
+                                        <!-- Mask: NOT A (universe minus A) -->
+                                        <mask id="mNotA"><rect width="800" height="420" fill="white"/><use href="#defA" fill="black"/></mask>
+                                        <!-- Mask: NOT B -->
+                                        <mask id="mNotB"><rect width="800" height="420" fill="white"/><use href="#defB" fill="black"/></mask>
+                                        <!-- Mask: NOT (A∪B) = universe minus both -->
+                                        <mask id="mNotAuB"><rect width="800" height="420" fill="white"/><use href="#defA" fill="black"/><use href="#defB" fill="black"/></mask>
+                                        <!-- Mask: NOT (A∩B) = universe minus intersection only -->
+                                        <mask id="mNotAnB"><rect width="800" height="420" fill="white"/><use href="#defB" fill="black" clip-path="url(#clipA)"/></mask>
+                                    </defs>
+
+                                    <!-- Background grid -->
+                                    <rect width="800" height="420" fill="url(#gridPattern)"/>
+
+                                    <!-- U label -->
+                                    <text x="24" y="28" font-size="13" font-weight="600" letter-spacing="0.2em" class="universe-label" style="font-family:'Manrope',sans-serif;">U</text>
+
+                                    <!-- ========== HIGHLIGHT LAYERS ========== -->
+                                    <!-- hl-A: full circle A -->
+                                    <use id="hlA" href="#defA" fill="rgba(232,196,104,0.45)" stroke="rgba(232,196,104,0.9)" stroke-width="3" stroke-dasharray="6 3" opacity="0"/>
+                                    <!-- hl-B: full circle B -->
+                                    <use id="hlB" href="#defB" fill="rgba(124,198,255,0.40)" stroke="rgba(124,198,255,0.92)" stroke-width="3" stroke-dasharray="6 3" opacity="0"/>
+                                    <!-- hl-Union: A ∪ B -->
+                                    <g id="hlUnion" opacity="0"><use href="#defA" fill="rgba(232,196,104,0.40)"/><use href="#defB" fill="rgba(124,198,255,0.35)"/></g>
+                                    <!-- hl-Intersection: A ∩ B -->
+                                    <use id="hlInter" href="#defB" fill="rgba(74,222,128,0.50)" stroke="rgba(74,222,128,0.9)" stroke-width="3" stroke-dasharray="5 3" clip-path="url(#clipA)" opacity="0"/>
+                                    <!-- hl-A': complement of A -->
+                                    <rect id="hlAc" width="800" height="420" fill="rgba(148,163,184,0.35)" mask="url(#mNotA)" clip-path="url(#clipU)" opacity="0"/>
+                                    <!-- hl-B': complement of B -->
+                                    <rect id="hlBc" width="800" height="420" fill="rgba(148,163,184,0.35)" mask="url(#mNotB)" clip-path="url(#clipU)" opacity="0"/>
+                                    <!-- hl-A\B: A minus B -->
+                                    <use id="hlAmB" href="#defA" fill="rgba(232,196,104,0.50)" stroke="rgba(232,196,104,0.9)" stroke-width="3" stroke-dasharray="6 3" mask="url(#mNotB)" opacity="0"/>
+                                    <!-- hl-B\A: B minus A -->
+                                    <use id="hlBmA" href="#defB" fill="rgba(124,198,255,0.45)" stroke="rgba(124,198,255,0.92)" stroke-width="3" stroke-dasharray="6 3" mask="url(#mNotA)" opacity="0"/>
+                                    <!-- hl-AΔB: symmetric difference -->
+                                    <g id="hlSym" opacity="0"><use href="#defA" fill="rgba(232,196,104,0.45)" mask="url(#mNotB)"/><use href="#defB" fill="rgba(124,198,255,0.40)" mask="url(#mNotA)"/></g>
+                                    <!-- hl-(A∪B)': complement of union -->
+                                    <rect id="hlAuBc" width="800" height="420" fill="rgba(148,163,184,0.40)" mask="url(#mNotAuB)" clip-path="url(#clipU)" opacity="0"/>
+                                    <!-- hl-(A∩B)': complement of intersection -->
+                                    <rect id="hlAnBc" width="800" height="420" fill="rgba(148,163,184,0.40)" mask="url(#mNotAnB)" clip-path="url(#clipU)" opacity="0"/>
+
+                                    <!-- ========== BASE CIRCLES (drawn on top of highlights) ========== -->
+                                    <use id="baseA" href="#defA" fill="rgba(232,196,104,0.18)" stroke="rgba(232,196,104,0.7)" stroke-width="2.5" style="display:none;"/>
+                                    <use id="baseB" href="#defB" fill="rgba(124,198,255,0.15)" stroke="rgba(124,198,255,0.7)" stroke-width="2.5" style="display:none;"/>
+
+                                    <!-- ========== LABELS ========== -->
+                                    <text id="labelA" x="280" y="100" font-size="22" font-weight="700" text-anchor="middle" fill="rgba(232,196,104,0.95)" style="font-family:'Fraunces',serif; display:none;">A</text>
+                                    <text id="labelB" x="520" y="100" font-size="22" font-weight="700" text-anchor="middle" fill="rgba(124,198,255,0.95)" style="font-family:'Fraunces',serif; display:none;">B</text>
+
+                                    <!-- Empty set badge -->
+                                    <g id="emptyBadge" style="display:none;">
+                                        <rect x="320" y="190" width="160" height="40" rx="20" fill="rgba(15,23,42,0.85)" stroke="rgba(248,113,113,0.5)" stroke-width="1.5"/>
+                                        <text x="400" y="215" font-size="16" font-weight="600" text-anchor="middle" fill="#f87171" style="font-family:'Fraunces',serif;">A ∩ B = ∅</text>
+                                    </g>
+
+                                    <!-- Shading label at bottom -->
+                                    <text id="shadingLbl" x="400" y="400" font-size="18" font-weight="600" text-anchor="middle" fill="#e8c468" style="font-family:'Fraunces',serif; display:none;"></text>
+                                </svg>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Status -->
+                    <section class="mt-4 grid gap-3 md:grid-cols-[1.3fr_0.7fr]">
+                        <div class="rounded-3xl status-panel border p-4">
+                            <h3 class="text-sm font-semibold uppercase tracking-[0.22em] muted-text">Current operation</h3>
+                            <div class="mt-3 flex items-center gap-3">
+                                <span class="dot-pulse dot-color inline-flex h-3 w-3 rounded-full"></span>
+                                <p id="statusText" class="text-lg font-semibold heading-text">Select an operation to see the shaded region.</p>
+                            </div>
+                            <p id="statusExpl" class="mt-2 text-sm leading-7 sub-text">Click the buttons above to visualize different set operations.</p>
+                        </div>
+                        <div class="rounded-3xl status-panel border p-4">
+                            <h3 class="text-sm font-semibold uppercase tracking-[0.22em] muted-text">Symbol notation</h3>
+                            <div class="mt-3 symbol-box rounded-2xl px-3 py-3 flex items-center justify-center">
+                                <span id="symbolText" class="text-2xl font-bold symbol-text-color" style="font-family:'Fraunces',serif;">U</span>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div>
         </div>
     </div>
-    <div class="toolbar">
-        <a href="about.html" class="btn ghost">About</a>
-      </div>
-    </header>
-    
-    <div class="main-content">
-      <!-- Left Sidebar Navigation -->
-      <nav class="sidebar" aria-label="Stage Navigation">
-        <h3 class="sidebar-title">Learning Stages</h3>
-        <ul class="stage-list" role="tablist">
-          <li class="stage-item" data-stage="0">
-            <button class="stage-btn" role="tab" aria-selected="true" aria-controls="stage-content">
-              <span class="stage-name">Orientation</span>
-              <span class="stage-desc">Universal Set U</span>
-            </button>
-          </li>
-          <li class="stage-item" data-stage="1">
-            <button class="stage-btn" role="tab" aria-selected="false" aria-controls="stage-content">
-              <span class="stage-name">One Set A</span>
-              <span class="stage-desc">Set & Complement</span>
-            </button>
-          </li>
-          <li class="stage-item" data-stage="2">
-            <button class="stage-btn" role="tab" aria-selected="false" aria-controls="stage-content">
-              <span class="stage-name">Two Sets Overlapping</span>
-              <span class="stage-desc">Union & Intersection</span>
-            </button>
-          </li>
-          <li class="stage-item" data-stage="3">
-            <button class="stage-btn" role="tab" aria-selected="false" aria-controls="stage-content">
-              <span class="stage-name">Mutually Exclusive</span>
-              <span class="stage-desc">Empty Set ∅</span>
-            </button>
-          </li>
-          <li class="stage-item" data-stage="4">
-            <button class="stage-btn" role="tab" aria-selected="false" aria-controls="stage-content">
-              <span class="stage-name">Set Differences</span>
-              <span class="stage-desc">A\B, B\A, A Δ B</span>
-            </button>
-          </li>
-          <li class="stage-item" data-stage="5">
-            <button class="stage-btn" role="tab" aria-selected="false" aria-controls="stage-content">
-              <span class="stage-name">Subset/Superset</span>
-              <span class="stage-desc">A⊆B, A⊂B, A⊄B</span>
-            </button>
-          </li>
-          <li class="stage-item" data-stage="6">
-            <button class="stage-btn" role="tab" aria-selected="false" aria-controls="stage-content">
-              <span class="stage-name">Complements & De Morgan</span>
-              <span class="stage-desc">A′, (A∪B)′, De Morgan</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
-      
-      <!-- Main Content Area -->
-      <main class="content-area" id="stage-content" role="tabpanel">
-    
-    <div class="stage-header">
-      <h1 class="stage-title" id="stageTitle">Stage 1: One Set (A)</h1>
-      <p class="stage-description" id="stageDescription">Learn what a set is and understand the basic concept of set A</p>
-    </div>
+    <footer class="text-center text-xs footer-text py-4">© 2026 SetViz by Suriyati Ujang | Inspired by ProbViz | Built with ❤️ + JS</footer>
 
-    <div class="symbol-display" id="symbolDisplay">
-      U
-    </div>
+<script>
+// ===== STAGES =====
+const stages = [
+    { id:0, stage:"Stage 0", title:"Orientation", description:"Learn about the universal set U and what a set is.", note:"A set is a collection of things. The box is the universal set U — it contains everything we work with.", ops:[], visual:"none" },
+    { id:1, stage:"Stage 1", title:"One Set (A)", description:"Learn what a set is and understand set A.", note:"This is set A — all elements belonging to A. A′ (complement) represents everything outside A.", ops:[
+        {id:"A",label:"A",sym:"A",desc:"All elements in set A.",expl:"The shaded region shows everything inside circle A."},
+        {id:"Ac",label:"A′",sym:"A′",desc:"Complement of A — everything NOT in A.",expl:"The shaded region shows everything in U that is outside circle A."}
+    ], visual:"single" },
+    { id:2, stage:"Stage 2", title:"Two Sets Overlapping", description:"Learn to read A, B, A∪B, A∩B, A′, B′ from shading.", note:"A ∪ B (union) = in A or B or both. A ∩ B (intersection) = overlap only.", ops:[
+        {id:"A",label:"A",sym:"A",desc:"All elements in set A.",expl:"Everything inside circle A, including the overlap."},
+        {id:"B",label:"B",sym:"B",desc:"All elements in set B.",expl:"Everything inside circle B, including the overlap."},
+        {id:"Ac",label:"A′",sym:"A′",desc:"Complement of A.",expl:"Everything outside circle A but inside U."},
+        {id:"Bc",label:"B′",sym:"B′",desc:"Complement of B.",expl:"Everything outside circle B but inside U."},
+        {id:"AuB",label:"A ∪ B",sym:"A ∪ B",desc:"Union — elements in A or B or both.",expl:"Both circles together form the union."},
+        {id:"AnB",label:"A ∩ B",sym:"A ∩ B",desc:"Intersection — elements in BOTH A and B.",expl:"Only the lens-shaped overlap region."}
+    ], visual:"overlap" },
+    { id:3, stage:"Stage 3", title:"Mutually Exclusive", description:"See A ∩ B = ∅ visually — the circles don't overlap.", note:"Mutually exclusive = no element in common. A ∩ B = ∅ (empty set).", ops:[
+        {id:"A",label:"A",sym:"A",desc:"All elements in set A.",expl:"Circle A is separate from B."},
+        {id:"B",label:"B",sym:"B",desc:"All elements in set B.",expl:"Circle B is separate from A."},
+        {id:"AuB",label:"A ∪ B",sym:"A ∪ B",desc:"Union — both circles (no overlap).",expl:"Both separate circles together."},
+        {id:"AnB",label:"A ∩ B",sym:"A ∩ B = ∅",desc:"Intersection is empty.",expl:"Since the circles don't overlap, there's nothing in common."}
+    ], visual:"disjoint" },
+    { id:4, stage:"Stage 4", title:"Set Differences", description:"Learn A \\ B, B \\ A, and A Δ B (symmetric difference).", note:"A \\ B = only A (exclude overlap). A Δ B = parts not shared = (A \\ B) ∪ (B \\ A).", ops:[
+        {id:"A",label:"A",sym:"A",desc:"All elements in set A.",expl:"The full circle A."},
+        {id:"B",label:"B",sym:"B",desc:"All elements in set B.",expl:"The full circle B."},
+        {id:"AmB",label:"A \\ B",sym:"A \\ B",desc:"Elements in A but NOT in B.",expl:"Only the part of A that doesn't overlap with B."},
+        {id:"BmA",label:"B \\ A",sym:"B \\ A",desc:"Elements in B but NOT in A.",expl:"Only the part of B that doesn't overlap with A."},
+        {id:"AsdB",label:"A Δ B",sym:"A Δ B",desc:"Symmetric difference — in A or B but not both.",expl:"Both non-overlapping crescents combined."}
+    ], visual:"overlap" },
+    { id:5, stage:"Stage 5", title:"Subset / Superset", description:"Understand A ⊆ B, A ⊂ B, A ⊄ B relationships.", note:"⊂ = proper subset (strict). ⊆ = subset (allow equality). Use buttons to see different relationships.", ops:[
+        {id:"sub",label:"A ⊂ B",sym:"A ⊂ B",desc:"A is a proper subset of B.",expl:"Every element in A is in B, but B has more.",vl:"subset"},
+        {id:"eq",label:"A = B",sym:"A = B",desc:"A and B are equal sets.",expl:"Both sets contain exactly the same elements.",vl:"equal"},
+        {id:"olap",label:"Overlap",sym:"A ⊄ B",desc:"A is NOT a subset of B.",expl:"Some elements of A are outside B.",vl:"overlap"},
+        {id:"disj",label:"Disjoint",sym:"A ⊄ B",desc:"A is NOT a subset of B (disjoint).",expl:"A and B share nothing.",vl:"disjoint"}
+    ], visual:"subset" },
+    { id:6, stage:"Stage 6", title:"Complements & De Morgan", description:"Visualize complements and De Morgan's Laws.", note:"De Morgan's Laws: (A ∪ B)′ = A′ ∩ B′ and (A ∩ B)′ = A′ ∪ B′.", ops:[
+        {id:"A",label:"A",sym:"A",desc:"Set A.",expl:"Circle A highlighted."},
+        {id:"B",label:"B",sym:"B",desc:"Set B.",expl:"Circle B highlighted."},
+        {id:"Ac",label:"A′",sym:"A′",desc:"Complement of A.",expl:"Everything outside A."},
+        {id:"Bc",label:"B′",sym:"B′",desc:"Complement of B.",expl:"Everything outside B."},
+        {id:"AuBc",label:"(A∪B)′",sym:"(A ∪ B)′",desc:"Complement of union — outside both A and B.",expl:"Region outside both circles. Equals A′ ∩ B′ (De Morgan)."},
+        {id:"AnBc",label:"(A∩B)′",sym:"(A ∩ B)′",desc:"Complement of intersection — everything except the overlap.",expl:"Everything except the lens. Equals A′ ∪ B′ (De Morgan)."}
+    ], visual:"overlap" }
+];
 
+// ===== LAYOUTS =====
+const layouts = {
+    none:    { a:null, b:null },
+    single:  { a:{cx:400,cy:210,r:130}, b:null },
+    overlap: { a:{cx:280,cy:210,r:130}, b:{cx:520,cy:210,r:130} },
+    disjoint:{ a:{cx:180,cy:210,r:120}, b:{cx:620,cy:210,r:120} },
+    subset:  { a:{cx:420,cy:220,r:70},  b:{cx:400,cy:210,r:140} },
+    equal:   { a:{cx:400,cy:210,r:120}, b:{cx:400,cy:210,r:120} }
+};
 
-    <div class="operation-buttons" id="operationButtons">
-      <button class="op-btn" data-operation="A">A</button>
-      <button class="op-btn" data-operation="A-complement">A′</button>
-        </div>
+// ===== STATE =====
+let curStage = 0, curOp = null, isDark = false;
 
-    <div class="teaching-point" id="teachingPoint">
-      <strong>Teaching Point:</strong> This is set A — all elements belonging to A. A′ (complement of A) represents everything outside A.
-      </div>
+// ===== THEME =====
+function applyTheme() {
+    document.body.className = isDark ? "h-full dark" : "h-full light";
+    document.getElementById("themeToggle").textContent = isDark ? "☀️ Light" : "🌙 Dark";
+}
+document.getElementById("themeToggle").addEventListener("click", () => { isDark = !isDark; applyTheme(); });
 
-    <div class="venn-container">
-        <!-- Annotations Overlay -->
-        <div id="annotationsOverlay" class="annotations-overlay" style="display: none;">
-          <div class="annotation-tooltip" id="universeAnnotation">
-            <div class="tooltip-arrow"></div>
-            <div class="tooltip-content">
-              <h4>Universal Set (U)</h4>
-              <p>This rectangle represents the universal set U - the collection of all possible elements we're considering. Everything we work with must be inside this box.</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Guided Tour Overlay -->
-        <div id="guidedTourOverlay" class="guided-tour-overlay" style="display: none;">
-          <div class="tour-step" id="tourStep1">
-            <div class="tour-content">
-              <h3>Welcome to SetViz!</h3>
-              <p>Let's start by understanding the basic building blocks of set theory.</p>
-              <div class="tour-actions">
-                <button class="tour-btn" id="tourNext">Next →</button>
-                <button class="tour-btn secondary" id="tourSkip">Skip Tour</button>
-              </div>
-            </div>
-          </div>
-          <div class="tour-step" id="tourStep2" style="display: none;">
-            <div class="tour-content">
-              <h3>The Universal Set (U)</h3>
-              <p>This rectangle is called the <strong>Universal Set</strong> - it contains everything we're working with. Think of it as our "universe" of all possible elements.</p>
-              <div class="tour-actions">
-                <button class="tour-btn" id="tourPrev">← Previous</button>
-                <button class="tour-btn" id="tourNext2">Next →</button>
-              </div>
-            </div>
-          </div>
-          <div class="tour-step" id="tourStep3" style="display: none;">
-            <div class="tour-content">
-              <h3>Ready to Learn!</h3>
-              <p>Now you understand the universal set. In the next stages, we'll add sets A and B inside this universe and explore how they interact.</p>
-              <div class="tour-actions">
-                <button class="tour-btn" id="tourPrev2">← Previous</button>
-                <button class="tour-btn" id="tourComplete">Complete Tour</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <svg id="venn" viewBox="0 0 560 420" width="100%" height="420" max-width="100%" preserveAspectRatio="xMidYMid meet" aria-label="Venn diagram">
-          <defs>
-            <circle id="circleA" cx="190" cy="160" r="100"/>
-            <circle id="circleB" cx="310" cy="160" r="100"/>
+// ===== SVG HELPERS =====
+function setCircle(id, cx, cy, r) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.setAttribute("cx", cx); el.setAttribute("cy", cy); el.setAttribute("r", r);
+}
 
-            <clipPath id="clipA"><use href="#circleA"/></clipPath>
-            <clipPath id="clipB"><use href="#circleB"/></clipPath>
-            <clipPath id="clipAB">
-              <use href="#circleA"/>
-              <use href="#circleB"/>
-            </clipPath>
-            <clipPath id="clipIntersection">
-              <use href="#circleA"/>
-              <use href="#circleB"/>
-            </clipPath>
-            <clipPath id="clipIntersectionOnly">
-              <use href="#circleA"/>
-              <use href="#circleB"/>
-            </clipPath>
-            <clipPath id="clipTrueIntersection">
-              <use href="#circleA"/>
-              <use href="#circleB" clip-path="url(#clipA)"/>
-            </clipPath>
-            <clipPath id="clipIntersectionOnlyCorrect">
-              <use href="#circleA"/>
-              <use href="#circleB" clip-path="url(#clipA)"/>
-            </clipPath>
-            <mask id="maskIntersectionOnly">
-              <rect x="0" y="0" width="500" height="320" fill="black"/>
-              <use href="#circleA" fill="white"/>
-              <use href="#circleB" fill="white"/>
-            </mask>
-            <mask id="maskTrueIntersection">
-              <rect x="0" y="0" width="500" height="320" fill="black"/>
-              <use href="#circleA" fill="white"/>
-              <use href="#circleB" fill="white"/>
-            </mask>
-            <mask id="maskExactIntersection">
-              <rect x="0" y="0" width="500" height="320" fill="black"/>
-              <use href="#circleA" fill="white"/>
-              <use href="#circleB" fill="white"/>
-            </mask>
-            <mask id="maskIntersection">
-              <rect x="0" y="0" width="500" height="320" fill="black"/>
-              <use href="#circleA" fill="white"/>
-              <use href="#circleB" fill="white"/>
-            </mask>
-            <mask id="maskIntersectionCorrect">
-              <rect x="0" y="0" width="500" height="320" fill="black"/>
-              <use href="#circleA" fill="white"/>
-              <use href="#circleB" fill="white"/>
-            </mask>
-            <clipPath id="clipAminusB">
-              <use href="#circleA"/>
-              <rect x="0" y="0" width="500" height="320" clip-path="url(#clipB)" fill="#000"/>
-            </clipPath>
-            <clipPath id="clipBminusA">
-              <use href="#circleB"/>
-              <rect x="0" y="0" width="500" height="320" clip-path="url(#clipA)" fill="#000"/>
-            </clipPath>
-            <clipPath id="clipA-minus-B">
-              <use href="#circleA"/>
-              <rect x="0" y="0" width="500" height="320" clip-path="url(#clipB)" fill="#000"/>
-            </clipPath>
-            <clipPath id="clipB-minus-A">
-              <use href="#circleB"/>
-              <rect x="0" y="0" width="500" height="320" clip-path="url(#clipA)" fill="#000"/>
-            </clipPath>
-            <mask id="maskComplement">
-              <rect x="0" y="0" width="500" height="320" fill="white"/>
-              <use href="#circleA" fill="black"/>
-              <use href="#circleB" fill="black"/>
-            </mask>
-          <mask id="maskAComplement">
-            <rect x="0" y="0" width="560" height="420" fill="white"/>
-            <use href="#circleA" fill="black"/>
-          </mask>
-          <mask id="maskBComplement">
-            <rect x="0" y="0" width="560" height="420" fill="white"/>
-            <use href="#circleB" fill="black"/>
-          </mask>
-          <clipPath id="clipUniverse">
-            <rect x="30" y="20" width="450" height="280"/>
-          </clipPath>
-          </defs>
+function updateSvgPositions(layout) {
+    if (layout.a) { setCircle("defA", layout.a.cx, layout.a.cy, layout.a.r); }
+    if (layout.b) { setCircle("defB", layout.b.cx, layout.b.cy, layout.b.r); }
 
-          <g id="base">
-            <circle cx="190" cy="160" r="100" class="baseA"/>
-            <circle cx="310" cy="160" r="100" class="baseB" style="display: none;"/>
-          </g>
-
-        <g id="hl-A" opacity="0">
-          <circle cx="190" cy="160" r="100" class="hlA"/>
-        </g>
-        <g id="hl-B" opacity="0">
-          <circle cx="310" cy="160" r="100" class="hlB"/>
-        </g>
-        <g id="hl-A-complement" opacity="0" mask="url(#maskAComplement)" clip-path="url(#clipUniverse)">
-          <rect x="0" y="0" width="560" height="420" class="hlComp"/>
-        </g>
-        <g id="hl-B-complement" opacity="0" mask="url(#maskBComplement)" clip-path="url(#clipUniverse)">
-          <rect x="0" y="0" width="560" height="420" class="hlComp"/>
-        </g>
-        <g id="hl-A-union-B" opacity="0">
-            <circle cx="190" cy="160" r="100" class="hlA"/>
-            <circle cx="310" cy="160" r="100" class="hlB"/>
-          </g>
-        <g id="hl-A-union-B-independent" opacity="0">
-          <circle cx="190" cy="160" r="100" class="hlA"/>
-          <circle cx="350" cy="160" r="100" class="hlB"/>
-        </g>
-        <g id="hl-A-intersection-B" opacity="0">
-            <circle cx="310" cy="160" r="100" class="hlIntersection" clip-path="url(#clipA)"/>
-          </g>
-        <g id="hl-A-minus-B" opacity="0">
-          <circle cx="190" cy="160" r="100" class="hlA" clip-path="url(#clipA-minus-B)"/>
-        </g>
-        <g id="hl-B-minus-A" opacity="0">
-          <circle cx="310" cy="160" r="100" class="hlB" clip-path="url(#clipB-minus-A)"/>
-        </g>
-        <g id="hl-A-symmetric-difference-B" opacity="0">
-          <circle cx="190" cy="160" r="100" class="hlA" clip-path="url(#clipA-minus-B)"/>
-          <circle cx="310" cy="160" r="100" class="hlB" clip-path="url(#clipB-minus-A)"/>
-        </g>
-        
-        <!-- Visual indicators for Stage 4 operations -->
-        <g id="stage4-indicators" style="display: none;">
-          <text x="20" y="50" font-size="14" fill="#319795" font-weight="bold">A\B = Teal</text>
-          <text x="20" y="70" font-size="14" fill="#2d7dd2" font-weight="bold">B\A = Blue</text>
-          <text x="20" y="90" font-size="14" fill="#6b7280" font-weight="bold">A Δ B = Both</text>
-        </g>
-        
-        <!-- Subset symbol badges for Stage 5 -->
-        <g id="subset-badges" style="display: none;">
-          <rect x="30" y="320" width="450" height="80" fill="rgba(255,255,255,0.95)" stroke="#e5e7eb" stroke-width="1" rx="8"/>
-          <text x="255" y="340" font-size="14" fill="#374151" font-weight="bold" text-anchor="middle">Subset Relations</text>
-          <text x="80" y="360" font-size="16" fill="#059669" font-weight="bold" id="subset-proper">A ⊂ B</text>
-          <text x="180" y="360" font-size="16" fill="#059669" font-weight="bold" id="subset-equal">A ⊆ B</text>
-          <text x="280" y="360" font-size="16" fill="#dc2626" font-weight="bold" id="subset-not">A ⊄ B</text>
-          <text x="380" y="360" font-size="16" fill="#dc2626" font-weight="bold" id="subset-not-equal">A ⊈ B</text>
-        </g>
-        
-        <!-- Complement highlights for Stage 6 -->
-        <g id="hl-A-union-B-complement" opacity="0">
-          <rect x="0" y="0" width="560" height="420" class="hlComp" clip-path="url(#clipUniverse)"/>
-          <circle cx="190" cy="160" r="100" fill="#000" clip-path="url(#clipA)"/>
-          <circle cx="310" cy="160" r="100" fill="#000" clip-path="url(#clipB)"/>
-        </g>
-        
-        <g id="hl-A-intersection-B-complement" opacity="0">
-          <rect x="0" y="0" width="560" height="420" class="hlComp" clip-path="url(#clipUniverse)"/>
-          <circle cx="190" cy="160" r="100" fill="#000" clip-path="url(#clipIntersectionOnlyCorrect)"/>
-        </g>
-        
-        <!-- De Morgan spotlight animation groups -->
-        <g id="demorgan-union" style="display: none;">
-          <rect x="0" y="0" width="560" height="420" class="hlComp" clip-path="url(#clipUniverse)"/>
-          <circle cx="190" cy="160" r="100" fill="#000" clip-path="url(#clipA)"/>
-          <circle cx="310" cy="160" r="100" fill="#000" clip-path="url(#clipB)"/>
-        </g>
-        
-        <g id="demorgan-intersection" style="display: none;">
-          <rect x="0" y="0" width="560" height="420" class="hlComp" clip-path="url(#clipUniverse)"/>
-          <circle cx="190" cy="160" r="100" fill="#000" clip-path="url(#clipIntersectionOnlyCorrect)"/>
-        </g>
-
-          <g id="regionA"></g>
-          <g id="regionAB"></g>
-          <g id="regionB"></g>
-          <g id="regionOut"></g>
-
-        <text id="labelA" x="190" y="60" font-size="20" text-anchor="middle" style="display: none;">A</text>
-        <text id="labelB" x="310" y="60" font-size="20" text-anchor="middle" style="display: none;">B</text>
-        <text id="placeholderA" x="190" y="60" font-size="16" text-anchor="middle" class="placeholder-label" style="display: none;">?</text>
-        <text id="placeholderB" x="310" y="60" font-size="16" text-anchor="middle" class="placeholder-label" style="display: none;">?</text>
-        <text x="250" y="160" font-size="24" text-anchor="middle" class="empty-set-indicator" style="display: none;">∅</text>
-          <rect x="30" y="20" width="450" height="280" class="uBox"/>
-          <text x="40" y="36" font-size="12">U</text>
-        </svg>
-      </div>
-
-    <div class="stage-controls">
-      <div class="stage-nav">
-        <button class="nav-btn" id="prevStageBtn" disabled>← Previous Stage</button>
-        <button class="nav-btn" id="nextStageBtn">Next Stage →</button>
-      </div>
-      <div class="teaching-controls">
-        <button class="nav-btn" id="teachingModeBtn">🎓 Teaching Mode</button>
-        <button class="nav-btn" id="guidedTourBtn">📚 Guided Tour</button>
-        <button class="nav-btn" id="resetBtn">Reset</button>
-        <a href="about.html" class="nav-btn">About SetViz</a>
-      </div>
-      </div>
-
-      </main>
-      </div>
-
-    <footer class="foot">
-      © 2026 SetViz by Suriyati Ujang | Inspired by ProbViz | Built with ❤️ + JS
-      <div class="user-count" id="userCountBtn" style="cursor: pointer;">
-        <span class="user-icon">👥</span> Users: <span id="userCount">Loading...</span>
-      </div>
-    </footer>
-
-    <!-- Statistics Modal -->
-    <div id="statsModal" class="stats-modal" style="display: none;">
-      <div class="stats-modal-content">
-        <div class="stats-header">
-          <span class="stats-icon">📊</span>
-          <h3>SetViz Usage Statistics</h3>
-        </div>
-        <div class="stats-body">
-          <div class="stat-item">
-            <span class="stat-icon">👥</span>
-            <span class="stat-label">Unique Users:</span>
-            <span class="stat-value" id="uniqueUsers">0</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-icon">📄</span>
-            <span class="stat-label">Total Page Views:</span>
-            <span class="stat-value" id="totalPageViews">0</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-icon">📅</span>
-            <span class="stat-label">First Visit:</span>
-            <span class="stat-value" id="firstVisit">-</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-icon">🕒</span>
-            <span class="stat-label">Last Visit:</span>
-            <span class="stat-value" id="lastVisit">-</span>
-          </div>
-        </div>
-        <div class="stats-footer">
-          <button class="stats-close-btn" id="statsCloseBtn">OK</button>
-        </div>
-      </div>
-    </div>
-
-  <script>
-    // Basic Concepts Page Script
-    let currentStage = 0;
-    let currentOperation = null;
-    let setRelationship = 'independent';
-    let teachingMode = false;
-    let guidedTourActive = false;
-    let currentTourStep = 1;
-
-    const stages = {
-      0: {
-        title: 'Stage 0: Orientation',
-        description: 'Learn about the universal set U and what a set is',
-        operations: [],
-        teachingPoint: 'A set is a collection of things. The box is the universal set U.',
-        relationship: 'none'
-      },
-      1: {
-        title: 'Stage 1: One Set (A)',
-        description: 'Learn what a set is and understand the basic concept of set A',
-        operations: ['A', 'A-complement'],
-        teachingPoint: 'This is set A — all elements belonging to A. A′ (complement of A) represents everything outside A.',
-        relationship: 'single'
-      },
-      2: {
-        title: 'Stage 2: Two Sets (A, B) Overlapping',
-        description: 'Learn to read A, B, A∪B, A∩B, A′, B′ from shading',
-        operations: ['A', 'B', 'A-complement', 'B-complement', 'A-union-B', 'A-intersection-B'],
-        teachingPoint: 'A ∪ B (union) = in A or B (or both). A ∩ B (intersection) = overlap only. Show both complements to contrast.',
-        relationship: 'overlapping'
-      },
-      3: {
-        title: 'Stage 3: Two Sets Mutually Exclusive',
-        description: 'See A ∩ B = ∅ visually',
-        operations: ['A', 'B', 'A-union-B', 'A-intersection-B'],
-        teachingPoint: 'Mutually exclusive = no element in common. A ∩ B = ∅ (empty set).',
-        relationship: 'mutually-exclusive'
-      },
-      4: {
-        title: 'Stage 4: Set Differences & Symmetric Difference',
-        description: 'Learn A \\ B, B \\ A, and A Δ B (symmetric difference)',
-        operations: ['A', 'B', 'A-minus-B', 'B-minus-A', 'A-symmetric-difference-B'],
-        teachingPoint: 'A \\ B = only A (exclude overlap). A Δ B = parts not shared. A Δ B = (A \\ B) ∪ (B \\ A).',
-        relationship: 'overlapping'
-      },
-      5: {
-        title: 'Stage 5: Subset / Superset',
-        description: 'Understand A ⊆ B, A ⊂ B, A ⊄ B relationships',
-        operations: ['A', 'B', 'position-toggle'],
-        teachingPoint: '⊂ = proper subset (strict). ⊆ = subset (allow equality). Use position toggle to see different relationships.',
-        relationship: 'subset'
-      },
-      6: {
-        title: 'Stage 6: Complements & De Morgan',
-        description: 'Visualize complements and De Morgan\'s Laws',
-        operations: ['A', 'B', 'A-complement', 'B-complement', 'A-union-B-complement', 'A-intersection-B-complement', 'demorgan-spotlight'],
-        teachingPoint: 'De Morgan\'s Laws: (A ∪ B)′ = A′ ∩ B′ and (A ∩ B)′ = A′ ∪ B′. Click spotlight to see morphing animations.',
-        relationship: 'overlapping'
-      }
-    };
-
-    // Language strings
-    const languageStrings = {
-      en: {
-        stages: {
-          0: {
-            title: 'Stage 0: Orientation',
-            description: 'Learn about the universal set U and what a set is',
-            teachingPoint: 'A set is a collection of things. The box is the universal set U.'
-          },
-          1: {
-            title: 'Stage 1: One Set (A)',
-            description: 'Learn what a set is and understand the basic concept of set A',
-            teachingPoint: 'This is set A — all elements belonging to A. A′ (complement of A) represents everything outside A.'
-          },
-          2: {
-            title: 'Stage 2: Two Sets (A, B) Overlapping',
-            description: 'Learn to read A, B, A∪B, A∩B, A′, B′ from shading',
-            teachingPoint: 'A ∪ B (union) = in A or B (or both). A ∩ B (intersection) = overlap only. Show both complements to contrast.'
-          },
-          3: {
-            title: 'Stage 3: Two Sets Mutually Exclusive',
-            description: 'See A ∩ B = ∅ visually',
-            teachingPoint: 'Mutually exclusive = no element in common. A ∩ B = ∅ (empty set).'
-          },
-          4: {
-            title: 'Stage 4: Set Differences & Symmetric Difference',
-            description: 'Learn A \\ B, B \\ A, and A Δ B (symmetric difference)',
-            teachingPoint: 'A \\ B = only A (exclude overlap). A Δ B = parts not shared. A Δ B = (A \\ B) ∪ (B \\ A).'
-          },
-          5: {
-            title: 'Stage 5: Subset / Superset',
-            description: 'Understand A ⊆ B, A ⊂ B, A ⊄ B relationships',
-            teachingPoint: '⊂ = proper subset (strict). ⊆ = subset (allow equality). Use position toggle to see different relationships.'
-          },
-          6: {
-            title: 'Stage 6: Complements & De Morgan',
-            description: 'Visualize complements and De Morgan\'s Laws',
-            teachingPoint: 'De Morgan\'s Laws: (A ∪ B)′ = A′ ∩ B′ and (A ∩ B)′ = A′ ∪ B′. Click spotlight to see morphing animations.'
-          }
-        },
-        operations: {
-          'A': 'A',
-          'B': 'B',
-          'A-complement': 'A′',
-          'B-complement': 'B′',
-          'A-union-B': 'A ∪ B',
-          'A-intersection-B': 'A ∩ B',
-          'A-minus-B': 'A \\ B',
-          'B-minus-A': 'B \\ A',
-          'A-symmetric-difference-B': 'A Δ B',
-          'position-toggle': 'Toggle Position',
-          'A-union-B-complement': '(A ∪ B)′',
-          'A-intersection-B-complement': '(A ∩ B)′',
-          'demorgan-spotlight': 'De Morgan'
-        },
-        ui: {
-          reset: 'Reset',
-          about: 'About SetViz',
-          emptySet: '∅ (empty)',
-          miniTaskHint: 'Mini task: Shade the overlap only for A ∩ B',
-          emptySetMessage: 'A ∩ B = ∅ (empty set) - no overlap!'
-        }
-      }
-    };
-
-    // Simplified - English only
-
-    function updateStage() {
-      const stage = stages[currentStage];
-      const lang = languageStrings.en;
-      const stageLang = lang.stages[currentStage];
-      
-      document.getElementById('stageTitle').textContent = stageLang.title;
-      document.getElementById('stageDescription').textContent = stageLang.description;
-      document.getElementById('teachingPoint').innerHTML = `<strong>Teaching Point:</strong> ${stageLang.teachingPoint}`;
-      
-      // Set relationship for the stage
-      setRelationship = stage.relationship;
-      
-      // Update operation buttons
-      updateOperationButtons(stage.operations);
-      
-      // Update symbol display
-      updateSymbolDisplay();
-      
-      // Show/hide Stage 4 visual indicators
-      const stage4Indicators = document.getElementById('stage4-indicators');
-      if (stage4Indicators) {
-        stage4Indicators.style.display = currentStage === 4 ? 'block' : 'none';
-      }
-      
-      // Show/hide Stage 5 subset badges
-      const subsetBadges = document.getElementById('subset-badges');
-      if (subsetBadges) {
-        subsetBadges.style.display = currentStage === 5 ? 'block' : 'none';
-      }
-      
-      // Reset teaching point to stage default
-      let teachingContent = `<strong>Teaching Point:</strong> ${stage.teachingPoint}`;
-      
-      // Add quick check for mutually exclusive sets
-      if (setRelationship === 'mutually-exclusive') {
-        teachingContent += '<br><br><strong>Quick Check:</strong> In this view, what is A ∩ B? <em>Answer: ∅ (empty set)</em>';
-      }
-      
-      document.getElementById('teachingPoint').innerHTML = teachingContent;
-      
-      // Update Venn diagram
-      updateVennDiagram();
-      
-      // Add special styling for different relationships
-      const vennEl = document.getElementById('venn');
-      vennEl.classList.remove('stage-2-overlapping', 'stage-3-mutually-exclusive');
-      
-      if (setRelationship === 'overlapping') {
-        vennEl.classList.add('stage-2-overlapping');
-      } else if (setRelationship === 'mutually-exclusive') {
-        vennEl.classList.add('stage-3-mutually-exclusive');
-      }
-      
-      // Update navigation buttons
-      document.getElementById('prevStageBtn').disabled = currentStage === 0;
-      document.getElementById('nextStageBtn').disabled = currentStage === 3;
-      
-      // Update sidebar
-      updateSidebar();
-      
-      // Handle Stage 0 specific features
-      if (currentStage === 0) {
-        setupStage0Features();
-      }
-    }
-    
-    // Stage 0 specific setup
-    function setupStage0Features() {
-      const universeBox = document.querySelector('.uBox');
-      if (universeBox) {
-        universeBox.classList.add('stage-0-universe-highlight');
-      }
-      
-      // Position annotation tooltip for universe
-      const universeAnnotation = document.getElementById('universeAnnotation');
-      if (universeAnnotation) {
-        universeAnnotation.style.top = '60px';
-        universeAnnotation.style.left = '50%';
-        universeAnnotation.style.transform = 'translateX(-50%)';
-      }
-    }
-    
-    // Teaching Mode Functions
-    function toggleTeachingMode() {
-      teachingMode = !teachingMode;
-      const btn = document.getElementById('teachingModeBtn');
-      const annotationsOverlay = document.getElementById('annotationsOverlay');
-      
-      if (teachingMode) {
-        btn.classList.add('teaching-mode-active');
-        btn.textContent = '🎓 Teaching Mode ON';
-        annotationsOverlay.style.display = 'block';
-        
-        // Show enhanced teaching content for Stage 0
-        if (currentStage === 0) {
-          showStage0TeachingContent();
-        }
-      } else {
-        btn.classList.remove('teaching-mode-active');
-        btn.textContent = '🎓 Teaching Mode';
-        annotationsOverlay.style.display = 'none';
-        hideStage0TeachingContent();
-      }
-    }
-    
-    function showStage0TeachingContent() {
-      const teachingPoint = document.getElementById('teachingPoint');
-      const enhancedContent = `
-        <strong>Teaching Point:</strong> A set is a collection of things. The box is the universal set U.
-        <br><br>
-        <div style="background: #f0f9ff; padding: 12px; border-radius: 8px; border-left: 4px solid #0ea5e9; margin-top: 12px;">
-          <strong>🎓 Enhanced Learning:</strong>
-          <ul style="margin: 8px 0 0 0; padding-left: 20px;">
-            <li>The <strong>Universal Set (U)</strong> contains all possible elements we're considering</li>
-            <li>Think of it as our "universe" - everything we work with must be inside this box</li>
-            <li>In real life, U might be "all students in a class" or "all numbers from 1 to 10"</li>
-            <li>Notice the dashed border - this helps distinguish it from other sets we'll add later</li>
-          </ul>
-        </div>
-      `;
-      teachingPoint.innerHTML = enhancedContent;
-    }
-    
-    function hideStage0TeachingContent() {
-      const teachingPoint = document.getElementById('teachingPoint');
-      teachingPoint.innerHTML = `<strong>Teaching Point:</strong> A set is a collection of things. The box is the universal set U.`;
-    }
-    
-    // Guided Tour Functions
-    function startGuidedTour() {
-      guidedTourActive = true;
-      currentTourStep = 1;
-      const btn = document.getElementById('guidedTourBtn');
-      const tourOverlay = document.getElementById('guidedTourOverlay');
-      
-      btn.classList.add('guided-tour-active');
-      btn.textContent = '📚 Tour Active';
-      tourOverlay.style.display = 'flex';
-      
-      showTourStep(1);
-    }
-    
-    function showTourStep(step) {
-      // Hide all tour steps
-      document.querySelectorAll('.tour-step').forEach(el => {
-        el.style.display = 'none';
-      });
-      
-      // Show current step
-      const currentStepEl = document.getElementById(`tourStep${step}`);
-      if (currentStepEl) {
-        currentStepEl.style.display = 'block';
-      }
-      
-      // Update visual highlighting based on step
-      if (step === 2) {
-        // Highlight the universe box
-        const universeBox = document.querySelector('.uBox');
-        if (universeBox) {
-          universeBox.classList.add('stage-0-universe-highlight');
-        }
-      }
-    }
-    
-    function nextTourStep() {
-      if (currentTourStep < 3) {
-        currentTourStep++;
-        showTourStep(currentTourStep);
-      }
-    }
-    
-    function prevTourStep() {
-      if (currentTourStep > 1) {
-        currentTourStep--;
-        showTourStep(currentTourStep);
-      }
-    }
-    
-    function completeTour() {
-      guidedTourActive = false;
-      const btn = document.getElementById('guidedTourBtn');
-      const tourOverlay = document.getElementById('guidedTourOverlay');
-      
-      btn.classList.remove('guided-tour-active');
-      btn.textContent = '📚 Guided Tour';
-      tourOverlay.style.display = 'none';
-      
-      // Remove highlighting
-      const universeBox = document.querySelector('.uBox');
-      if (universeBox) {
-        universeBox.classList.remove('stage-0-universe-highlight');
-      }
-    }
-    
-    function skipTour() {
-      completeTour();
+    // Update the mask circle for intersection complement
+    const mAnB = document.querySelector("#mNotAnB circle");
+    if (mAnB && layout.b) {
+        mAnB.setAttribute("cx", layout.b.cx);
+        mAnB.setAttribute("cy", layout.b.cy);
+        mAnB.setAttribute("r", layout.b.r);
     }
 
-    function updateOperationButtons(operations) {
-      const container = document.getElementById('operationButtons');
-      container.innerHTML = '';
-      
-      operations.forEach(op => {
-        if (op === 'position-toggle') {
-          // Create position toggle buttons for Stage 5
-          const positionButtons = [
-            { id: 'proper-subset', label: 'A⊂B', position: 'proper-subset' },
-            { id: 'equal-sets', label: 'A=B', position: 'equal-sets' },
-            { id: 'overlapping', label: 'Overlap', position: 'overlapping' },
-            { id: 'disjoint', label: 'Disjoint', position: 'disjoint' }
-          ];
-          
-          positionButtons.forEach(pos => {
-            const btn = document.createElement('button');
-            btn.className = 'op-btn position-btn';
-            btn.setAttribute('data-position', pos.position);
-            btn.textContent = pos.label;
-            btn.addEventListener('click', () => selectPosition(pos.position));
-            container.appendChild(btn);
-          });
-        } else if (op === 'demorgan-spotlight') {
-          // Create De Morgan spotlight button for Stage 6
-          const btn = document.createElement('button');
-          btn.className = 'op-btn demorgan-btn';
-          btn.setAttribute('data-operation', op);
-          btn.textContent = languageStrings.en.operations[op];
-          btn.addEventListener('click', () => selectOperation(op));
-          container.appendChild(btn);
-        } else {
-          const btn = document.createElement('button');
-          btn.className = 'op-btn';
-          btn.setAttribute('data-operation', op);
-          btn.textContent = languageStrings.en.operations[op] || getOperationSymbol(op);
-          btn.addEventListener('click', () => selectOperation(op));
-          container.appendChild(btn);
-        }
-      });
-    }
+    // Base circles
+    const bA = document.getElementById("baseA");
+    const bB = document.getElementById("baseB");
+    const lA = document.getElementById("labelA");
+    const lB = document.getElementById("labelB");
 
-    function getOperationSymbol(operation) {
-      const symbols = {
-        'A': 'A',
-        'B': 'B',
-        'A-complement': 'A′',
-        'B-complement': 'B′',
-        'A-union-B': 'A ∪ B',
-        'A-intersection-B': 'A ∩ B'
-      };
-      return symbols[operation] || operation;
-    }
+    if (layout.a) {
+        bA.style.display = "block";
+        lA.style.display = "block";
+        lA.setAttribute("x", layout.a.cx);
+        lA.setAttribute("y", layout.a.cy - layout.a.r - 12);
+    } else { bA.style.display = "none"; lA.style.display = "none"; }
 
-    function updateSymbolDisplay() {
-      const symbolDisplay = document.getElementById('symbolDisplay');
-      if (currentStage === 0) {
-        symbolDisplay.textContent = 'U';
-      } else if (currentOperation) {
-        symbolDisplay.textContent = getOperationSymbol(currentOperation);
-      } else {
-        symbolDisplay.textContent = 'U';
-      }
-    }
+    if (layout.b) {
+        bB.style.display = "block";
+        lB.style.display = "block";
+        lB.setAttribute("x", layout.b.cx);
+        lB.setAttribute("y", layout.b.cy - layout.b.r - 12);
+    } else { bB.style.display = "none"; lB.style.display = "none"; }
+}
 
-    function selectOperation(operation) {
-      currentOperation = operation;
-      
-      // Update button states
-      document.querySelectorAll('.op-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.operation === operation);
-      });
-      
-      // Update symbol display
-      updateSymbolDisplay();
-      
-      // Update Venn diagram highlighting
-      updateVennDiagram();
-      
-      // Show mini task hints for Stage 2
-      if (currentStage === 2) {
-        showMiniTaskHint(operation);
-      }
-      
-      // Show empty set message for mutually exclusive intersection
-      if (operation === 'A-intersection-B' && setRelationship === 'mutually-exclusive') {
-        showEmptySetMessage();
-      }
-      
-      // Handle De Morgan spotlight for Stage 6
-      if (operation === 'demorgan-spotlight' && currentStage === 6) {
-        showDeMorganSpotlight();
-      }
-    }
+// ===== HIGHLIGHTS =====
+const hlIds = ["hlA","hlB","hlAc","hlBc","hlAmB","hlBmA","hlAuBc","hlAnBc","hlUnion","hlInter","hlSym"];
 
-    function selectPosition(position) {
-      // Update position button states
-      document.querySelectorAll('.position-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.position === position);
-      });
-      
-      // Update circle positions based on subset relationship
-      updateSubsetPositions(position);
-      
-      // Update subset symbol badges
-      updateSubsetBadges(position);
-    }
+function clearHL() {
+    hlIds.forEach(id => { const e = document.getElementById(id); if(e) e.setAttribute("opacity","0"); });
+    document.getElementById("emptyBadge").style.display = "none";
+    document.getElementById("shadingLbl").style.display = "none";
+}
 
-    function updateSubsetPositions(position) {
-      const circleA = document.querySelector('.baseA');
-      const circleB = document.querySelector('.baseB');
-      
-      if (!circleA || !circleB) return;
-      
-      // Reset all circles to default positions first
-      circleA.setAttribute('cx', '190');
-      circleA.setAttribute('cy', '160');
-      circleA.setAttribute('r', '100');
-      circleB.setAttribute('cx', '310');
-      circleB.setAttribute('cy', '160');
-      circleB.setAttribute('r', '100');
-      
-      switch(position) {
-        case 'proper-subset':
-          // A entirely inside B (smaller circle inside larger)
-          circleA.setAttribute('cx', '280');
-          circleA.setAttribute('cy', '160');
-          circleA.setAttribute('r', '60');
-          circleB.setAttribute('cx', '280');
-          circleB.setAttribute('cy', '160');
-          circleB.setAttribute('r', '100');
-          break;
-          
-        case 'equal-sets':
-          // A equal to B (same position and size)
-          circleA.setAttribute('cx', '250');
-          circleA.setAttribute('cy', '160');
-          circleA.setAttribute('r', '80');
-          circleB.setAttribute('cx', '250');
-          circleB.setAttribute('cy', '160');
-          circleB.setAttribute('r', '80');
-          break;
-          
-        case 'overlapping':
-          // A overlapping but not subset (partial overlap)
-          circleA.setAttribute('cx', '190');
-          circleA.setAttribute('cy', '160');
-          circleA.setAttribute('r', '100');
-          circleB.setAttribute('cx', '310');
-          circleB.setAttribute('cy', '160');
-          circleB.setAttribute('r', '100');
-          break;
-          
-        case 'disjoint':
-          // A disjoint from B (no overlap)
-          circleA.setAttribute('cx', '150');
-          circleA.setAttribute('cy', '160');
-          circleA.setAttribute('r', '100');
-          circleB.setAttribute('cx', '380');
-          circleB.setAttribute('cy', '160');
-          circleB.setAttribute('r', '100');
-          break;
-      }
-      
-      // Update all highlight circles to match new positions
-      updateAllHighlightPositions();
-    }
+function showHL(opId, stage) {
+    clearHL();
+    if (!opId) return;
+    const map = { A:"hlA", B:"hlB", Ac:"hlAc", Bc:"hlBc", AuB:"hlUnion", AnB:"hlInter", AmB:"hlAmB", BmA:"hlBmA", AsdB:"hlSym", AuBc:"hlAuBc", AnBc:"hlAnBc" };
+    const lbl = { A:"A", B:"B", Ac:"A′", Bc:"B′", AuB:"A ∪ B", AnB:"A ∩ B", AmB:"A \\ B", BmA:"B \\ A", AsdB:"A Δ B", AuBc:"(A ∪ B)′", AnBc:"(A ∩ B)′" };
 
-    function updateAllHighlightPositions() {
-      const circleA = document.querySelector('.baseA');
-      const circleB = document.querySelector('.baseB');
-      
-      if (!circleA || !circleB) return;
-      
-      const aX = circleA.getAttribute('cx');
-      const aY = circleA.getAttribute('cy');
-      const aR = circleA.getAttribute('r');
-      const bX = circleB.getAttribute('cx');
-      const bY = circleB.getAttribute('cy');
-      const bR = circleB.getAttribute('r');
-      
-      // Update all highlight circles to match the new positions
-      document.querySelectorAll('[id^="hl-"] circle').forEach(circle => {
-        const parentId = circle.parentElement.id;
-        if (parentId.includes('A') && !parentId.includes('B')) {
-          circle.setAttribute('cx', aX);
-          circle.setAttribute('cy', aY);
-          circle.setAttribute('r', aR);
-        } else if (parentId.includes('B') && !parentId.includes('A')) {
-          circle.setAttribute('cx', bX);
-          circle.setAttribute('cy', bY);
-          circle.setAttribute('r', bR);
-        } else if (parentId.includes('A') && parentId.includes('B')) {
-          // For combined highlights, update both circles
-          const circles = circle.parentElement.querySelectorAll('circle');
-          if (circles.length >= 2) {
-            circles[0].setAttribute('cx', aX);
-            circles[0].setAttribute('cy', aY);
-            circles[0].setAttribute('r', aR);
-            circles[1].setAttribute('cx', bX);
-            circles[1].setAttribute('cy', bY);
-            circles[1].setAttribute('r', bR);
-          }
-        }
-      });
+    // Handle disjoint intersection specially
+    if (opId === "AnB" && stage.visual === "disjoint") {
+        document.getElementById("emptyBadge").style.display = "block";
+        showLabel("A ∩ B = ∅");
+        return;
     }
+    // Stage 5 position ops: just change layout, no highlight
+    if (["sub","eq","olap","disj"].includes(opId)) return;
 
-    function updateSubsetBadges(position) {
-      const badges = {
-        'subset-proper': document.getElementById('subset-proper'),
-        'subset-equal': document.getElementById('subset-equal'),
-        'subset-not': document.getElementById('subset-not'),
-        'subset-not-equal': document.getElementById('subset-not-equal')
-      };
-      
-      // Reset all badges
-      Object.values(badges).forEach(badge => {
-        if (badge) {
-          badge.style.opacity = '0.3';
-          badge.style.fontWeight = 'normal';
-        }
-      });
-      
-      // Highlight correct badges based on position
-      switch(position) {
-        case 'proper-subset':
-          if (badges['subset-proper']) {
-            badges['subset-proper'].style.opacity = '1';
-            badges['subset-proper'].style.fontWeight = 'bold';
-          }
-          if (badges['subset-equal']) {
-            badges['subset-equal'].style.opacity = '1';
-            badges['subset-equal'].style.fontWeight = 'bold';
-          }
-          break;
-          
-        case 'equal-sets':
-          if (badges['subset-equal']) {
-            badges['subset-equal'].style.opacity = '1';
-            badges['subset-equal'].style.fontWeight = 'bold';
-          }
-          break;
-          
-        case 'overlapping':
-        case 'disjoint':
-          if (badges['subset-not']) {
-            badges['subset-not'].style.opacity = '1';
-            badges['subset-not'].style.fontWeight = 'bold';
-          }
-          if (badges['subset-not-equal']) {
-            badges['subset-not-equal'].style.opacity = '1';
-            badges['subset-not-equal'].style.fontWeight = 'bold';
-          }
-          break;
-      }
-    }
+    const hlId = map[opId];
+    if (hlId) { document.getElementById(hlId).setAttribute("opacity","1"); }
+    if (lbl[opId]) showLabel(lbl[opId]);
+}
 
-    function showDeMorganSpotlight() {
-      const teachingPoint = document.getElementById('teachingPoint');
-      const lang = languageStrings.en;
-      
-      // Cycle through De Morgan's Laws demonstrations
-      let step = 0;
-      const demorganSteps = [
-        {
-          title: "De Morgan's Law 1: (A ∪ B)′ = A′ ∩ B′",
-          description: "First, let's see (A ∪ B)′ - everything outside both A and B",
-          highlight: 'hl-A-union-B-complement'
-        },
-        {
-          title: "Now morphing to A′ ∩ B′",
-          description: "This is the same as A′ ∩ B′ - the intersection of complements",
-          highlight: 'demorgan-union'
-        },
-        {
-          title: "De Morgan's Law 2: (A ∩ B)′ = A′ ∪ B′",
-          description: "Now let's see (A ∩ B)′ - everything outside the intersection",
-          highlight: 'hl-A-intersection-B-complement'
-        },
-        {
-          title: "Now morphing to A′ ∪ B′",
-          description: "This is the same as A′ ∪ B′ - the union of complements",
-          highlight: 'demorgan-intersection'
-        }
-      ];
-      
-      function runStep() {
-        if (step >= demorganSteps.length) {
-          // Reset after showing all steps
-          step = 0;
-          teachingPoint.innerHTML = `<strong>Teaching Point:</strong> ${stages[currentStage].teachingPoint}`;
-          // Clear all highlights
-          document.querySelectorAll('[id^="hl-"], [id^="demorgan-"]').forEach(el => {
-            el.style.opacity = '0';
-            el.style.display = 'none';
-          });
-          return;
-        }
-        
-        const currentStep = demorganSteps[step];
-        teachingPoint.innerHTML = `<strong>${currentStep.title}:</strong> ${currentStep.description}`;
-        
-        // Clear previous highlights
-        document.querySelectorAll('[id^="hl-"], [id^="demorgan-"]').forEach(el => {
-          el.style.opacity = '0';
-          el.style.display = 'none';
-        });
-        
-        // Show current highlight
-        const highlightEl = document.getElementById(currentStep.highlight);
-        if (highlightEl) {
-          highlightEl.style.display = 'block';
-          highlightEl.style.opacity = '1';
-        }
-        
-        step++;
-        setTimeout(runStep, 3000); // 3 seconds per step
-      }
-      
-      runStep();
-    }
+function showLabel(text) {
+    const el = document.getElementById("shadingLbl");
+    el.textContent = text;
+    el.style.display = "block";
+}
 
-    function showMiniTaskHint(operation) {
-      const teachingPoint = document.getElementById('teachingPoint');
-      const lang = languageStrings.en;
-      let hint = '';
-      
-      switch(operation) {
-        case 'A-intersection-B':
-          hint = lang.ui.miniTaskHint;
-          break;
-        case 'A-union-B':
-          hint = '<strong>Mini Task:</strong> Shade A ∪ B. <em>Hint: This includes both circles - everything in A or B (or both)!</em>';
-          break;
-        case 'A-complement':
-          hint = '<strong>Teaching Point:</strong> A′ is everything outside A. Notice how it includes the part of B that doesn\'t overlap with A.';
-          break;
-        case 'B-complement':
-          hint = '<strong>Teaching Point:</strong> B′ is everything outside B. Notice how it includes the part of A that doesn\'t overlap with B.';
-          break;
-        case 'A':
-          hint = '<strong>Teaching Point:</strong> Set A includes the entire left circle, including the overlapping part.';
-          break;
-        case 'B':
-          hint = '<strong>Teaching Point:</strong> Set B includes the entire right circle, including the overlapping part.';
-          break;
-        default:
-          hint = '<strong>Teaching Point:</strong> A ∪ B (union) = in A or B (or both). A ∩ B (intersection) = overlap only. Show both complements to contrast.';
-      }
-      
-      teachingPoint.innerHTML = hint;
-    }
-
-    function showEmptySetMessage() {
-      const teachingPoint = document.getElementById('teachingPoint');
-      const lang = languageStrings.en;
-      const emptyMessage = lang.ui.emptySetMessage;
-      teachingPoint.innerHTML = emptyMessage;
-      
-      // Add a visual indicator in the symbol display
-      const symbolDisplay = document.getElementById('symbolDisplay');
-      symbolDisplay.innerHTML = 'A ∩ B = <span style="color: #ef4444; font-weight: bold;">∅</span>';
-    }
-
-    function updateVennDiagram() {
-      // Reset all highlights
-      document.querySelectorAll('[id^="hl-"]').forEach(el => {
-        el.setAttribute('opacity', '0');
-      });
-      
-      // Show/hide circles based on stage
-      const circleA = document.querySelector('.baseA');
-      const circleB = document.querySelector('.baseB');
-      const textA = document.querySelector('#labelA');
-      const textB = document.querySelector('#labelB');
-      const placeholderA = document.querySelector('#placeholderA');
-      const placeholderB = document.querySelector('#placeholderB');
-      const emptySetIndicator = document.querySelector('.empty-set-indicator');
-      
-      if (setRelationship === 'none') {
-        // Orientation stage - show only universe box, no placeholders or labels
-        if (circleA) circleA.style.display = 'none';
-        if (circleB) circleB.style.display = 'none';
-        if (textA) textA.style.display = 'none';
-        if (textB) textB.style.display = 'none';
-        if (placeholderA) placeholderA.style.display = 'none';
-        if (placeholderB) placeholderB.style.display = 'none';
-        if (emptySetIndicator) emptySetIndicator.style.display = 'none';
-      } else if (setRelationship === 'single') {
-        // Single set mode
-        if (circleA) circleA.style.display = 'block';
-        if (circleB) circleB.style.display = 'none';
-        if (textA) textA.style.display = 'block';
-        if (textB) textB.style.display = 'none';
-        if (placeholderA) placeholderA.style.display = 'none';
-        if (placeholderB) placeholderB.style.display = 'none';
-        if (emptySetIndicator) emptySetIndicator.style.display = 'none';
-      } else {
-        // Two set mode
-        if (circleA) circleA.style.display = 'block';
-        if (circleB) circleB.style.display = 'block';
-        if (textA) textA.style.display = 'block';
-        if (textB) textB.style.display = 'block';
-        if (placeholderA) placeholderA.style.display = 'none';
-        if (placeholderB) placeholderB.style.display = 'none';
-        
-        // Hide empty set indicator by default
-        if (emptySetIndicator) {
-          emptySetIndicator.style.display = 'none';
-        }
-        
-        // Adjust circle positions based on relationship
-        if (setRelationship === 'overlapping') {
-          // Circles slightly overlapping - keep original positions
-          circleA.setAttribute('cx', '190');
-          circleB.setAttribute('cx', '310');
-        } else if (setRelationship === 'mutually-exclusive') {
-          // Circles separated with no overlap - within universe box
-          circleA.setAttribute('cx', '150');
-          circleB.setAttribute('cx', '380');
-          console.log('Stage 3: Moved circle A to x=150, circle B to x=380 for mutually exclusive sets');
-        }
-        
-        // Update the intersection circle to match the new circle B position
-        const intersectionCircle = document.querySelector('#hl-A-intersection-B circle');
-        if (intersectionCircle) {
-          intersectionCircle.setAttribute('cx', circleB.getAttribute('cx'));
-        }
-        
-        // Update the A highlight circle to match the new circle A position
-        const aHighlightCircle = document.querySelector('#hl-A circle');
-        if (aHighlightCircle) {
-          aHighlightCircle.setAttribute('cx', circleA.getAttribute('cx'));
-        }
-        
-        // Update the A complement mask to match the new circle A position
-        const maskACircle = document.querySelector('#maskAComplement use');
-        if (maskACircle) {
-          maskACircle.setAttribute('href', '#circleA');
-        }
-        
-        // Update the B highlight circle to match the new circle B position
-        const bHighlightCircle = document.querySelector('#hl-B circle');
-        if (bHighlightCircle) {
-          bHighlightCircle.setAttribute('cx', circleB.getAttribute('cx'));
-        }
-        
-        // Update the B complement mask to match the new circle B position
-        const maskBCircle = document.querySelector('#maskBComplement use');
-        if (maskBCircle) {
-          maskBCircle.setAttribute('href', '#circleB');
-        }
-        
-        // Update union highlighting circles to match the new positions
-        const unionCircles = document.querySelectorAll('#hl-A-union-B circle');
-        unionCircles.forEach((circle, index) => {
-          if (index === 0) {
-            // Circle A - match the dynamic position
-            circle.setAttribute('cx', circleA.getAttribute('cx'));
-          } else if (index === 1) {
-            // Circle B - match the dynamic position
-            circle.setAttribute('cx', circleB.getAttribute('cx'));
-          }
-        });
-        
-        // Update A-minus-B highlight circle to match the new positions
-        const aMinusBCircle = document.querySelector('#hl-A-minus-B circle');
-        if (aMinusBCircle) {
-          aMinusBCircle.setAttribute('cx', circleA.getAttribute('cx'));
-        }
-        
-        // Update B-minus-A highlight circle to match the new positions
-        const bMinusACircle = document.querySelector('#hl-B-minus-A circle');
-        if (bMinusACircle) {
-          bMinusACircle.setAttribute('cx', circleB.getAttribute('cx'));
-        }
-        
-        // Update symmetric difference highlight circles to match the new positions
-        const symDiffCircles = document.querySelectorAll('#hl-A-symmetric-difference-B circle');
-        symDiffCircles.forEach((circle, index) => {
-          if (index === 0) {
-            // Circle A - match the dynamic position
-            circle.setAttribute('cx', circleA.getAttribute('cx'));
-          } else if (index === 1) {
-            // Circle B - match the dynamic position
-            circle.setAttribute('cx', circleB.getAttribute('cx'));
-          }
-        });
-      }
-      
-      // Apply highlighting based on current operation
-      if (currentOperation) {
-        let highlightId = `hl-${currentOperation}`;
-        
-        // Special handling for union when sets are independent
-        if (currentOperation === 'A-union-B' && setRelationship === 'independent') {
-          highlightId = 'hl-A-union-B-independent';
-        }
-        
-        // Special handling for intersection when sets are mutually exclusive
-        if (currentOperation === 'A-intersection-B' && setRelationship === 'mutually-exclusive') {
-          // Don't highlight anything - show empty set message instead
-          return;
-        }
-        
-        // Special handling for De Morgan spotlight
-        if (currentOperation === 'demorgan-spotlight') {
-          // Don't highlight anything - showDeMorganSpotlight handles this
-          return;
-        }
-        
-        const highlightEl = document.getElementById(highlightId);
-        if (highlightEl) {
-          highlightEl.setAttribute('opacity', '1');
-        }
-      }
-    }
-
-    // Event listeners
-    document.getElementById('prevStageBtn').addEventListener('click', () => {
-      if (currentStage > 0) {
-        currentStage--;
-        currentOperation = null;
-        updateStage();
-      }
+// ===== RENDER =====
+function renderStageList() {
+    const list = document.getElementById("stageList");
+    list.innerHTML = "";
+    stages.forEach((s, i) => {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.type = "button";
+        const isActive = i === curStage;
+        btn.className = `stage-item w-full rounded-2xl border px-4 py-3 text-left ${isActive ? "stage-item-active" : "stage-item-inactive"}`;
+        btn.innerHTML = `<div class="mb-1 flex items-center gap-3"><span class="stage-num inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold">${i}</span><span class="stage-title-text text-sm font-semibold">${s.title}</span></div><p class="stage-desc-text text-xs leading-6">${s.description}</p>`;
+        btn.addEventListener("click", () => { curStage = i; curOp = null; render(); });
+        li.appendChild(btn);
+        list.appendChild(li);
     });
+}
 
-    document.getElementById('nextStageBtn').addEventListener('click', () => {
-      if (currentStage < 6) {
-        currentStage++;
-        currentOperation = null;
-        updateStage();
-      }
+function renderChoices(stage) {
+    const row = document.getElementById("choiceRow");
+    row.innerHTML = "";
+    stage.ops.forEach(op => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `choice-btn rounded-2xl border px-4 py-3 text-sm font-semibold ${op.id === curOp ? "choice-active" : "choice-inactive"}`;
+        btn.textContent = op.label;
+        btn.addEventListener("click", () => { curOp = op.id; render(); });
+        row.appendChild(btn);
     });
+}
 
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      currentOperation = null;
-      
-      // Clear all highlights including De Morgan animations
-      document.querySelectorAll('[id^="hl-"], [id^="demorgan-"]').forEach(el => {
-        el.style.opacity = '0';
-        el.style.display = 'none';
-      });
-      
-      // Reset teaching point to stage default
-      const stage = stages[currentStage];
-      const lang = languageStrings.en;
-      const stageLang = lang.stages[currentStage];
-      document.getElementById('teachingPoint').innerHTML = `<strong>Teaching Point:</strong> ${stageLang.teachingPoint}`;
-      
-      updateStage();
-    });
-    
-    // Teaching Mode and Guided Tour Event Listeners
-    document.getElementById('teachingModeBtn').addEventListener('click', toggleTeachingMode);
-    document.getElementById('guidedTourBtn').addEventListener('click', startGuidedTour);
-    
-    // Guided Tour Navigation
-    document.getElementById('tourNext').addEventListener('click', nextTourStep);
-    document.getElementById('tourNext2').addEventListener('click', nextTourStep);
-    document.getElementById('tourPrev').addEventListener('click', prevTourStep);
-    document.getElementById('tourPrev2').addEventListener('click', prevTourStep);
-    document.getElementById('tourComplete').addEventListener('click', completeTour);
-    document.getElementById('tourSkip').addEventListener('click', skipTour);
+function render() {
+    const stage = stages[curStage];
+    const op = stage.ops.find(o => o.id === curOp) || null;
 
+    renderStageList();
+    renderChoices(stage);
 
-    // Responsive SVG handling
-    function adjustSVGSize() {
-      const vennContainer = document.querySelector('.venn-container');
-      const svg = document.getElementById('venn');
-      
-      if (vennContainer && svg) {
-        const containerWidth = vennContainer.clientWidth;
-        const containerHeight = vennContainer.clientHeight;
-        
-        // Calculate appropriate size while maintaining aspect ratio
-        const aspectRatio = 560 / 420; // viewBox aspect ratio
-        let newWidth = Math.min(containerWidth - 20, 500);
-        let newHeight = newWidth / aspectRatio;
-        
-        // Ensure minimum height
-        if (newHeight < 200) {
-          newHeight = 200;
-          newWidth = newHeight * aspectRatio;
-        }
-        
-        svg.style.width = newWidth + 'px';
-        svg.style.height = newHeight + 'px';
-      }
+    document.getElementById("stageEyebrow").textContent = stage.stage;
+    document.getElementById("conceptTitle").textContent = stage.title;
+    document.getElementById("conceptDescription").textContent = stage.description;
+    document.getElementById("teachingNote").textContent = stage.note;
+
+    if (op) {
+        document.getElementById("statusText").textContent = op.desc;
+        document.getElementById("statusExpl").textContent = op.expl;
+        document.getElementById("symbolText").textContent = op.sym;
+    } else {
+        document.getElementById("statusText").textContent = "Select an operation to see the shaded region.";
+        document.getElementById("statusExpl").textContent = "Click the buttons above to visualize different set operations.";
+        document.getElementById("symbolText").textContent = "U";
     }
 
-    // Sidebar navigation
-    function updateSidebar() {
-      const lang = languageStrings.en;
-      
-      document.querySelectorAll('.stage-btn').forEach((btn, index) => {
-        const isActive = index === currentStage;
-        btn.setAttribute('aria-selected', isActive);
-        btn.classList.toggle('active', isActive);
-        
-        // Update button text with translated stage names
-        const stageLang = lang.stages[index];
-        if (stageLang) {
-          btn.textContent = stageLang.title;
-        }
-      });
-    }
+    // Determine visual layout
+    let visualKey = stage.visual;
+    if (stage.id === 5 && op && op.vl) visualKey = op.vl;
+    const layout = layouts[visualKey] || layouts.none;
 
-    // Add event listeners for sidebar navigation
-    document.querySelectorAll('.stage-btn').forEach((btn, index) => {
-      btn.addEventListener('click', () => {
-        currentStage = index;
-        currentOperation = null;
-        updateStage();
-        updateSidebar();
-      });
-    });
+    updateSvgPositions(layout);
+    showHL(curOp, stage);
+}
 
-    // Initialize - English only
-
-    // API-based statistics tracking
-    const API_BASE = window.location.origin + '/api';
-    
-    // Get stats from server
-    async function fetchStats() {
-      try {
-        const response = await fetch(`${API_BASE}/stats`);
-        if (!response.ok) throw new Error('Failed to fetch stats');
-        return await response.json();
-      } catch (error) {
-        console.error('Failed to fetch stats:', error);
-        // Fallback to localStorage if API fails
-        return getLocalStats();
-      }
-    }
-    
-    // Update stats on server
-    async function updateStats() {
-      try {
-        const response = await fetch(`${API_BASE}/stats`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
-        });
-        if (!response.ok) throw new Error('Failed to update stats');
-        return await response.json();
-      } catch (error) {
-        console.error('Failed to update stats:', error);
-        // Fallback to localStorage
-        return updateLocalStats();
-      }
-    }
-    
-    // Fallback functions (localStorage implementation)
-    function getLocalStats() {
-      const stats = JSON.parse(localStorage.getItem('setvizStats') || '{}');
-      if (!stats.uniqueUsers) {
-        stats.uniqueUsers = Math.floor(Math.random() * 50) + 15;
-      }
-      if (!stats.totalPageViews) {
-        stats.totalPageViews = Math.floor(Math.random() * 100) + 30;
-      }
-      if (!stats.firstVisit) {
-        stats.firstVisit = new Date().toISOString().split('T')[0];
-      }
-      return stats;
-    }
-    
-    function updateLocalStats() {
-      const stats = getLocalStats();
-      stats.totalPageViews += 1;
-      stats.lastVisit = new Date().toISOString().split('T')[0];
-      localStorage.setItem('setvizStats', JSON.stringify(stats));
-      return stats;
-    }
-    
-    async function updateUserCount() {
-      const userCountElement = document.getElementById('userCount');
-      if (!userCountElement) return;
-      
-      try {
-        // Try to get fresh data from server
-        const stats = await updateStats();
-        userCountElement.textContent = stats.uniqueUsers.toLocaleString();
-      } catch (error) {
-        // Fallback to localStorage
-        const stats = updateLocalStats();
-        userCountElement.textContent = stats.uniqueUsers.toLocaleString();
-      }
-      
-      // Add animation
-      userCountElement.style.transform = 'scale(1.1)';
-      setTimeout(() => {
-        userCountElement.style.transform = 'scale(1)';
-      }, 200);
-    }
-    
-    async function showStatsModal() {
-      const modal = document.getElementById('statsModal');
-      
-      try {
-        // Get fresh data from server
-        const stats = await fetchStats();
-        
-        document.getElementById('uniqueUsers').textContent = stats.uniqueUsers || 0;
-        document.getElementById('totalPageViews').textContent = stats.totalPageViews || 0;
-        document.getElementById('firstVisit').textContent = stats.firstVisit || '-';
-        document.getElementById('lastVisit').textContent = stats.lastVisit || '-';
-      } catch (error) {
-        // Fallback to localStorage
-        const stats = getLocalStats();
-        document.getElementById('uniqueUsers').textContent = stats.uniqueUsers || 0;
-        document.getElementById('totalPageViews').textContent = stats.totalPageViews || 0;
-        document.getElementById('firstVisit').textContent = stats.firstVisit || '-';
-        document.getElementById('lastVisit').textContent = stats.lastVisit || '-';
-      }
-      
-      modal.style.display = 'flex';
-    }
-    
-    function hideStatsModal() {
-      const modal = document.getElementById('statsModal');
-      modal.style.display = 'none';
-    }
-    
-    // Initialize
-    updateStage();
-    updateSidebar();
-    updateUserCount();
-    
-    // Add event listeners for statistics modal
-    document.getElementById('userCountBtn').addEventListener('click', showStatsModal);
-    document.getElementById('statsCloseBtn').addEventListener('click', hideStatsModal);
-    document.getElementById('statsModal').addEventListener('click', (e) => {
-      if (e.target.id === 'statsModal') {
-        hideStatsModal();
-      }
-    });
-    
-    // Update user count periodically (every 30 seconds)
-    setInterval(updateUserCount, 30000);
-    
-    // Adjust SVG size on load and resize
-    window.addEventListener('load', adjustSVGSize);
-    window.addEventListener('resize', adjustSVGSize);
-  </script>
+// ===== INIT =====
+applyTheme();
+render();
+</script>
 </body>
 </html>

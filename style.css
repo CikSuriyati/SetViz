@@ -1,20 +1,28 @@
 /* SetViz — style.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 :root{
-  --ink:#1a202c; --muted:#718096; --card:#ffffff; --line:#e2e8f0; --blue:#2d7dd2;
-  --blue2:#90cdf4; --orange:#fb923c; --bg:#f8fafc; --shadow:0 2px 8px rgba(0,0,0,.05);
+  --ink:#1a202c; --muted:#6b7280; --card:#ffffff; --line:#e5e7eb; --blue:#5F27CD;
+  --blue2:#a78bfa; --orange:#fb923c; --bg:#faf5ff; --shadow:0 2px 8px rgba(0,0,0,.05);
   --green:#10b981; --red:#ef4444; --purple:#8b5cf6; --pink:#ec4899;
-  --teal:#319795; --cyan:#00b5d8; --indigo:#4c51bf;
-  --gradient: linear-gradient(135deg, var(--teal), var(--blue));
-  --gradient-alt: linear-gradient(135deg, var(--green), var(--teal));
+  --teal:#FF6B6B; --cyan:#a855f7; --indigo:#5F27CD;
+  --gradient: linear-gradient(135deg, #FF6B6B, #5F27CD);
+  --gradient-alt: linear-gradient(135deg, #FECA57, #FF6B6B);
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 *{ box-sizing:border-box }
 body{ 
   margin:0; 
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; 
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; 
   color:var(--ink); 
-  background: linear-gradient(135deg, #319795 0%, #2d7dd2 25%, #0ea5e9 50%, #06b6d4 75%, #14b8a6 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #ffd93d 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
   min-height: 100vh;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 .topbar{ 
   display:flex; 
@@ -396,37 +404,37 @@ body{
 /* Stage 2 overlapping emphasis */
 .stage-2-overlapping .baseA {
   stroke-width: 3;
-  stroke: #319795;
+  stroke: #FF6B6B;
 }
 
 .stage-2-overlapping .baseB {
   stroke-width: 3;
-  stroke: #2d7dd2;
+  stroke: #5F27CD;
 }
 
 /* Stage 3 mutually exclusive emphasis */
 .stage-3-mutually-exclusive .baseA {
   stroke-width: 3;
-  stroke: #319795;
+  stroke: #FF6B6B;
   stroke-dasharray: 5 5;
 }
 
 .stage-3-mutually-exclusive .baseB {
   stroke-width: 3;
-  stroke: #2d7dd2;
+  stroke: #5F27CD;
   stroke-dasharray: 5 5;
 }
 
 /* Venn base and highlight colors */
-.baseA{ fill:#f0fdfa; stroke:#319795; stroke-width:2; transition: var(--transition) }
-.baseB{ fill:#f0f9ff; stroke:#2d7dd2; stroke-width:2; transition: var(--transition) }
+.baseA{ fill:#fff1f2; stroke:#FF6B6B; stroke-width:2; transition: var(--transition) }
+.baseB{ fill:#f5f3ff; stroke:#5F27CD; stroke-width:2; transition: var(--transition) }
 
 /* Enhanced intersection visibility */
 .hlAB{ 
-  fill:#a7f3d0; 
+  fill:#FECA57; 
   opacity:.9; 
   transition: opacity 0.3s ease;
-  stroke: #319795;
+  stroke: #f59e0b;
   stroke-width: 3;
   stroke-dasharray: 4 2;
 }
@@ -441,30 +449,30 @@ body{
   animation: pulse 2s ease-in-out infinite;
 }
 
-/* Red intersection highlighting for better visibility */
+/* Golden intersection highlighting for better visibility */
 .hlIntersection{
-  fill: #ef4444;
-  opacity: 0.8;
-  stroke: #dc2626;
+  fill: #FECA57;
+  opacity: 0.85;
+  stroke: #f59e0b;
   stroke-width: 2;
   stroke-dasharray: 3 3;
   pointer-events: none;
 }
 
-/* Set difference highlighting - Enhanced colors for better distinction */
+/* Set difference highlighting - Vibrant colors for better distinction */
 .hlA{
-  fill: #319795;
-  opacity: 0.9;
-  stroke: #0f766e;
+  fill: #FF6B6B;
+  opacity: 0.75;
+  stroke: #e74c3c;
   stroke-width: 3;
   stroke-dasharray: 4 2;
   pointer-events: none;
 }
 
 .hlB{
-  fill: #2d7dd2;
-  opacity: 0.9;
-  stroke: #1e40af;
+  fill: #5F27CD;
+  opacity: 0.75;
+  stroke: #341f97;
   stroke-width: 3;
   stroke-dasharray: 4 2;
   pointer-events: none;
@@ -486,10 +494,10 @@ body{
 }
 
 .position-btn.active {
-  background: linear-gradient(135deg, var(--teal), var(--blue));
-  border-color: var(--teal);
+  background: linear-gradient(135deg, #FF6B6B, #5F27CD);
+  border-color: #FF6B6B;
   color: white;
-  box-shadow: 0 4px 12px rgba(49, 151, 149, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
 }
 
 /* De Morgan spotlight button for Stage 6 */
@@ -525,24 +533,24 @@ body{
 
 /* Enhanced symmetric difference styling */
 #hl-A-symmetric-difference-B circle:first-child {
-  fill: #3b82f6;
-  opacity: 0.9;
-  stroke: #1d4ed8;
+  fill: #FF6B6B;
+  opacity: 0.8;
+  stroke: #e74c3c;
   stroke-width: 3;
   stroke-dasharray: 4 2;
 }
 
 #hl-A-symmetric-difference-B circle:last-child {
-  fill: #f59e0b;
-  opacity: 0.9;
-  stroke: #d97706;
+  fill: #5F27CD;
+  opacity: 0.8;
+  stroke: #341f97;
   stroke-width: 3;
   stroke-dasharray: 4 2;
 }
 
-.hlAonly{ fill:#a7f3d0; opacity:.7; transition: opacity 0.3s ease }
-.hlBonly{ fill:#bfdbfe; opacity:.7; transition: opacity 0.3s ease }
-.hlComp{ fill:#d1d5db; opacity:.7; transition: opacity 0.3s ease }
+.hlAonly{ fill:#fecaca; opacity:.7; transition: opacity 0.3s ease }
+.hlBonly{ fill:#ddd6fe; opacity:.7; transition: opacity 0.3s ease }
+.hlComp{ fill:#c8d6e5; opacity:.7; transition: opacity 0.3s ease }
 
 /* Element animations */
 .element-chip{ 
@@ -626,14 +634,14 @@ body{
 
 /* Mutually exclusive sets styling */
 .venn-mutually-exclusive .baseA{ 
-  fill:#f0fdfa; 
-  stroke:#319795; 
+  fill:#fff1f2; 
+  stroke:#FF6B6B; 
   stroke-width:3; 
   stroke-dasharray: 5 5;
 }
 .venn-mutually-exclusive .baseB{ 
-  fill:#f0f9ff; 
-  stroke:#2d7dd2;
+  fill:#f5f3ff; 
+  stroke:#5F27CD;
   stroke-width:3; 
   stroke-dasharray: 5 5;
 }

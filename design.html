@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="en" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SetViz – Basic Concepts</title>
+    <script src="/_sdk/element_sdk.js"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&amp;family=Manrope:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet">
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Manrope", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(232, 196, 104, 0.16), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(90, 138, 198, 0.18), transparent 30%),
+                linear-gradient(135deg, #0f172a 0%, #111827 45%, #1f2937 100%);
+            color: #e5eef9;
+        }
+
+        .glass-panel {
+            background: rgba(22, 29, 45, 0.72);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+        }
+
+        .stage-item {
+            transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+        }
+
+        .stage-item:hover,
+        .stage-item:focus-visible {
+            transform: translateX(3px);
+            outline: none;
+        }
+
+        .choice-btn {
+            transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+        }
+
+        .choice-btn:hover,
+        .choice-btn:focus-visible {
+            transform: translateY(-1px);
+            outline: none;
+        }
+
+        .set-shape {
+            transition: all 450ms cubic-bezier(.2, .8, .2, 1);
+            position: absolute;
+            border-radius: 9999px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 14px 16px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            box-sizing: border-box;
+        }
+
+        .set-label {
+            font-family: "Fraunces", serif;
+            font-size: 22px;
+            line-height: 1;
+            text-shadow: 0 1px 10px rgba(0, 0, 0, 0.18);
+        }
+
+        .fade-up {
+            animation: fadeUp 500ms ease both;
+        }
+
+        .fade-up-delay {
+            animation: fadeUp 650ms ease both;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dot-pulse {
+            animation: pulseSoft 1400ms ease-in-out infinite;
+        }
+
+        @keyframes pulseSoft {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.95;
+            }
+
+            50% {
+                transform: scale(1.08);
+                opacity: 1;
+            }
+        }
+
+        .universe-grid {
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .legend-chip {
+            transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+        }
+    </style>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+    </style>
+    <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+</head>
+
+<body class="h-full">
+    <div id="app" class="h-full w-full overflow-auto">
+        <div class="w-full h-full p-4 md:p-6">
+            <div class="mx-auto flex h-full w-full max-w-7xl flex-col gap-4 lg:flex-row">
+                <aside class="glass-panel fade-up w-full rounded-[28px] p-4 md:p-5 lg:w-[290px] lg:shrink-0"
+                    aria-label="Learning stages">
+                    <div class="mb-5">
+                        <p class="mb-2 text-xs font-semibold uppercase tracking-[0.26em] text-amber-300/80">SetViz path
+                        </p>
+                        <h1 id="appTitle" class="text-2xl font-semibold text-white"
+                            style="font-family: 'Fraunces', serif;">SetViz – Basic Concepts</h1>
+                        <p id="appSubtitle" class="mt-2 text-sm leading-6 text-slate-300">Explore how sets relate to
+                            each other visually.</p>
+                    </div>
+                    <nav aria-label="Topic steps">
+                        <ol id="stageList" class="space-y-2"></ol>
+                    </nav>
+                </aside>
+                <main class="glass-panel fade-up-delay flex w-full flex-1 flex-col rounded-[28px] p-4 md:p-6"
+                    aria-label="Main learning panel">
+                    <header class="mb-5">
+                        <div class="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+                            <div>
+                                <p id="stageEyebrow"
+                                    class="mb-2 text-xs font-semibold uppercase tracking-[0.26em] text-amber-300/80">
+                                    Stage 1</p>
+                                <h2 id="conceptTitle" class="text-3xl font-semibold text-white md:text-4xl"
+                                    style="font-family: 'Fraunces', serif;">Orientation</h2>
+                                <p id="conceptDescription"
+                                    class="mt-3 max-w-3xl text-sm leading-7 text-slate-300 md:text-base">Start by seeing
+                                    sets as groups inside one larger space called the universal set.</p>
+                            </div>
+                            <div class="flex flex-wrap gap-2" aria-label="Quick logic indicators"><span id="chipSubset"
+                                    class="legend-chip rounded-full border px-3 py-2 text-xs font-semibold tracking-wide text-slate-200">Subset</span>
+                                <span id="chipEqual"
+                                    class="legend-chip rounded-full border px-3 py-2 text-xs font-semibold tracking-wide text-slate-200">Equal</span>
+                                <span id="chipDisjoint"
+                                    class="legend-chip rounded-full border px-3 py-2 text-xs font-semibold tracking-wide text-slate-200">Disjoint</span>
+                            </div>
+                        </div>
+                    </header>
+                    <section class="mb-4" aria-labelledby="relationshipHeading">
+                        <h3 id="relationshipHeading"
+                            class="mb-3 text-sm font-semibold uppercase tracking-[0.22em] text-slate-400">Choose a
+                            relationship</h3>
+                        <div id="choiceRow" class="flex flex-wrap gap-2"></div>
+                    </section>
+                    <section class="mb-4 rounded-3xl border border-white/10 bg-white/5 p-4"
+                        aria-labelledby="teachingNoteHeading">
+                        <div class="flex items-start gap-3">
+                            <div class="mt-1 rounded-full bg-amber-300/20 p-2 text-amber-200"><i data-lucide="lightbulb"
+                                    style="width:18px;height:18px;"></i>
+                            </div>
+                            <div>
+                                <h3 id="teachingNoteHeading"
+                                    class="text-sm font-semibold uppercase tracking-[0.2em] text-amber-200">Teaching
+                                    note</h3>
+                                <p id="teachingNote" class="mt-2 text-sm leading-7 text-slate-200">A universal set is
+                                    the big container, and sets A and B sit inside it.</p>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="flex-1" aria-labelledby="visualizationHeading">
+                        <div class="mb-3 flex items-center justify-between gap-3">
+                            <h3 id="visualizationHeading"
+                                class="text-sm font-semibold uppercase tracking-[0.22em] text-slate-400">Visualization
+                                canvas</h3>
+                            <div class="text-xs text-slate-400">
+                                Universal set U
+                            </div>
+                        </div>
+                        <div class="relative rounded-[30px] border border-white/10 bg-slate-950/45 p-3 md:p-4">
+                            <div id="universeBox"
+                                class="universe-grid relative mx-auto h-[420px] w-full overflow-hidden rounded-[24px] border border-dashed border-white/10 bg-slate-900/50">
+                                <div
+                                    class="absolute left-4 top-3 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+                                    U
+                                </div>
+                                <div id="setA" class="set-shape border-2"><span class="set-label">A</span>
+                                </div>
+                                <div id="setB" class="set-shape border-2"><span class="set-label">B</span>
+                                </div>
+                                <div id="singleSetA" class="set-shape border-2 hidden"><span class="set-label">A</span>
+                                </div>
+                                <div id="singleSetB" class="set-shape border-2 hidden"><span class="set-label">B</span>
+                                </div>
+                                <div id="equalBadge"
+                                    class="absolute hidden rounded-full border px-4 py-2 text-sm font-semibold backdrop-blur-sm">
+                                    A = B
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="mt-4 grid gap-3 md:grid-cols-[1.3fr_0.7fr]" aria-labelledby="statusHeading">
+                        <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
+                            <h3 id="statusHeading"
+                                class="text-sm font-semibold uppercase tracking-[0.22em] text-slate-400">Current
+                                relationship</h3>
+                            <div class="mt-3 flex items-center gap-3"><span id="statusDot"
+                                    class="dot-pulse inline-flex h-3 w-3 rounded-full"></span>
+                                <p id="statusText" class="text-lg font-semibold text-white">A and B are being introduced
+                                    inside the universal set.</p>
+                            </div>
+                            <p id="statusExplanation" class="mt-2 text-sm leading-7 text-slate-300">This view helps you
+                                locate the sets before comparing them.</p>
+                        </div>
+                        <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
+                            <h3 id="logicHeading"
+                                class="text-sm font-semibold uppercase tracking-[0.22em] text-slate-400">Logic check
+                            </h3>
+                            <div class="mt-3 space-y-2">
+                                <div class="flex items-center justify-between rounded-2xl bg-black/20 px-3 py-2"><span
+                                        class="text-sm text-slate-300">A ⊂ B</span> <span id="logicSubset"
+                                        class="rounded-full px-2.5 py-1 text-xs font-semibold">No</span>
+                                </div>
+                                <div class="flex items-center justify-between rounded-2xl bg-black/20 px-3 py-2"><span
+                                        class="text-sm text-slate-300">A = B</span> <span id="logicEqual"
+                                        class="rounded-full px-2.5 py-1 text-xs font-semibold">No</span>
+                                </div>
+                                <div class="flex items-center justify-between rounded-2xl bg-black/20 px-3 py-2"><span
+                                        class="text-sm text-slate-300">A ∩ B = ∅</span> <span id="logicDisjoint"
+                                        class="rounded-full px-2.5 py-1 text-xs font-semibold">No</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </div>
+    </div>
+    <script>
+        const defaultConfig = {
+            background_color: "#0f172a",
+            surface_color: "#162033",
+            text_color: "#e5eef9",
+            primary_action_color: "#e8c468",
+            secondary_action_color: "#7cc6ff",
+            font_family: "Fraunces",
+            font_size: 16,
+            app_title: "SetViz – Basic Concepts",
+            app_subtitle: "Explore how sets relate to each other visually.",
+            note_prefix: "Teaching note",
+            status_prefix: "Current relationship"
+        };
+
+        const stages = [
+            {
+                id: "orientation",
+                stage: "Stage 1",
+                title: "Orientation",
+                description: "Start by seeing sets as groups inside one larger space called the universal set.",
+                note: "A universal set is the big container, and sets A and B sit inside it.",
+                defaultChoice: "separate",
+                choices: [
+                    {
+                        id: "separate",
+                        label: "A and B",
+                        relationship: "Sets A and B are shown as separate examples inside U.",
+                        explanation: "This is a starting view. You can identify each set before studying how they compare.",
+                        flags: { subset: false, equal: false, disjoint: false },
+                        visual: "separate"
+                    }
+                ]
+            },
+            {
+                id: "single-set",
+                stage: "Stage 2",
+                title: "Single Sets",
+                description: "Look at one set at a time to understand that a set is simply a collection of elements.",
+                note: "A set can be viewed on its own before it is compared with another set.",
+                defaultChoice: "show-a",
+                choices: [
+                    {
+                        id: "show-a",
+                        label: "A",
+                        relationship: "You are viewing set A by itself.",
+                        explanation: "This highlights one set clearly. It helps learners focus on the idea of membership.",
+                        flags: { subset: false, equal: false, disjoint: false },
+                        visual: "singleA"
+                    },
+                    {
+                        id: "show-b",
+                        label: "B",
+                        relationship: "You are viewing set B by itself.",
+                        explanation: "Viewing B alone reinforces that each set can be described independently.",
+                        flags: { subset: false, equal: false, disjoint: false },
+                        visual: "singleB"
+                    }
+                ]
+            },
+            {
+                id: "overlap",
+                stage: "Stage 3",
+                title: "Intersection and Overlap",
+                description: "Two sets can share some elements. When that happens, their regions overlap.",
+                note: "The overlapping part represents elements that belong to both A and B.",
+                defaultChoice: "overlap",
+                choices: [
+                    {
+                        id: "overlap",
+                        label: "Overlap",
+                        relationship: "A and B overlap, so they share at least one common element.",
+                        explanation: "This means the intersection is not empty, but neither set has to fully contain the other.",
+                        flags: { subset: false, equal: false, disjoint: false },
+                        visual: "overlap"
+                    },
+                    {
+                        id: "disjoint",
+                        label: "Disjoint",
+                        relationship: "A and B are disjoint, so they do not share any elements.",
+                        explanation: "Disjoint sets have no intersection. Their circles stay apart inside the universal set.",
+                        flags: { subset: false, equal: false, disjoint: true },
+                        visual: "disjoint"
+                    }
+                ]
+            },
+            {
+                id: "subset",
+                stage: "Stage 4",
+                title: "Subset",
+                description: "A subset means every element of A is also inside B.",
+                note: "If all of A fits completely inside B, then A is a subset of B.",
+                defaultChoice: "subset",
+                choices: [
+                    {
+                        id: "subset",
+                        label: "A ⊂ B",
+                        relationship: "A is a subset of B.",
+                        explanation: "Everything in A is included in B, so A fits inside B.",
+                        flags: { subset: true, equal: false, disjoint: false },
+                        visual: "subset"
+                    },
+                    {
+                        id: "not-subset",
+                        label: "Not subset",
+                        relationship: "A is not a subset of B.",
+                        explanation: "At least one part of A lies outside B, so the subset rule fails.",
+                        flags: { subset: false, equal: false, disjoint: false },
+                        visual: "notSubset"
+                    }
+                ]
+            },
+            {
+                id: "equal",
+                stage: "Stage 5",
+                title: "Equality of Sets",
+                description: "Two sets are equal when they contain exactly the same elements.",
+                note: "If A and B match perfectly, then A = B.",
+                defaultChoice: "equal",
+                choices: [
+                    {
+                        id: "equal",
+                        label: "A = B",
+                        relationship: "A and B are equal.",
+                        explanation: "Every element in A is in B, and every element in B is in A.",
+                        flags: { subset: true, equal: true, disjoint: false },
+                        visual: "equal"
+                    },
+                    {
+                        id: "almost-equal",
+                        label: "Almost equal",
+                        relationship: "A and B are not equal.",
+                        explanation: "The sets may overlap a lot, but even one difference means they are not equal.",
+                        flags: { subset: false, equal: false, disjoint: false },
+                        visual: "overlap"
+                    }
+                ]
+            },
+            {
+                id: "superset",
+                stage: "Stage 6",
+                title: "Subset and Superset",
+                description: "A superset contains all elements of another set and possibly more.",
+                note: "If A is inside B, then B is a superset of A.",
+                defaultChoice: "superset",
+                choices: [
+                    {
+                        id: "superset",
+                        label: "B ⊃ A",
+                        relationship: "B is a superset of A.",
+                        explanation: "This is the same picture as A ⊂ B, but the idea is described from B's point of view.",
+                        flags: { subset: true, equal: false, disjoint: false },
+                        visual: "subset"
+                    },
+                    {
+                        id: "disjoint-superset-check",
+                        label: "Disjoint check",
+                        relationship: "B is not a superset of A when the sets are disjoint.",
+                        explanation: "If A lies outside B completely, then B cannot contain all of A.",
+                        flags: { subset: false, equal: false, disjoint: true },
+                        visual: "disjoint"
+                    }
+                ]
+            }
+        ];
+
+        const state = {
+            activeStageId: stages[0].id,
+            activeChoiceId: stages[0].defaultChoice
+        };
+
+        const els = {
+            appTitle: document.getElementById("appTitle"),
+            appSubtitle: document.getElementById("appSubtitle"),
+            stageList: document.getElementById("stageList"),
+            stageEyebrow: document.getElementById("stageEyebrow"),
+            conceptTitle: document.getElementById("conceptTitle"),
+            conceptDescription: document.getElementById("conceptDescription"),
+            choiceRow: document.getElementById("choiceRow"),
+            teachingNoteHeading: document.getElementById("teachingNoteHeading"),
+            teachingNote: document.getElementById("teachingNote"),
+            statusHeading: document.getElementById("statusHeading"),
+            statusText: document.getElementById("statusText"),
+            statusExplanation: document.getElementById("statusExplanation"),
+            statusDot: document.getElementById("statusDot"),
+            logicSubset: document.getElementById("logicSubset"),
+            logicEqual: document.getElementById("logicEqual"),
+            logicDisjoint: document.getElementById("logicDisjoint"),
+            chipSubset: document.getElementById("chipSubset"),
+            chipEqual: document.getElementById("chipEqual"),
+            chipDisjoint: document.getElementById("chipDisjoint"),
+            setA: document.getElementById("setA"),
+            setB: document.getElementById("setB"),
+            singleSetA: document.getElementById("singleSetA"),
+            singleSetB: document.getElementById("singleSetB"),
+            equalBadge: document.getElementById("equalBadge")
+        };
+
+        function getStage() {
+            return stages.find(stage => stage.id === state.activeStageId) || stages[0];
+        }
+
+        function getChoice() {
+            const stage = getStage();
+            return stage.choices.find(choice => choice.id === state.activeChoiceId) || stage.choices[0];
+        }
+
+        function stageButton(stage, index) {
+            const li = document.createElement("li");
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "stage-item w-full rounded-2xl border px-4 py-3 text-left";
+            button.setAttribute("aria-pressed", stage.id === state.activeStageId ? "true" : "false");
+
+            const top = document.createElement("div");
+            top.className = "mb-1 flex items-center gap-3";
+
+            const num = document.createElement("span");
+            num.className = "inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold";
+            num.textContent = String(index + 1).padStart(2, "0");
+
+            const label = document.createElement("span");
+            label.className = "text-sm font-semibold";
+            label.textContent = stage.title;
+
+            const desc = document.createElement("p");
+            desc.className = "text-xs leading-6";
+            desc.textContent = stage.description;
+
+            top.appendChild(num);
+            top.appendChild(label);
+            button.appendChild(top);
+            button.appendChild(desc);
+
+            button.addEventListener("click", () => {
+                state.activeStageId = stage.id;
+                state.activeChoiceId = stage.defaultChoice;
+                render();
+            });
+
+            li.appendChild(button);
+            return li;
+        }
+
+        function choiceButton(choice) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "choice-btn rounded-2xl border px-4 py-3 text-sm font-semibold";
+            button.textContent = choice.label;
+            button.setAttribute("aria-pressed", choice.id === state.activeChoiceId ? "true" : "false");
+            button.addEventListener("click", () => {
+                state.activeChoiceId = choice.id;
+                render();
+            });
+            return button;
+        }
+
+        function applyLogicBadge(el, value, colors) {
+            el.textContent = value ? "Yes" : "No";
+            el.style.backgroundColor = value ? colors.strong : colors.soft;
+            el.style.color = value ? colors.textStrong : colors.textSoft;
+            el.style.border = "1px solid " + (value ? colors.strongBorder : colors.softBorder);
+        }
+
+        function styleHiddenSet(el) {
+            el.classList.add("hidden");
+            el.style.opacity = "0";
+            el.style.pointerEvents = "none";
+        }
+
+        function styleVisibleSet(el) {
+            el.classList.remove("hidden");
+            el.style.opacity = "1";
+            el.style.pointerEvents = "auto";
+        }
+
+        function positionSet(el, cfg) {
+            styleVisibleSet(el);
+            el.style.left = cfg.left;
+            el.style.top = cfg.top;
+            el.style.width = cfg.width;
+            el.style.height = cfg.height;
+        }
+
+        function renderVisualization(visual) {
+            const setAColor = "rgba(232, 196, 104, 0.34)";
+            const setABorder = "rgba(232, 196, 104, 0.9)";
+            const setBColor = "rgba(124, 198, 255, 0.30)";
+            const setBBorder = "rgba(124, 198, 255, 0.92)";
+
+            [els.setA, els.setB, els.singleSetA, els.singleSetB].forEach(el => {
+                el.style.color = "#ffffff";
+                el.style.boxShadow = "0 12px 35px rgba(0,0,0,0.22)";
+            });
+
+            els.setA.style.backgroundColor = setAColor;
+            els.setA.style.borderColor = setABorder;
+            els.setB.style.backgroundColor = setBColor;
+            els.setB.style.borderColor = setBBorder;
+            els.singleSetA.style.backgroundColor = setAColor;
+            els.singleSetA.style.borderColor = setABorder;
+            els.singleSetB.style.backgroundColor = setBColor;
+            els.singleSetB.style.borderColor = setBBorder;
+
+            styleHiddenSet(els.setA);
+            styleHiddenSet(els.setB);
+            styleHiddenSet(els.singleSetA);
+            styleHiddenSet(els.singleSetB);
+            els.equalBadge.classList.add("hidden");
+
+            if (visual === "separate") {
+                positionSet(els.setA, { left: "12%", top: "20%", width: "34%", height: "52%" });
+                positionSet(els.setB, { left: "56%", top: "20%", width: "30%", height: "52%" });
+            }
+
+            if (visual === "singleA") {
+                positionSet(els.singleSetA, { left: "26%", top: "16%", width: "48%", height: "62%" });
+            }
+
+            if (visual === "singleB") {
+                positionSet(els.singleSetB, { left: "26%", top: "16%", width: "48%", height: "62%" });
+            }
+
+            if (visual === "overlap") {
+                positionSet(els.setA, { left: "18%", top: "18%", width: "38%", height: "56%" });
+                positionSet(els.setB, { left: "42%", top: "18%", width: "38%", height: "56%" });
+            }
+
+            if (visual === "disjoint") {
+                positionSet(els.setA, { left: "12%", top: "20%", width: "32%", height: "52%" });
+                positionSet(els.setB, { left: "58%", top: "20%", width: "26%", height: "46%" });
+            }
+
+            if (visual === "subset") {
+                positionSet(els.setB, { left: "23%", top: "12%", width: "48%", height: "66%" });
+                positionSet(els.setA, { left: "34%", top: "27%", width: "20%", height: "30%" });
+            }
+
+            if (visual === "notSubset") {
+                positionSet(els.setB, { left: "36%", top: "17%", width: "34%", height: "52%" });
+                positionSet(els.setA, { left: "16%", top: "24%", width: "34%", height: "48%" });
+            }
+
+            if (visual === "equal") {
+                positionSet(els.setA, { left: "25%", top: "14%", width: "44%", height: "62%" });
+                positionSet(els.setB, { left: "25%", top: "14%", width: "44%", height: "62%" });
+                els.setA.style.backgroundColor = "rgba(232, 196, 104, 0.26)";
+                els.setB.style.backgroundColor = "rgba(124, 198, 255, 0.26)";
+                els.equalBadge.classList.remove("hidden");
+                els.equalBadge.style.left = "50%";
+                els.equalBadge.style.top = "80%";
+                els.equalBadge.style.transform = "translateX(-50%)";
+                els.equalBadge.style.borderColor = "rgba(255,255,255,0.14)";
+                els.equalBadge.style.backgroundColor = "rgba(15, 23, 42, 0.7)";
+                els.equalBadge.style.color = "#f8fafc";
+            }
+        }
+
+        function renderStageList() {
+            els.stageList.innerHTML = "";
+            stages.forEach((stage, index) => {
+                const item = stageButton(stage, index);
+                const button = item.querySelector("button");
+                const isActive = stage.id === state.activeStageId;
+                const num = button.querySelector("span");
+                const title = button.querySelectorAll("span")[1];
+                const desc = button.querySelector("p");
+
+                if (isActive) {
+                    button.style.backgroundColor = "rgba(232, 196, 104, 0.14)";
+                    button.style.borderColor = "rgba(232, 196, 104, 0.5)";
+                    title.style.color = "#fff7dd";
+                    desc.style.color = "#e2d6aa";
+                    num.style.backgroundColor = "#e8c468";
+                    num.style.color = "#1f2937";
+                } else {
+                    button.style.backgroundColor = "rgba(255,255,255,0.03)";
+                    button.style.borderColor = "rgba(255,255,255,0.08)";
+                    title.style.color = "#e5eef9";
+                    desc.style.color = "#97a6ba";
+                    num.style.backgroundColor = "rgba(124,198,255,0.16)";
+                    num.style.color = "#bfe5ff";
+                }
+
+                els.stageList.appendChild(item);
+            });
+        }
+
+        function renderChoices(stage) {
+            els.choiceRow.innerHTML = "";
+            stage.choices.forEach(choice => {
+                const btn = choiceButton(choice);
+                const active = choice.id === state.activeChoiceId;
+                if (active) {
+                    btn.style.backgroundColor = "#e8c468";
+                    btn.style.borderColor = "#e8c468";
+                    btn.style.color = "#1f2937";
+                    btn.style.boxShadow = "0 8px 22px rgba(232,196,104,0.28)";
+                } else {
+                    btn.style.backgroundColor = "rgba(255,255,255,0.03)";
+                    btn.style.borderColor = "rgba(255,255,255,0.1)";
+                    btn.style.color = "#d9e5f5";
+                }
+                els.choiceRow.appendChild(btn);
+            });
+        }
+
+        async function onConfigChange(config) {
+            const current = Object.assign({}, defaultConfig, config || {});
+            const baseSize = current.font_size || defaultConfig.font_size;
+            const customFont = current.font_family || defaultConfig.font_family;
+
+            document.body.style.background =
+                "radial-gradient(circle at top left, rgba(232, 196, 104, 0.16), transparent 28%), radial-gradient(circle at bottom right, rgba(90, 138, 198, 0.18), transparent 30%), linear-gradient(135deg, " +
+                current.background_color + " 0%, #111827 45%, #1f2937 100%)";
+
+            els.appTitle.textContent = current.app_title || defaultConfig.app_title;
+            els.appSubtitle.textContent = current.app_subtitle || defaultConfig.app_subtitle;
+            els.teachingNoteHeading.textContent = current.note_prefix || defaultConfig.note_prefix;
+            els.statusHeading.textContent = current.status_prefix || defaultConfig.status_prefix;
+
+            els.appTitle.style.color = current.text_color;
+            els.appSubtitle.style.color = current.text_color;
+            els.conceptTitle.style.color = current.text_color;
+            els.conceptDescription.style.color = current.text_color;
+            els.teachingNote.style.color = current.text_color;
+            els.statusText.style.color = current.text_color;
+
+            els.appTitle.style.fontFamily = `${customFont}, Georgia, serif`;
+            els.conceptTitle.style.fontFamily = `${customFont}, Georgia, serif`;
+
+            document.body.style.color = current.text_color;
+            document.body.style.fontSize = `${baseSize}px`;
+
+            els.appTitle.style.fontSize = `${baseSize * 1.9}px`;
+            els.conceptTitle.style.fontSize = `${baseSize * 2.1}px`;
+            els.appSubtitle.style.fontSize = `${baseSize * 0.95}px`;
+            els.conceptDescription.style.fontSize = `${baseSize}px`;
+            els.teachingNoteHeading.style.fontSize = `${baseSize * 0.8}px`;
+            els.teachingNote.style.fontSize = `${baseSize * 0.95}px`;
+            els.statusHeading.style.fontSize = `${baseSize * 0.8}px`;
+            els.statusText.style.fontSize = `${baseSize * 1.12}px`;
+            els.statusExplanation.style.fontSize = `${baseSize * 0.92}px`;
+
+            document.querySelectorAll(".glass-panel").forEach(panel => {
+                panel.style.backgroundColor = "rgba(22, 32, 51, 0.72)";
+                panel.style.borderColor = "rgba(255,255,255,0.08)";
+            });
+
+            const activeChoiceButtons = els.choiceRow.querySelectorAll("button[aria-pressed='true']");
+            activeChoiceButtons.forEach(btn => {
+                btn.style.backgroundColor = current.primary_action_color;
+                btn.style.borderColor = current.primary_action_color;
+                btn.style.color = "#1f2937";
+            });
+
+            const inactiveChoiceButtons = els.choiceRow.querySelectorAll("button[aria-pressed='false']");
+            inactiveChoiceButtons.forEach(btn => {
+                btn.style.color = current.text_color;
+            });
+
+            els.statusDot.style.backgroundColor = current.secondary_action_color;
+            els.chipSubset.style.color = current.text_color;
+            els.chipEqual.style.color = current.text_color;
+            els.chipDisjoint.style.color = current.text_color;
+        }
+
+        function render() {
+            const stage = getStage();
+            const choice = getChoice();
+
+            renderStageList();
+            renderChoices(stage);
+
+            els.stageEyebrow.textContent = stage.stage;
+            els.conceptTitle.textContent = stage.title;
+            els.conceptDescription.textContent = stage.description;
+            els.teachingNote.textContent = stage.note;
+            els.statusText.textContent = choice.relationship;
+            els.statusExplanation.textContent = choice.explanation;
+
+            const yesColors = {
+                strong: "rgba(34,197,94,0.18)",
+                soft: "rgba(255,255,255,0.06)",
+                textStrong: "#bbf7d0",
+                textSoft: "#d6deea",
+                strongBorder: "rgba(34,197,94,0.42)",
+                softBorder: "rgba(255,255,255,0.08)"
+            };
+
+            applyLogicBadge(els.logicSubset, choice.flags.subset, yesColors);
+            applyLogicBadge(els.logicEqual, choice.flags.equal, yesColors);
+            applyLogicBadge(els.logicDisjoint, choice.flags.disjoint, yesColors);
+
+            const chipOn = "rgba(124,198,255,0.16)";
+            const chipOnBorder = "rgba(124,198,255,0.4)";
+            const chipOff = "rgba(255,255,255,0.03)";
+            const chipOffBorder = "rgba(255,255,255,0.08)";
+
+            [
+                [els.chipSubset, choice.flags.subset],
+                [els.chipEqual, choice.flags.equal],
+                [els.chipDisjoint, choice.flags.disjoint]
+            ].forEach(([el, on]) => {
+                el.style.backgroundColor = on ? chipOn : chipOff;
+                el.style.borderColor = on ? chipOnBorder : chipOffBorder;
+            });
+
+            els.statusDot.style.backgroundColor = choice.flags.equal
+                ? "#e8c468"
+                : choice.flags.disjoint
+                    ? "#f87171"
+                    : choice.flags.subset
+                        ? "#4ade80"
+                        : "#7cc6ff";
+
+            renderVisualization(choice.visual);
+
+            if (window.elementSdk && window.elementSdk.config) {
+                onConfigChange(window.elementSdk.config);
+            } else {
+                onConfigChange(defaultConfig);
+            }
+
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities: (config) => ({
+                    recolorables: [
+                        {
+                            get: () => config.background_color || defaultConfig.background_color,
+                            set: (value) => {
+                                config.background_color = value;
+                                window.elementSdk.setConfig({ background_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.surface_color || defaultConfig.surface_color,
+                            set: (value) => {
+                                config.surface_color = value;
+                                window.elementSdk.setConfig({ surface_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.text_color || defaultConfig.text_color,
+                            set: (value) => {
+                                config.text_color = value;
+                                window.elementSdk.setConfig({ text_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                            set: (value) => {
+                                config.primary_action_color = value;
+                                window.elementSdk.setConfig({ primary_action_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+                            set: (value) => {
+                                config.secondary_action_color = value;
+                                window.elementSdk.setConfig({ secondary_action_color: value });
+                            }
+                        }
+                    ],
+                    borderables: [],
+                    fontEditable: {
+                        get: () => config.font_family || defaultConfig.font_family,
+                        set: (value) => {
+                            config.font_family = value;
+                            window.elementSdk.setConfig({ font_family: value });
+                        }
+                    },
+                    fontSizeable: {
+                        get: () => config.font_size || defaultConfig.font_size,
+                        set: (value) => {
+                            config.font_size = value;
+                            window.elementSdk.setConfig({ font_size: value });
+                        }
+                    }
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["app_title", config.app_title || defaultConfig.app_title],
+                    ["app_subtitle", config.app_subtitle || defaultConfig.app_subtitle],
+                    ["note_prefix", config.note_prefix || defaultConfig.note_prefix],
+                    ["status_prefix", config.status_prefix || defaultConfig.status_prefix]
+                ])
+            });
+        }
+
+        render();
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'9e44a66b65e77249',t:'MTc3NDg0Nzg2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>
