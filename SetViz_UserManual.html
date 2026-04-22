@@ -1,1363 +1,736 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="h-full">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SetViz – User Manual</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta name="description" content="Complete user manual for SetViz – an interactive set theory visualisation tool.">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --gold: #e8c468;
-  --blue: #7cc6ff;
-  --green: #4ade80;
-  --red: #f87171;
-  --bg: #0f172a;
-  --surface: rgba(22,29,45,0.85);
-  --border: rgba(255,255,255,0.09);
-  --text: #e5eef9;
-  --muted: #94a3b8;
-  --anno: #fb923c;
-  --anno2: #a78bfa;
-  --anno3: #34d399;
-  --anno4: #f472b6;
-  --anno5: #60a5fa;
+/* ── base (mirrors index.html exactly) ── */
+html,body{height:100%;}
+body{
+  margin:0;
+  font-family:"Manrope",sans-serif;
+  transition:background 400ms ease,color 400ms ease;
+}
+body.light{
+  background:linear-gradient(135deg,#f8fafc 0%,#e2e8f0 50%,#f1f5f9 100%);
+  color:#1e293b;
+}
+body.dark{
+  background:
+    radial-gradient(circle at top left,rgba(232,196,104,.16),transparent 28%),
+    radial-gradient(circle at bottom right,rgba(90,138,198,.18),transparent 30%),
+    linear-gradient(135deg,#0f172a 0%,#111827 45%,#1f2937 100%);
+  color:#e5eef9;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* glass panel */
+body.light .glass-panel{background:rgba(255,255,255,.82);backdrop-filter:blur(14px);border:1px solid rgba(0,0,0,.08);box-shadow:0 8px 32px rgba(0,0,0,.08);}
+body.dark  .glass-panel{background:rgba(22,29,45,.72);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 60px rgba(0,0,0,.28);}
 
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.7;
-}
+/* text colours */
+body.light .eyebrow-text{color:#b45309;}
+body.dark  .eyebrow-text{color:rgba(251,191,36,.8);}
+body.light .heading-text{color:#0f172a;}
+body.dark  .heading-text{color:#ffffff;}
+body.light .sub-text{color:#475569;}
+body.dark  .sub-text{color:#cbd5e1;}
+body.light .muted-text{color:#64748b;}
+body.dark  .muted-text{color:#94a3b8;}
 
-/* ── PAGE SHELL ── */
-.page-wrap {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 48px 32px 80px;
-}
+/* nav back button */
+body.light .back-btn{background:rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.1);color:#334155;}
+body.dark  .back-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#cbd5e1;}
+.back-btn:hover{opacity:.8;}
 
-/* ── COVER ── */
-.cover {
-  text-align: center;
-  padding: 64px 0 56px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 56px;
-}
-.cover-badge {
-  display: inline-block;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--gold);
-  border: 1px solid rgba(232,196,104,.3);
-  padding: 4px 14px;
-  border-radius: 99px;
-  margin-bottom: 24px;
-}
-.cover h1 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 52px;
-  line-height: 1.1;
-  color: #fff;
-  margin-bottom: 8px;
-}
-.cover h1 span { color: var(--gold); }
-.cover-sub {
-  font-size: 17px;
-  color: var(--muted);
-  max-width: 460px;
-  margin: 16px auto 0;
-}
-.cover-meta {
-  margin-top: 32px;
-  display: flex;
-  justify-content: center;
-  gap: 32px;
-  font-size: 13px;
-  color: var(--muted);
-}
-.cover-meta strong { color: var(--text); }
+/* theme toggle */
+body.light .theme-toggle{background:rgba(0,0,0,.06);border-color:rgba(0,0,0,.1);color:#475569;}
+body.dark  .theme-toggle{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:#cbd5e1;}
 
-/* ── SECTION ── */
-.section { margin-bottom: 64px; }
-.section-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: .25em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 10px;
-}
-.section h2 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 30px;
-  color: #fff;
-  margin-bottom: 16px;
-}
-.section p {
-  color: var(--muted);
-  font-size: 15px;
-  margin-bottom: 14px;
-  max-width: 680px;
-}
+/* note panel */
+body.light .note-panel{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.2);}
+body.dark  .note-panel{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);}
+body.light .note-icon-bg{background:rgba(251,191,36,.15);color:#b45309;}
+body.dark  .note-icon-bg{background:rgba(232,196,104,.2);color:#fde68a;}
+body.light .note-heading{color:#92400e;}
+body.dark  .note-heading{color:#fde68a;}
+body.light .note-body{color:#475569;}
+body.dark  .note-body{color:#cbd5e1;}
 
-/* ── ANNOTATED DIAGRAM ── */
-.diagram-wrap {
-  position: relative;
-  margin: 28px 0;
-  border-radius: 20px;
-  overflow: visible;
-}
+/* status panel */
+body.light .status-panel{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.06);}
+body.dark  .status-panel{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);}
 
-/* The mock UI panel */
-.mock-ui {
-  border-radius: 20px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  box-shadow: 0 24px 64px rgba(0,0,0,.5);
-  background: rgba(22,29,45,0.72);
-  backdrop-filter: blur(14px);
-}
+/* canvas */
+body.light .canvas-outer{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.06);}
+body.dark  .canvas-outer{background:rgba(15,23,42,.45);border-color:rgba(255,255,255,.1);}
+body.light .canvas-inner{background:#ffffff;border-color:rgba(0,0,0,.1);}
+body.dark  .canvas-inner{background:rgba(15,23,42,.5);border-color:rgba(255,255,255,.1);}
 
-/* ── ANNOTATION SYSTEM ── */
-.ann-container {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none;
-}
-.ann-dot {
-  position: absolute;
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  font-weight: 700;
-  color: #fff;
-  z-index: 10;
-  box-shadow: 0 0 0 3px rgba(0,0,0,.4);
-  transform: translate(-50%, -50%);
-}
-.ann-line {
-  position: absolute;
-  transform-origin: 0 0;
-  height: 1.5px;
-  z-index: 9;
-}
-.ann-label {
-  position: absolute;
-  font-size: 12px;
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 600;
-  white-space: nowrap;
-  padding: 5px 10px;
-  border-radius: 8px;
-  z-index: 10;
-}
+/* op buttons */
+body.light .op-active{background:#f59e0b;border-color:#f59e0b;color:#fff;box-shadow:0 4px 16px rgba(245,158,11,.25);}
+body.dark  .op-active{background:#e8c468;border-color:#e8c468;color:#1f2937;box-shadow:0 8px 22px rgba(232,196,104,.28);}
+body.light .op-inactive{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.08);color:#334155;}
+body.dark  .op-inactive{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.1);color:#d9e5f5;}
 
-/* Annotation colours */
-.c1 { background: var(--anno);  border-color: var(--anno);  }
-.c2 { background: var(--anno2); border-color: var(--anno2); }
-.c3 { background: var(--anno3); border-color: var(--anno3); }
-.c4 { background: var(--anno4); border-color: var(--anno4); }
-.c5 { background: var(--anno5); border-color: var(--anno5); }
-.c6 { background: var(--gold);  color: #1f2937; border-color: var(--gold); }
+/* footer */
+body.light .footer-text{color:#94a3b8;}
+body.dark  .footer-text{color:#475569;}
 
-.ann-label.c1 { background: rgba(251,146,60,.15); border: 1px solid rgba(251,146,60,.4); color: var(--anno);  }
-.ann-label.c2 { background: rgba(167,139,250,.15); border: 1px solid rgba(167,139,250,.4); color: var(--anno2); }
-.ann-label.c3 { background: rgba(52,211,153,.15); border: 1px solid rgba(52,211,153,.4); color: var(--anno3); }
-.ann-label.c4 { background: rgba(244,114,182,.15); border: 1px solid rgba(244,114,182,.4); color: var(--anno4); }
-.ann-label.c5 { background: rgba(96,165,250,.15); border: 1px solid rgba(96,165,250,.4); color: var(--anno5); }
-.ann-label.c6 { background: rgba(232,196,104,.15); border: 1px solid rgba(232,196,104,.4); color: var(--gold); }
+/* dot pulse */
+.dot-pulse{animation:pulseSoft 1400ms ease-in-out infinite;}
+@keyframes pulseSoft{0%,100%{transform:scale(1);opacity:.95;}50%{transform:scale(1.08);opacity:1;}}
+body.light .dot-color{background-color:#f59e0b;}
+body.dark  .dot-color{background-color:#e8c468;}
 
-/* ── LEGEND BOX ── */
-.legend {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 24px;
-}
-@media (max-width: 600px) { .legend { grid-template-columns: 1fr; } }
-.legend-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  background: rgba(255,255,255,.03);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 14px;
-}
-.legend-num {
-  width: 24px; height: 24px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  font-weight: 700;
-  color: #fff;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-.legend-text strong {
-  display: block;
-  font-size: 13px;
-  color: var(--text);
-  margin-bottom: 2px;
-}
-.legend-text span {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.5;
-}
+/* universe grid */
+body.light .universe-grid{background-image:linear-gradient(rgba(0,0,0,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.05) 1px,transparent 1px);background-size:24px 24px;}
+body.dark  .universe-grid{background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:24px 24px;}
 
-/* ── STEP CARDS ── */
-.steps {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 20px;
+/* ── manual-specific ── */
+.section-label{
+  font-size:10px;font-weight:600;letter-spacing:.25em;text-transform:uppercase;
+  margin-bottom:6px;
 }
-.step-card {
-  display: flex;
-  gap: 16px;
-  background: rgba(255,255,255,.03);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px 18px;
-  align-items: flex-start;
-}
-.step-num {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background: rgba(232,196,104,.15);
-  border: 1px solid rgba(232,196,104,.3);
-  color: var(--gold);
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.step-content strong {
-  display: block;
-  font-size: 14px;
-  color: #fff;
-  margin-bottom: 4px;
-}
-.step-content span {
-  font-size: 13px;
-  color: var(--muted);
-}
+body.light .section-label{color:#b45309;}
+body.dark  .section-label{color:rgba(251,191,36,.8);}
 
-/* ── STAGE TABLE ── */
-.stage-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-  margin-top: 20px;
-  border-radius: 14px;
-  overflow: hidden;
-}
-.stage-table th {
-  background: rgba(232,196,104,.12);
-  color: var(--gold);
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: .15em;
-  text-transform: uppercase;
-  padding: 10px 14px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-}
-.stage-table td {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  color: var(--muted);
-  vertical-align: top;
-}
-.stage-table tr:last-child td { border-bottom: none; }
-.stage-table tr:hover td { background: rgba(255,255,255,.02); }
-.stage-badge {
-  display: inline-block;
-  background: rgba(124,198,255,.15);
-  color: var(--blue);
-  border-radius: 6px;
-  padding: 1px 8px;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-}
-.ops-tag {
-  display: inline-block;
-  background: rgba(74,222,128,.1);
-  color: var(--green);
-  border-radius: 6px;
-  padding: 1px 7px;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  margin: 2px 2px 2px 0;
-}
+.callout{border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;margin:16px 0;}
+body.light .callout-tip{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);}
+body.dark  .callout-tip{background:rgba(232,196,104,.07);border:1px solid rgba(232,196,104,.2);}
+body.light .callout-info{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);}
+body.dark  .callout-info{background:rgba(96,165,250,.07);border:1px solid rgba(96,165,250,.2);}
 
-/* ── CALLOUT ── */
-.callout {
-  display: flex;
-  gap: 14px;
-  border-radius: 14px;
-  padding: 16px 18px;
-  margin: 20px 0;
-  align-items: flex-start;
-}
-.callout.tip  { background: rgba(232,196,104,.08); border: 1px solid rgba(232,196,104,.2); }
-.callout.info { background: rgba(96,165,250,.08);  border: 1px solid rgba(96,165,250,.2);  }
-.callout-icon { font-size: 18px; line-height: 1; flex-shrink: 0; margin-top: 1px; }
-.callout-body strong { display: block; font-size: 13px; color: #fff; margin-bottom: 3px; }
-.callout-body span   { font-size: 13px; color: var(--muted); }
+.step-card{display:flex;gap:14px;border-radius:14px;padding:14px 16px;align-items:flex-start;margin-bottom:10px;}
+body.light .step-card{background:rgba(0,0,0,.02);border:1px solid rgba(0,0,0,.07);}
+body.dark  .step-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);}
 
-/* ── INLINE CODE ── */
-code {
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  background: rgba(255,255,255,.07);
-  padding: 2px 6px;
-  border-radius: 5px;
-  color: var(--gold);
-}
+.step-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+body.light .step-num{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:#b45309;}
+body.dark  .step-num{background:rgba(232,196,104,.15);border:1px solid rgba(232,196,104,.3);color:#e8c468;}
 
-/* ── DIVIDER ── */
-.divider {
-  height: 1px;
-  background: var(--border);
-  margin: 52px 0;
-}
+/* annotation dot */
+.ann{position:absolute;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;z-index:20;transform:translate(-50%,-50%);box-shadow:0 0 0 3px rgba(0,0,0,.4);pointer-events:none;}
 
-/* ── TOC ── */
-.toc {
-  background: rgba(255,255,255,.03);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px 28px;
-  margin-bottom: 52px;
-}
-.toc h3 {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 14px;
-}
-.toc ol {
-  list-style: none;
-  counter-reset: toc;
-}
-.toc li {
-  counter-increment: toc;
-  padding: 5px 0;
-  font-size: 14px;
-  color: var(--muted);
-  display: flex;
-  gap: 10px;
-}
-.toc li::before {
-  content: counter(toc, decimal-leading-zero);
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  color: rgba(232,196,104,.5);
-  flex-shrink: 0;
-  width: 22px;
-  margin-top: 2px;
-}
+/* legend grid */
+.legend-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;}
+@media(max-width:600px){.legend-grid{grid-template-columns:1fr;}}
+.legend-item{display:flex;gap:10px;border-radius:12px;padding:12px 14px;align-items:flex-start;}
+body.light .legend-item{background:rgba(0,0,0,.02);border:1px solid rgba(0,0,0,.07);}
+body.dark  .legend-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);}
+.legend-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;margin-top:1px;}
 
-/* ══════════════════════════════════
-   MOCK UI COMPONENTS
-══════════════════════════════════ */
+/* stage table */
+.stg-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:16px;}
+.stg-table th{font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:10px 12px;text-align:left;}
+body.light .stg-table th{background:rgba(245,158,11,.1);color:#b45309;border-bottom:1px solid rgba(0,0,0,.08);}
+body.dark  .stg-table th{background:rgba(232,196,104,.1);color:#e8c468;border-bottom:1px solid rgba(255,255,255,.08);}
+.stg-table td{padding:9px 12px;vertical-align:top;}
+body.light .stg-table td{border-bottom:1px solid rgba(0,0,0,.06);color:#475569;}
+body.dark  .stg-table td{border-bottom:1px solid rgba(255,255,255,.06);color:#94a3b8;}
+.stg-table tr:last-child td{border-bottom:none;}
+body.light .stg-table tr:hover td{background:rgba(0,0,0,.02);}
+body.dark  .stg-table tr:hover td{background:rgba(255,255,255,.02);}
+.badge-stage{display:inline-block;border-radius:6px;padding:1px 8px;font-size:11px;font-weight:600;}
+body.light .badge-stage{background:rgba(59,130,246,.12);color:#2563eb;}
+body.dark  .badge-stage{background:rgba(124,198,255,.15);color:#7cc6ff;}
+.badge-op{display:inline-block;border-radius:5px;padding:1px 7px;font-size:11px;margin:2px 2px 2px 0;}
+body.light .badge-op{background:rgba(22,163,74,.1);color:#15803d;}
+body.dark  .badge-op{background:rgba(74,222,128,.1);color:#4ade80;}
 
-/* Sidebar */
-.ui-sidebar {
-  width: 260px;
-  padding: 20px;
-  border-right: 1px solid var(--border);
-  background: rgba(15,23,42,.4);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.ui-eyebrow {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: .25em;
-  text-transform: uppercase;
-  color: rgba(232,196,104,.8);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.ui-theme-btn {
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.12);
-  color: #cbd5e1;
-  border-radius: 99px;
-  padding: 3px 10px;
-  font-size: 9px;
-  font-family: 'DM Mono', monospace;
-  cursor: pointer;
-}
-.ui-title {
-  font-family: 'DM Serif Display', serif;
-  font-size: 18px;
-  color: #fff;
-  line-height: 1.2;
-}
-.ui-subtitle {
-  font-size: 11px;
-  color: #94a3b8;
-  line-height: 1.5;
-}
-.ui-stage-item {
-  border-radius: 12px;
-  border: 1px solid;
-  padding: 10px 12px;
-  font-size: 11px;
-  line-height: 1.4;
-}
-.ui-stage-item.active {
-  background: rgba(232,196,104,.12);
-  border-color: rgba(232,196,104,.45);
-}
-.ui-stage-item.inactive {
-  background: rgba(255,255,255,.03);
-  border-color: rgba(255,255,255,.07);
-  color: #94a3b8;
-}
-.ui-stage-num {
-  display: inline-flex;
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  align-items: center;
-  justify-content: center;
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  font-weight: 700;
-  margin-right: 6px;
-}
-.ui-stage-item.active .ui-stage-num   { background: #e8c468; color: #1f2937; }
-.ui-stage-item.inactive .ui-stage-num { background: rgba(124,198,255,.16); color: #bfe5ff; }
-.ui-stage-title { font-weight: 600; color: #fff7dd; }
-.ui-stage-item.inactive .ui-stage-title { color: #e5eef9; }
-.ui-stage-desc { font-size: 10px; color: #97a6ba; margin-top: 2px; }
+/* divider */
+.divider{height:1px;margin:48px 0;}
+body.light .divider{background:rgba(0,0,0,.08);}
+body.dark  .divider{background:rgba(255,255,255,.08);}
 
-/* Main panel */
-.ui-main {
-  flex: 1;
-  padding: 20px 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  min-width: 0;
-}
-.ui-stage-eyebrow {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: .25em;
-  text-transform: uppercase;
-  color: rgba(232,196,104,.8);
-}
-.ui-concept-title {
-  font-family: 'DM Serif Display', serif;
-  font-size: 26px;
-  color: #fff;
-  line-height: 1.1;
-}
-.ui-concept-desc {
-  font-size: 12px;
-  color: #cbd5e1;
-}
-.ui-ops-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: #94a3b8;
-  margin-bottom: 8px;
-}
-.ui-ops-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.ui-op-btn {
-  border-radius: 10px;
-  border: 1px solid;
-  padding: 6px 12px;
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.ui-op-btn.active {
-  background: #e8c468;
-  border-color: #e8c468;
-  color: #1f2937;
-  box-shadow: 0 4px 14px rgba(232,196,104,.28);
-}
-.ui-op-btn.inactive {
-  background: rgba(255,255,255,.03);
-  border-color: rgba(255,255,255,.1);
-  color: #d9e5f5;
-}
-.ui-note {
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.09);
-  border-radius: 14px;
-  padding: 12px 14px;
-  display: flex;
-  gap: 10px;
-}
-.ui-note-icon {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  background: rgba(232,196,104,.18);
-  color: #fde68a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  flex-shrink: 0;
-}
-.ui-note-head {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: #fde68a;
-  margin-bottom: 4px;
-}
-.ui-note-body {
-  font-size: 11px;
-  color: #cbd5e1;
-  line-height: 1.5;
-}
-.ui-canvas-label-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
-}
-.ui-canvas-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: #94a3b8;
-}
-.ui-canvas-wrap {
-  border-radius: 18px;
-  background: rgba(15,23,42,.45);
-  border: 1px solid rgba(255,255,255,.09);
-  padding: 10px;
-}
-.ui-canvas-inner {
-  border-radius: 14px;
-  background: rgba(15,23,42,.4);
-  border: 1px dashed rgba(255,255,255,.1);
-  height: 160px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.ui-venn-svg { width: 100%; height: 100%; }
-.ui-status-row {
-  display: grid;
-  grid-template-columns: 1.3fr 0.7fr;
-  gap: 10px;
-}
-.ui-status-box {
-  border-radius: 14px;
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.08);
-  padding: 12px 14px;
-}
-.ui-status-head {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: #94a3b8;
-  margin-bottom: 8px;
-}
-.ui-status-text {
-  font-size: 13px;
-  font-weight: 600;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.ui-dot { width: 10px; height: 10px; border-radius: 50%; background: #e8c468; animation: pulse 1.4s infinite; flex-shrink:0; }
-@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
-.ui-status-expl { font-size: 11px; color: #94a3b8; margin-top: 6px; line-height: 1.5; }
-.ui-symbol-box {
-  background: rgba(0,0,0,.2);
-  border-radius: 10px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 6px;
-}
-.ui-symbol-text {
-  font-family: 'DM Serif Display', serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: #fff;
-}
+/* toc */
+.toc{border-radius:16px;padding:22px 26px;margin-bottom:48px;}
+body.light .toc{background:rgba(0,0,0,.02);border:1px solid rgba(0,0,0,.08);}
+body.dark  .toc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);}
 
-/* Full layout wrapper */
-.full-mock {
-  display: flex;
-  min-height: 540px;
-}
-.sidebar-mock {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+body.light code{background:rgba(0,0,0,.06);color:#b45309;}
+body.dark  code{background:rgba(255,255,255,.08);color:#e8c468;}
+code{font-family:monospace;font-size:12px;padding:2px 6px;border-radius:4px;}
 
-/* ── PRINT ── */
-@media print {
-  body { background: #fff; color: #000; }
-  .mock-ui { border: 1px solid #ccc; }
-}
+/* fade-in on load */
+.fade-up{animation:fadeUp 500ms ease both;}
+.fade-up-delay{animation:fadeUp 680ms ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
-<body>
-<div class="page-wrap">
+<body class="dark">
+<div class="w-full min-h-full overflow-auto">
+  <div class="max-w-4xl mx-auto px-4 md:px-8 py-8 md:py-12">
 
-  <!-- COVER -->
-  <div class="cover">
-    <div class="cover-badge">User Manual</div>
-    <h1>Set<span>Viz</span></h1>
-    <p class="cover-sub">Interactive Set Theory Visualisation Tool — Complete Guide to Features &amp; Usage</p>
-    <div class="cover-meta">
-      <div><strong>Author</strong> Suriyati Ujang</div>
-      <div><strong>Version</strong> 1.0 (2026)</div>
-      <div><strong>URL</strong> ciksuriyati.github.io/SetViz</div>
-    </div>
-  </div>
+    <!-- ── TOP NAV ── -->
+    <nav class="fade-up flex items-center justify-between mb-10">
+      <a href="index.html" class="back-btn rounded-full px-4 py-2 text-sm font-semibold no-underline inline-flex items-center gap-2" style="text-decoration:none;">
+        ← Back to SetViz
+      </a>
+      <button id="themeToggle" class="theme-toggle rounded-full px-3 py-1.5 text-xs font-semibold border cursor-pointer">☀️ Light</button>
+    </nav>
 
-  <!-- TOC -->
-  <div class="toc">
-    <h3>Contents</h3>
-    <ol>
-      <li>Overview &amp; Getting Started</li>
-      <li>Interface Layout — Full Annotated Diagram</li>
-      <li>Left Panel — The Stage Navigator</li>
-      <li>Right Panel — Learning Area</li>
-      <li>The Venn Diagram Canvas</li>
-      <li>Operation Buttons</li>
-      <li>Teaching Note &amp; Symbol Notation</li>
-      <li>All 7 Learning Stages</li>
-      <li>Light / Dark Theme</li>
-      <li>Quick-Start Workflow</li>
-    </ol>
-  </div>
-
-  <!-- ══ 1. OVERVIEW ══ -->
-  <div class="section">
-    <div class="section-label">Section 01</div>
-    <h2>Overview &amp; Getting Started</h2>
-    <p>SetViz is a browser-based interactive tool for learning set theory concepts through dynamic Venn diagram visualisations. No installation, no registration, no cost — open the link and start learning immediately.</p>
-
-    <div class="callout info">
-      <div class="callout-icon">🌐</div>
-      <div class="callout-body">
-        <strong>Access SetViz</strong>
-        <span>Open any modern browser (Chrome, Firefox, Safari, Edge) and go to <code>https://ciksuriyati.github.io/SetViz/</code> — works on desktop, tablet, and smartphone.</span>
+    <!-- ── COVER ── -->
+    <header class="fade-up text-center mb-14 pb-10" style="border-bottom:1px solid rgba(255,255,255,.08);">
+      <p class="eyebrow-text text-xs font-semibold uppercase tracking-[.26em] mb-3">User Manual</p>
+      <h1 class="heading-text text-5xl md:text-6xl font-semibold mb-3" style="font-family:'Fraunces',serif;">
+        Set<span style="color:#e8c468;">Viz</span>
+      </h1>
+      <p class="sub-text text-base max-w-md mx-auto mt-2">Interactive Set Theory Visualisation Tool — Complete Guide to Features &amp; Usage</p>
+      <div class="flex justify-center gap-8 mt-6 text-sm">
+        <div class="muted-text">Author: <span class="sub-text font-semibold">Suriyati Ujang</span></div>
+        <div class="muted-text">Version: <span class="sub-text font-semibold">1.0 (2026)</span></div>
       </div>
+    </header>
+
+    <!-- ── TOC ── -->
+    <div class="toc fade-up-delay">
+      <p class="eyebrow-text text-xs font-semibold uppercase tracking-[.22em] mb-3">Contents</p>
+      <ol style="list-style:none;counter-reset:toc;">
+        <li style="counter-increment:toc;display:flex;gap:10px;padding:5px 0;font-size:14px;" class="muted-text"><span style="font-family:monospace;font-size:11px;color:rgba(232,196,104,.5);width:22px;flex-shrink:0;padding-top:2px;">01</span> Overview &amp; Getting Started</li>
+        <li style="counter-increment:toc;display:flex;gap:10px;padding:5px 0;font-size:14px;" class="muted-text"><span style="font-family:monospace;font-size:11px;color:rgba(232,196,104,.5);width:22px;flex-shrink:0;padding-top:2px;">02</span> Full Interface — Annotated Diagram</li>
+        <li style="counter-increment:toc;display:flex;gap:10px;padding:5px 0;font-size:14px;" class="muted-text"><span style="font-family:monospace;font-size:11px;color:rgba(232,196,104,.5);width:22px;flex-shrink:0;padding-top:2px;">03</span> Left Panel — Stage Navigator</li>
+        <li style="counter-increment:toc;display:flex;gap:10px;padding:5px 0;font-size:14px;" class="muted-text"><span style="font-family:monospace;font-size:11px;color:rgba(232,196,104,.5);width:22px;flex-shrink:0;padding-top:2px;">04</span> Operation Buttons</li>
+        <li style="counter-increment:toc;display:flex;gap:10px;padding:5px 0;font-size:14px;" class="muted-text"><span style="font-family:monospace;font-size:11px;color:rgba(232,196,104,.5);width:22px;flex-shrink:0;padding-top:2px;">05</span> Venn Diagram Canvas</li>
+        <li style="counter-increment:toc;display:flex;gap:10px;padding:5px 0;font-size:14px;" class="muted-text"><span style="font-family:monospace;font-size:11px;color:rgba(232,196,104,.5);width:22px;flex-shrink:0;padding-top:2px;">06</span> Teaching Note, Status Bar &amp; Symbol</li>
+        <li style="counter-increment:toc;display:flex;gap:10px;padding:5px 0;font-size:14px;" class="muted-text"><span style="font-family:monospace;font-size:11px;color:rgba(232,196,104,.5);width:22px;flex-shrink:0;padding-top:2px;">07</span> All 7 Learning Stages</li>
+        <li style="counter-increment:toc;display:flex;gap:10px;padding:5px 0;font-size:14px;" class="muted-text"><span style="font-family:monospace;font-size:11px;color:rgba(232,196,104,.5);width:22px;flex-shrink:0;padding-top:2px;">08</span> Quick-Start Workflow</li>
+      </ol>
     </div>
 
-    <div class="steps">
-      <div class="step-card">
-        <div class="step-num">1</div>
-        <div class="step-content">
-          <strong>Open the URL</strong>
-          <span>No download or login needed. The page loads instantly.</span>
+    <!-- ════════════════════════════════ -->
+    <!-- 01 OVERVIEW -->
+    <!-- ════════════════════════════════ -->
+    <section class="mb-14">
+      <p class="section-label">Section 01</p>
+      <h2 class="heading-text text-3xl font-semibold mb-3" style="font-family:'Fraunces',serif;">Overview &amp; Getting Started</h2>
+      <p class="sub-text text-sm leading-7 mb-4 max-w-2xl">SetViz is a browser-based interactive tool for learning set theory concepts through dynamic Venn diagram visualisations. No installation, no registration, no cost — open the link and start learning immediately.</p>
+
+      <div class="callout callout-info">
+        <span style="font-size:18px;flex-shrink:0;">🌐</span>
+        <div>
+          <p class="heading-text text-sm font-semibold mb-1">Access SetViz</p>
+          <p class="sub-text text-sm">Open any modern browser and go to <code>https://ciksuriyati.github.io/SetViz/</code> — works on desktop, tablet, and smartphone. No login required.</p>
         </div>
       </div>
-      <div class="step-card">
-        <div class="step-num">2</div>
-        <div class="step-content">
-          <strong>Choose a stage from the left panel</strong>
-          <span>Start with Stage 0 (Orientation) or jump to any concept you need.</span>
-        </div>
+
+      <div class="mt-4">
+        <div class="step-card"><div class="step-num">1</div><div><p class="heading-text text-sm font-semibold mb-0.5">Open the URL</p><p class="sub-text text-sm">No download or login needed. The page loads in seconds on any device.</p></div></div>
+        <div class="step-card"><div class="step-num">2</div><div><p class="heading-text text-sm font-semibold mb-0.5">Choose a stage from the left panel</p><p class="sub-text text-sm">Start with Stage 0 (Orientation) or jump directly to any concept you need.</p></div></div>
+        <div class="step-card"><div class="step-num">3</div><div><p class="heading-text text-sm font-semibold mb-0.5">Click an operation button</p><p class="sub-text text-sm">The Venn diagram shades instantly to show which region represents that operation.</p></div></div>
+        <div class="step-card"><div class="step-num">4</div><div><p class="heading-text text-sm font-semibold mb-0.5">Read the teaching note and symbol</p><p class="sub-text text-sm">Each operation shows a contextual explanation and its formal mathematical notation.</p></div></div>
       </div>
-      <div class="step-card">
-        <div class="step-num">3</div>
-        <div class="step-content">
-          <strong>Click an operation button</strong>
-          <span>The Venn diagram shades instantly to show exactly which region represents that operation.</span>
-        </div>
-      </div>
-      <div class="step-card">
-        <div class="step-num">4</div>
-        <div class="step-content">
-          <strong>Read the teaching note and symbol</strong>
-          <span>Each operation shows a contextual explanation and its formal mathematical notation.</span>
-        </div>
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <div class="divider"></div>
+    <div class="divider"></div>
 
-  <!-- ══ 2. FULL INTERFACE DIAGRAM ══ -->
-  <div class="section">
-    <div class="section-label">Section 02</div>
-    <h2>Interface Layout — Annotated Overview</h2>
-    <p>SetViz has two main panels: a <strong style="color:#fff">Left Panel</strong> (stage navigator) and a <strong style="color:#fff">Right Panel</strong> (learning area). The diagram below labels all six key zones.</p>
+    <!-- ════════════════════════════════ -->
+    <!-- 02 FULL INTERFACE DIAGRAM -->
+    <!-- ════════════════════════════════ -->
+    <section class="mb-14">
+      <p class="section-label">Section 02</p>
+      <h2 class="heading-text text-3xl font-semibold mb-3" style="font-family:'Fraunces',serif;">Full Interface — Annotated Diagram</h2>
+      <p class="sub-text text-sm leading-7 mb-6 max-w-2xl">SetViz has two main panels: a <strong class="heading-text">Left Panel</strong> (stage navigator) and a <strong class="heading-text">Right Panel</strong> (learning area). Seven numbered callouts identify every key zone.</p>
 
-    <!-- Full mock UI -->
-    <div class="diagram-wrap" style="margin-top:32px;">
-      <div class="mock-ui full-mock">
+      <!-- MOCK UI – full two-panel layout -->
+      <div class="relative rounded-[20px] overflow-hidden glass-panel" style="min-height:500px;">
+        <div class="flex" style="min-height:500px;">
 
-        <!-- LEFT SIDEBAR -->
-        <div class="ui-sidebar">
-          <div class="ui-eyebrow">
-            <span>SetViz path</span>
-            <button class="ui-theme-btn">🌙 Dark</button>
-          </div>
-          <div class="ui-title">SetViz –<br>Basic Concepts</div>
-          <div class="ui-subtitle">An interactive learning tool for set theory concepts through visualizations.</div>
-          <div class="sidebar-mock">
-            <div class="ui-stage-item active">
-              <div><span class="ui-stage-num">2</span><span class="ui-stage-title">Two Sets Overlapping</span></div>
-              <div class="ui-stage-desc">Learn A, B, A∪B, A∩B, A′, B′</div>
+          <!-- LEFT SIDEBAR MOCK -->
+          <div style="width:260px;flex-shrink:0;padding:18px;display:flex;flex-direction:column;gap:10px;border-right:1px solid rgba(255,255,255,.08);background:rgba(15,23,42,.35);">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span class="eyebrow-text" style="font-size:9px;font-weight:600;letter-spacing:.25em;text-transform:uppercase;">SetViz path</span>
+              <!-- ANN 2 -->
+              <span style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#cbd5e1;border-radius:99px;padding:2px 9px;font-size:9px;font-family:monospace;position:relative;">
+                🌙 Dark
+                <span class="ann" style="background:#a78bfa;top:-10px;right:-14px;width:20px;height:20px;font-size:9px;">2</span>
+              </span>
             </div>
-            <div class="ui-stage-item inactive">
-              <div><span class="ui-stage-num">3</span><span class="ui-stage-title">Mutually Exclusive</span></div>
-              <div class="ui-stage-desc">See A ∩ B = ∅ visually</div>
+            <h3 class="heading-text" style="font-family:'Fraunces',serif;font-size:17px;line-height:1.2;">SetViz –<br>Basic Concepts</h3>
+            <p class="sub-text" style="font-size:11px;line-height:1.5;">An interactive learning tool for set theory through visualizations.</p>
+            <!-- stage list mock -->
+            <div style="display:flex;flex-direction:column;gap:7px;position:relative;">
+              <!-- ANN 3 -->
+              <div style="position:absolute;top:-10px;right:-14px;z-index:20;">
+                <span class="ann" style="background:#34d399;width:20px;height:20px;font-size:9px;position:relative;transform:none;top:0;left:0;">3</span>
+              </div>
+              <div style="border-radius:11px;border:1px solid rgba(232,196,104,.45);background:rgba(232,196,104,.12);padding:9px 11px;font-size:11px;">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+                  <span style="background:#e8c468;color:#1f2937;border-radius:50%;width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;">2</span>
+                  <span style="color:#fff7dd;font-weight:600;">Two Sets Overlapping</span>
+                </div>
+                <span style="color:#97a6ba;font-size:10px;">A, B, A∪B, A∩B, A′, B′</span>
+              </div>
+              <div style="border-radius:11px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);padding:9px 11px;font-size:11px;">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+                  <span style="background:rgba(124,198,255,.16);color:#bfe5ff;border-radius:50%;width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;">3</span>
+                  <span style="color:#e5eef9;font-weight:600;">Mutually Exclusive</span>
+                </div>
+                <span style="color:#97a6ba;font-size:10px;">A ∩ B = ∅ visually</span>
+              </div>
+              <div style="border-radius:11px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);padding:9px 11px;font-size:11px;">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+                  <span style="background:rgba(124,198,255,.16);color:#bfe5ff;border-radius:50%;width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;">4</span>
+                  <span style="color:#e5eef9;font-weight:600;">Set Differences</span>
+                </div>
+                <span style="color:#97a6ba;font-size:10px;">A\B, B\A, A Δ B</span>
+              </div>
+              <div style="border-radius:11px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);padding:9px 11px;font-size:11px;">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+                  <span style="background:rgba(124,198,255,.16);color:#bfe5ff;border-radius:50%;width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;">5</span>
+                  <span style="color:#e5eef9;font-weight:600;">Subset / Superset</span>
+                </div>
+                <span style="color:#97a6ba;font-size:10px;">A⊆B, A⊂B, A⊄B</span>
+              </div>
             </div>
-            <div class="ui-stage-item inactive">
-              <div><span class="ui-stage-num">4</span><span class="ui-stage-title">Set Differences</span></div>
-              <div class="ui-stage-desc">Learn A\B, B\A, and A Δ B</div>
-            </div>
-            <div class="ui-stage-item inactive">
-              <div><span class="ui-stage-num">5</span><span class="ui-stage-title">Subset / Superset</span></div>
-              <div class="ui-stage-desc">Understand A⊆B relationships</div>
-            </div>
-            <div class="ui-stage-item inactive">
-              <div><span class="ui-stage-num">6</span><span class="ui-stage-title">De Morgan's Laws</span></div>
-              <div class="ui-stage-desc">Visualize complement laws</div>
-            </div>
-          </div>
-        </div>
+          </div><!-- /sidebar -->
 
-        <!-- MAIN -->
-        <div class="ui-main">
-          <div>
-            <div class="ui-stage-eyebrow">Stage 2</div>
-            <div class="ui-concept-title">Two Sets Overlapping</div>
-            <div class="ui-concept-desc">Learn to read A, B, A∪B, A∩B, A′, B′ from shading.</div>
-          </div>
+          <!-- MAIN MOCK -->
+          <div style="flex:1;padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0;position:relative;">
+            <!-- ANN 1 label for sidebar -->
+            <span class="ann" style="background:#fb923c;left:-13px;top:50%;width:20px;height:20px;font-size:9px;">1</span>
 
-          <div>
-            <div class="ui-ops-label">Choose an operation</div>
-            <div class="ui-ops-row">
-              <button class="ui-op-btn inactive">A</button>
-              <button class="ui-op-btn inactive">B</button>
-              <button class="ui-op-btn inactive">A′</button>
-              <button class="ui-op-btn inactive">B′</button>
-              <button class="ui-op-btn active">A ∪ B</button>
-              <button class="ui-op-btn inactive">A ∩ B</button>
-            </div>
-          </div>
-
-          <div class="ui-note">
-            <div class="ui-note-icon">💡</div>
             <div>
-              <div class="ui-note-head">Teaching note</div>
-              <div class="ui-note-body">A ∪ B (union) = in A or B or both. A ∩ B (intersection) = overlap only. Use buttons to shade each region.</div>
+              <p class="eyebrow-text" style="font-size:9px;font-weight:600;letter-spacing:.25em;text-transform:uppercase;margin-bottom:4px;">Stage 2</p>
+              <h4 class="heading-text" style="font-family:'Fraunces',serif;font-size:24px;line-height:1.1;margin-bottom:4px;">Two Sets Overlapping</h4>
+              <p class="sub-text" style="font-size:12px;">Learn to read A, B, A∪B, A∩B, A′, B′ from shading.</p>
+            </div>
+
+            <!-- op buttons -->
+            <div>
+              <p class="muted-text" style="font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;margin-bottom:7px;">Choose an operation</p>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;position:relative;">
+                <!-- ANN 4 -->
+                <span class="ann" style="background:#f472b6;right:-14px;top:-10px;width:20px;height:20px;font-size:9px;">4</span>
+                <button style="border-radius:9px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:#d9e5f5;padding:5px 11px;font-size:11px;font-weight:600;">A</button>
+                <button style="border-radius:9px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:#d9e5f5;padding:5px 11px;font-size:11px;font-weight:600;">B</button>
+                <button style="border-radius:9px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:#d9e5f5;padding:5px 11px;font-size:11px;font-weight:600;">A′</button>
+                <button style="border-radius:9px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:#d9e5f5;padding:5px 11px;font-size:11px;font-weight:600;">B′</button>
+                <button style="border-radius:9px;border:1px solid #e8c468;background:#e8c468;color:#1f2937;padding:5px 11px;font-size:11px;font-weight:600;box-shadow:0 4px 12px rgba(232,196,104,.28);">A ∪ B</button>
+                <button style="border-radius:9px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:#d9e5f5;padding:5px 11px;font-size:11px;font-weight:600;">A ∩ B</button>
+              </div>
+            </div>
+
+            <!-- teaching note -->
+            <div style="border-radius:14px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.04);padding:11px 13px;display:flex;gap:10px;position:relative;">
+              <!-- ANN 5 -->
+              <span class="ann" style="background:#60a5fa;right:-14px;top:-10px;width:20px;height:20px;font-size:9px;">5</span>
+              <div style="width:26px;height:26px;border-radius:50%;background:rgba(232,196,104,.18);color:#fde68a;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">💡</div>
+              <div>
+                <p style="font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#fde68a;margin-bottom:3px;">Teaching note</p>
+                <p style="font-size:11px;color:#cbd5e1;line-height:1.5;">A ∪ B (union) = in A or B or both. A ∩ B (intersection) = overlap only.</p>
+              </div>
+            </div>
+
+            <!-- canvas -->
+            <div style="position:relative;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+                <span class="muted-text" style="font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;">Visualization canvas</span>
+                <span class="muted-text" style="font-size:9px;">Universal set U</span>
+              </div>
+              <div style="border-radius:16px;background:rgba(15,23,42,.45);border:1px solid rgba(255,255,255,.09);padding:8px;position:relative;">
+                <!-- ANN 6 -->
+                <span class="ann" style="background:#e8c468;color:#1f2937;right:-14px;top:-10px;width:20px;height:20px;font-size:9px;">6</span>
+                <div class="universe-grid" style="border-radius:12px;background:rgba(15,23,42,.4);border:1px dashed rgba(255,255,255,.1);height:130px;overflow:hidden;position:relative;">
+                  <svg viewBox="0 0 480 130" width="100%" height="100%">
+                    <defs><clipPath id="caFull"><circle cx="168" cy="65" r="54"/></clipPath></defs>
+                    <text x="14" y="16" fill="#475569" font-size="9" font-family="monospace" letter-spacing="1">U</text>
+                    <!-- union highlight -->
+                    <circle cx="168" cy="65" r="54" fill="rgba(232,196,104,.38)" stroke="rgba(232,196,104,.8)" stroke-width="2" stroke-dasharray="5 3"/>
+                    <circle cx="312" cy="65" r="54" fill="rgba(124,198,255,.32)" stroke="rgba(124,198,255,.8)" stroke-width="2" stroke-dasharray="5 3"/>
+                    <!-- base circles -->
+                    <circle cx="168" cy="65" r="54" fill="rgba(232,196,104,.1)" stroke="rgba(232,196,104,.55)" stroke-width="1.5"/>
+                    <circle cx="312" cy="65" r="54" fill="rgba(124,198,255,.08)" stroke="rgba(124,198,255,.55)" stroke-width="1.5"/>
+                    <text x="168" y="20" text-anchor="middle" fill="rgba(232,196,104,.9)" font-size="13" font-weight="700" font-family="Georgia,serif">A</text>
+                    <text x="312" y="20" text-anchor="middle" fill="rgba(124,198,255,.9)" font-size="13" font-weight="700" font-family="Georgia,serif">B</text>
+                    <text x="240" y="122" text-anchor="middle" fill="#e8c468" font-size="11" font-weight="600" font-family="Georgia,serif">A ∪ B</text>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- status bar -->
+            <div style="display:grid;grid-template-columns:1.3fr .7fr;gap:8px;position:relative;">
+              <!-- ANN 7 -->
+              <span class="ann" style="background:#34d399;right:-14px;bottom:-10px;width:20px;height:20px;font-size:9px;">7</span>
+              <div style="border-radius:13px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);padding:11px 13px;">
+                <p class="muted-text" style="font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px;">Current operation</p>
+                <div style="display:flex;align-items:center;gap:7px;">
+                  <span class="dot-pulse dot-color" style="display:inline-flex;width:10px;height:10px;border-radius:50%;flex-shrink:0;"></span>
+                  <span class="heading-text" style="font-size:12px;font-weight:600;">Union — elements in A or B or both.</span>
+                </div>
+                <p class="sub-text" style="font-size:11px;margin-top:4px;">Both circles together form the union.</p>
+              </div>
+              <div style="border-radius:13px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);padding:11px 13px;">
+                <p class="muted-text" style="font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px;">Symbol notation</p>
+                <div style="background:rgba(0,0,0,.2);border-radius:9px;padding:8px;display:flex;align-items:center;justify-content:center;">
+                  <span class="heading-text" style="font-family:'Fraunces',serif;font-size:20px;font-weight:700;">A ∪ B</span>
+                </div>
+              </div>
+            </div>
+          </div><!-- /main -->
+        </div>
+      </div><!-- /mock-ui -->
+
+      <!-- LEGEND -->
+      <div class="legend-grid mt-6">
+        <div class="legend-item"><span class="legend-num" style="background:#fb923c;">1</span><div><p class="heading-text text-sm font-semibold mb-0.5">Left Panel — Stage Navigator</p><p class="muted-text text-xs leading-5">Lists all 7 learning stages. Click any stage to jump to it. Active stage is highlighted in gold.</p></div></div>
+        <div class="legend-item"><span class="legend-num" style="background:#a78bfa;">2</span><div><p class="heading-text text-sm font-semibold mb-0.5">Theme Toggle</p><p class="muted-text text-xs leading-5">Switch between 🌙 Dark and ☀️ Light mode at any time from the top-right of the sidebar.</p></div></div>
+        <div class="legend-item"><span class="legend-num" style="background:#34d399;">3</span><div><p class="heading-text text-sm font-semibold mb-0.5">Stage Cards</p><p class="muted-text text-xs leading-5">Each card shows the stage number, title, and description. Active = gold; others = blue tint.</p></div></div>
+        <div class="legend-item"><span class="legend-num" style="background:#f472b6;">4</span><div><p class="heading-text text-sm font-semibold mb-0.5">Operation Buttons</p><p class="muted-text text-xs leading-5">Click to select an operation (e.g. A∪B). Active button turns gold; Venn diagram shades instantly.</p></div></div>
+        <div class="legend-item"><span class="legend-num" style="background:#60a5fa;">5</span><div><p class="heading-text text-sm font-semibold mb-0.5">Teaching Note Panel</p><p class="muted-text text-xs leading-5">Contextual explanation for the current stage — common definitions and misconceptions.</p></div></div>
+        <div class="legend-item"><span class="legend-num" style="background:#e8c468;color:#1f2937;">6</span><div><p class="heading-text text-sm font-semibold mb-0.5">Venn Diagram Canvas</p><p class="muted-text text-xs leading-5">Dynamic SVG diagram. Shaded region changes instantly when you click an operation button.</p></div></div>
+        <div class="legend-item" style="grid-column:1/-1;"><span class="legend-num" style="background:#34d399;">7</span><div><p class="heading-text text-sm font-semibold mb-0.5">Status Bar &amp; Symbol Notation</p><p class="muted-text text-xs leading-5">Plain-English description of the active operation (left) and its formal mathematical symbol (right), e.g. <code>A ∪ B</code>, <code>A′</code>, <code>(A∩B)′</code>.</p></div></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ════════════════════════════════ -->
+    <!-- 03 LEFT PANEL CLOSE-UP -->
+    <!-- ════════════════════════════════ -->
+    <section class="mb-14">
+      <p class="section-label">Section 03</p>
+      <h2 class="heading-text text-3xl font-semibold mb-3" style="font-family:'Fraunces',serif;">Left Panel — Stage Navigator</h2>
+      <p class="sub-text text-sm leading-7 mb-6 max-w-2xl">The left panel is your learning roadmap. It shows all seven stages and always highlights which one you are on.</p>
+
+      <div class="flex flex-col md:flex-row gap-8 items-start">
+        <!-- sidebar close-up -->
+        <div class="glass-panel rounded-[20px] p-5 flex-shrink-0" style="width:260px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span class="eyebrow-text" style="font-size:9px;font-weight:600;letter-spacing:.25em;text-transform:uppercase;">SetViz path</span>
+            <span style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#cbd5e1;border-radius:99px;padding:2px 9px;font-size:9px;font-family:monospace;">🌙 Dark &nbsp;<span style="color:#a78bfa;font-weight:700;">← A</span></span>
+          </div>
+          <h3 class="heading-text" style="font-family:'Fraunces',serif;font-size:17px;line-height:1.2;margin-bottom:6px;">SetViz –<br>Basic Concepts</h3>
+          <p class="sub-text" style="font-size:11px;line-height:1.5;margin-bottom:10px;">An interactive learning tool for set theory concepts.</p>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="border-radius:11px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);padding:9px 11px;font-size:11px;">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;"><span style="background:rgba(124,198,255,.16);color:#bfe5ff;border-radius:50%;width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">0</span><span style="color:#e5eef9;font-weight:600;">Orientation</span></div>
+              <span style="color:#97a6ba;font-size:10px;">Learn about the universal set U</span>
+            </div>
+            <div style="border-radius:11px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);padding:9px 11px;font-size:11px;">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;"><span style="background:rgba(124,198,255,.16);color:#bfe5ff;border-radius:50%;width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">1</span><span style="color:#e5eef9;font-weight:600;">One Set (A)</span></div>
+              <span style="color:#97a6ba;font-size:10px;">Single set and complement A′</span>
+            </div>
+            <div style="border-radius:11px;border:1px solid rgba(232,196,104,.45);background:rgba(232,196,104,.12);padding:9px 11px;font-size:11px;position:relative;">
+              <span style="position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-size:10px;color:#fb923c;font-weight:700;">← B</span>
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;"><span style="background:#e8c468;color:#1f2937;border-radius:50%;width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">2</span><span style="color:#fff7dd;font-weight:600;">Two Sets Overlapping</span></div>
+              <span style="color:#e2d6aa;font-size:10px;">A, B, A∪B, A∩B, A′, B′</span>
+            </div>
+            <div style="border-radius:11px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);padding:9px 11px;font-size:11px;">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;"><span style="background:rgba(124,198,255,.16);color:#bfe5ff;border-radius:50%;width:19px;height:19px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">3</span><span style="color:#e5eef9;font-weight:600;">Mutually Exclusive</span></div>
+              <span style="color:#97a6ba;font-size:10px;">A ∩ B = ∅</span>
+            </div>
+            <div style="font-size:10px;text-align:center;padding:4px 0;position:relative;" class="muted-text">
+              <span style="position:absolute;left:-10px;top:50%;transform:translateY(-50%);font-size:10px;color:#34d399;font-weight:700;">C →</span>
+              … Stages 4 – 6 continue below
             </div>
           </div>
+        </div>
 
+        <!-- legend -->
+        <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+          <div class="legend-item"><span class="legend-num" style="background:#a78bfa;">A</span><div><p class="heading-text text-sm font-semibold mb-1">Theme Toggle (top right of sidebar)</p><p class="muted-text text-xs leading-5">Click <code>🌙 Dark</code> to switch to Light mode, or <code>☀️ Light</code> to switch back to Dark. The preference applies to the whole page immediately.</p></div></div>
+          <div class="legend-item"><span class="legend-num" style="background:#fb923c;">B</span><div><p class="heading-text text-sm font-semibold mb-1">Active Stage Card (gold highlight)</p><p class="muted-text text-xs leading-5">The stage you are currently viewing. Gold border, gold stage-number badge. The main panel on the right updates to match. Click any other card to switch.</p></div></div>
+          <div class="legend-item"><span class="legend-num" style="background:#34d399;">C</span><div><p class="heading-text text-sm font-semibold mb-1">Inactive Stage Cards</p><p class="muted-text text-xs leading-5">All other stages shown with a blue tint. <strong class="heading-text">Click any card to jump directly to that stage</strong> — no need to go in order. Hover to see a subtle slide-in animation.</p></div></div>
+          <div class="callout callout-tip">
+            <span style="font-size:16px;flex-shrink:0;">💡</span>
+            <div><p class="heading-text text-sm font-semibold mb-1">Non-linear navigation</p><p class="sub-text text-xs leading-5">You can click any stage at any time. If you already know Stage 1, skip straight to Stage 4 (Set Differences) or Stage 6 (De Morgan's Laws).</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ════════════════════════════════ -->
+    <!-- 04 OPERATION BUTTONS -->
+    <!-- ════════════════════════════════ -->
+    <section class="mb-14">
+      <p class="section-label">Section 04</p>
+      <h2 class="heading-text text-3xl font-semibold mb-3" style="font-family:'Fraunces',serif;">Operation Buttons</h2>
+      <p class="sub-text text-sm leading-7 mb-6 max-w-2xl">Each stage shows a row of buttons for the available set operations. Clicking a button instantly shades the corresponding Venn diagram region and updates the status bar.</p>
+
+      <div class="glass-panel rounded-[18px] p-5 max-w-lg">
+        <p class="muted-text mb-3" style="font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;">Choose an operation — Stage 2</p>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;align-items:center;">
+          <button class="op-inactive" style="border-radius:10px;border:1px solid;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;">A</button>
+          <button class="op-inactive" style="border-radius:10px;border:1px solid;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;">B</button>
+          <button class="op-inactive" style="border-radius:10px;border:1px solid;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;">A′</button>
+          <button class="op-inactive" style="border-radius:10px;border:1px solid;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;">B′</button>
+          <span style="position:relative;display:inline-block;">
+            <button class="op-active" style="border-radius:10px;border:1px solid;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;">A ∪ B</button>
+            <span style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;color:#fb923c;font-weight:700;white-space:nowrap;">← Selected (gold)</span>
+          </span>
+          <button class="op-inactive" style="border-radius:10px;border:1px solid;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;">A ∩ B</button>
+        </div>
+        <p class="muted-text mt-3" style="font-size:11px;">Only one button is active at a time. Click a different button to switch operations instantly.</p>
+      </div>
+
+      <div class="legend-grid mt-6" style="grid-template-columns:1fr;">
+        <div class="legend-item"><span class="legend-num" style="background:#34d399;">→</span><div><p class="heading-text text-sm font-semibold mb-1">Inactive button (default state)</p><p class="muted-text text-xs leading-5">Dark background, light text. Click to activate. Each stage only shows the operations relevant to that concept — so Stage 0 has no buttons, Stage 2 has 6, and Stage 6 has 6.</p></div></div>
+        <div class="legend-item"><span class="legend-num" style="background:#fb923c;">★</span><div><p class="heading-text text-sm font-semibold mb-1">Active button (selected operation)</p><p class="muted-text text-xs leading-5">Highlighted in gold with a glow shadow. The Venn diagram and status panel immediately reflect this operation. Clicking the same button again keeps it selected.</p></div></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ════════════════════════════════ -->
+    <!-- 05 VENN DIAGRAM CANVAS -->
+    <!-- ════════════════════════════════ -->
+    <section class="mb-14">
+      <p class="section-label">Section 05</p>
+      <h2 class="heading-text text-3xl font-semibold mb-3" style="font-family:'Fraunces',serif;">Venn Diagram Canvas</h2>
+      <p class="sub-text text-sm leading-7 mb-6 max-w-2xl">The canvas renders a live SVG Venn diagram. The shaded region updates the moment you click an operation — no page reload needed. Below are examples of every shading type.</p>
+
+      <!-- 3-column grid of canvas examples -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+        <!-- A only -->
+        <div>
+          <p class="eyebrow-text mb-2" style="font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;text-align:center;">A — circle A shaded gold</p>
+          <div class="glass-panel rounded-[16px] p-3">
+            <div class="canvas-inner universe-grid" style="border-radius:11px;border:1px dashed;height:110px;overflow:hidden;">
+              <svg viewBox="0 0 300 110" width="100%" height="100%">
+                <text x="10" y="14" fill="#475569" font-size="8" font-family="monospace">U</text>
+                <circle cx="105" cy="56" r="46" fill="rgba(232,196,104,.42)" stroke="rgba(232,196,104,.85)" stroke-width="2" stroke-dasharray="5 3"/>
+                <circle cx="195" cy="56" r="46" fill="rgba(124,198,255,.08)" stroke="rgba(124,198,255,.5)" stroke-width="1.5"/>
+                <text x="105" y="18" text-anchor="middle" fill="rgba(232,196,104,.9)" font-size="12" font-weight="700" font-family="Georgia,serif">A</text>
+                <text x="195" y="18" text-anchor="middle" fill="rgba(124,198,255,.7)" font-size="12" font-weight="700" font-family="Georgia,serif">B</text>
+                <text x="150" y="104" text-anchor="middle" fill="#e8c468" font-size="10" font-family="Georgia,serif">A</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- A ∩ B -->
+        <div>
+          <p class="eyebrow-text mb-2" style="font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;text-align:center;">A ∩ B — overlap region green</p>
+          <div class="glass-panel rounded-[16px] p-3">
+            <div class="canvas-inner universe-grid" style="border-radius:11px;border:1px dashed;height:110px;overflow:hidden;">
+              <svg viewBox="0 0 300 110" width="100%" height="100%">
+                <defs><clipPath id="cAI"><circle cx="105" cy="56" r="46"/></clipPath></defs>
+                <text x="10" y="14" fill="#475569" font-size="8" font-family="monospace">U</text>
+                <circle cx="105" cy="56" r="46" fill="rgba(232,196,104,.08)" stroke="rgba(232,196,104,.5)" stroke-width="1.5"/>
+                <circle cx="195" cy="56" r="46" fill="rgba(124,198,255,.08)" stroke="rgba(124,198,255,.5)" stroke-width="1.5"/>
+                <circle cx="195" cy="56" r="46" fill="rgba(74,222,128,.48)" stroke="rgba(74,222,128,.85)" stroke-width="2" stroke-dasharray="4 3" clip-path="url(#cAI)"/>
+                <text x="105" y="18" text-anchor="middle" fill="rgba(232,196,104,.7)" font-size="12" font-weight="700" font-family="Georgia,serif">A</text>
+                <text x="195" y="18" text-anchor="middle" fill="rgba(124,198,255,.7)" font-size="12" font-weight="700" font-family="Georgia,serif">B</text>
+                <text x="150" y="104" text-anchor="middle" fill="#4ade80" font-size="10" font-family="Georgia,serif">A ∩ B</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- A' complement -->
+        <div>
+          <p class="eyebrow-text mb-2" style="font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;text-align:center;">A′ — everything outside A</p>
+          <div class="glass-panel rounded-[16px] p-3">
+            <div class="canvas-inner universe-grid" style="border-radius:11px;border:1px dashed;height:110px;overflow:hidden;">
+              <svg viewBox="0 0 300 110" width="100%" height="100%">
+                <defs><mask id="mAC2"><rect width="300" height="110" fill="white"/><circle cx="105" cy="56" r="46" fill="black"/></mask></defs>
+                <text x="10" y="14" fill="#475569" font-size="8" font-family="monospace">U</text>
+                <rect width="300" height="110" fill="rgba(148,163,184,.38)" mask="url(#mAC2)"/>
+                <circle cx="105" cy="56" r="46" fill="rgba(232,196,104,.08)" stroke="rgba(232,196,104,.5)" stroke-width="1.5"/>
+                <circle cx="195" cy="56" r="46" fill="rgba(124,198,255,.08)" stroke="rgba(124,198,255,.5)" stroke-width="1.5"/>
+                <text x="105" y="18" text-anchor="middle" fill="rgba(232,196,104,.7)" font-size="12" font-weight="700" font-family="Georgia,serif">A</text>
+                <text x="195" y="18" text-anchor="middle" fill="rgba(124,198,255,.7)" font-size="12" font-weight="700" font-family="Georgia,serif">B</text>
+                <text x="150" y="104" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="Georgia,serif">A′</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- A \ B difference -->
+        <div>
+          <p class="eyebrow-text mb-2" style="font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;text-align:center;">A \ B — A minus overlap</p>
+          <div class="glass-panel rounded-[16px] p-3">
+            <div class="canvas-inner universe-grid" style="border-radius:11px;border:1px dashed;height:110px;overflow:hidden;">
+              <svg viewBox="0 0 300 110" width="100%" height="100%">
+                <defs><mask id="mNB"><rect width="300" height="110" fill="white"/><circle cx="195" cy="56" r="46" fill="black"/></mask></defs>
+                <text x="10" y="14" fill="#475569" font-size="8" font-family="monospace">U</text>
+                <circle cx="105" cy="56" r="46" fill="rgba(232,196,104,.5)" stroke="rgba(232,196,104,.9)" stroke-width="2" stroke-dasharray="5 3" mask="url(#mNB)"/>
+                <circle cx="105" cy="56" r="46" fill="rgba(232,196,104,.08)" stroke="rgba(232,196,104,.5)" stroke-width="1.5"/>
+                <circle cx="195" cy="56" r="46" fill="rgba(124,198,255,.08)" stroke="rgba(124,198,255,.5)" stroke-width="1.5"/>
+                <text x="105" y="18" text-anchor="middle" fill="rgba(232,196,104,.9)" font-size="12" font-weight="700" font-family="Georgia,serif">A</text>
+                <text x="195" y="18" text-anchor="middle" fill="rgba(124,198,255,.7)" font-size="12" font-weight="700" font-family="Georgia,serif">B</text>
+                <text x="150" y="104" text-anchor="middle" fill="#e8c468" font-size="10" font-family="Georgia,serif">A \ B</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- A union B complement -->
+        <div>
+          <p class="eyebrow-text mb-2" style="font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;text-align:center;">(A∪B)′ — outside both circles</p>
+          <div class="glass-panel rounded-[16px] p-3">
+            <div class="canvas-inner universe-grid" style="border-radius:11px;border:1px dashed;height:110px;overflow:hidden;">
+              <svg viewBox="0 0 300 110" width="100%" height="100%">
+                <defs><mask id="mNAuB"><rect width="300" height="110" fill="white"/><circle cx="105" cy="56" r="46" fill="black"/><circle cx="195" cy="56" r="46" fill="black"/></mask></defs>
+                <text x="10" y="14" fill="#475569" font-size="8" font-family="monospace">U</text>
+                <rect width="300" height="110" fill="rgba(148,163,184,.40)" mask="url(#mNAuB)"/>
+                <circle cx="105" cy="56" r="46" fill="rgba(232,196,104,.08)" stroke="rgba(232,196,104,.5)" stroke-width="1.5"/>
+                <circle cx="195" cy="56" r="46" fill="rgba(124,198,255,.08)" stroke="rgba(124,198,255,.5)" stroke-width="1.5"/>
+                <text x="105" y="18" text-anchor="middle" fill="rgba(232,196,104,.7)" font-size="12" font-weight="700" font-family="Georgia,serif">A</text>
+                <text x="195" y="18" text-anchor="middle" fill="rgba(124,198,255,.7)" font-size="12" font-weight="700" font-family="Georgia,serif">B</text>
+                <text x="150" y="104" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="Georgia,serif">(A∪B)′</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- A ∩ B = ∅ disjoint -->
+        <div>
+          <p class="eyebrow-text mb-2" style="font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;text-align:center;">Stage 3 — A ∩ B = ∅ badge</p>
+          <div class="glass-panel rounded-[16px] p-3">
+            <div class="canvas-inner universe-grid" style="border-radius:11px;border:1px dashed;height:110px;overflow:hidden;position:relative;">
+              <svg viewBox="0 0 300 110" width="100%" height="100%">
+                <text x="10" y="14" fill="#475569" font-size="8" font-family="monospace">U</text>
+                <circle cx="80" cy="56" r="44" fill="rgba(232,196,104,.12)" stroke="rgba(232,196,104,.6)" stroke-width="1.5"/>
+                <circle cx="220" cy="56" r="44" fill="rgba(124,198,255,.1)" stroke="rgba(124,198,255,.6)" stroke-width="1.5"/>
+                <text x="80" y="18" text-anchor="middle" fill="rgba(232,196,104,.9)" font-size="12" font-weight="700" font-family="Georgia,serif">A</text>
+                <text x="220" y="18" text-anchor="middle" fill="rgba(124,198,255,.9)" font-size="12" font-weight="700" font-family="Georgia,serif">B</text>
+                <rect x="103" y="40" width="94" height="28" rx="14" fill="rgba(15,23,42,.9)" stroke="rgba(248,113,113,.5)" stroke-width="1.5"/>
+                <text x="150" y="58" text-anchor="middle" fill="#f87171" font-size="10" font-weight="600" font-family="Georgia,serif">A ∩ B = ∅</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <span style="font-size:16px;flex-shrink:0;">💡</span>
+        <div><p class="heading-text text-sm font-semibold mb-1">The shading label</p><p class="sub-text text-xs leading-5">A small label (e.g. <code>A ∪ B</code>) appears at the bottom of the canvas confirming which region is shaded. For Stage 3 (Mutually Exclusive), a red <code>A ∩ B = ∅</code> badge appears instead to reinforce the empty-set concept.</p></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ════════════════════════════════ -->
+    <!-- 06 STATUS BAR -->
+    <!-- ════════════════════════════════ -->
+    <section class="mb-14">
+      <p class="section-label">Section 06</p>
+      <h2 class="heading-text text-3xl font-semibold mb-3" style="font-family:'Fraunces',serif;">Teaching Note, Status Bar &amp; Symbol</h2>
+      <p class="sub-text text-sm leading-7 mb-6 max-w-2xl">Below the canvas, three panels provide all the conceptual context you need without leaving the page.</p>
+
+      <div class="glass-panel rounded-[18px] p-5 flex flex-col gap-3 max-w-2xl">
+        <!-- note -->
+        <div style="border-radius:14px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.04);padding:12px 14px;display:flex;gap:10px;">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(232,196,104,.18);color:#fde68a;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">💡</div>
           <div>
-            <div class="ui-canvas-label-row">
-              <div class="ui-canvas-label">Visualization canvas</div>
-              <div class="ui-canvas-label">Universal set U</div>
-            </div>
-            <div class="ui-canvas-wrap">
-              <div class="ui-canvas-inner">
-                <svg class="ui-venn-svg" viewBox="0 0 500 160" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <circle id="mA" cx="170" cy="80" r="64"/>
-                    <circle id="mB" cx="330" cy="80" r="64"/>
-                    <clipPath id="cA"><circle cx="170" cy="80" r="64"/></clipPath>
-                    <clipPath id="cB"><circle cx="330" cy="80" r="64"/></clipPath>
-                  </defs>
-                  <!-- grid -->
-                  <pattern id="g" width="16" height="16" patternUnits="userSpaceOnUse">
-                    <path d="M16 0L0 0 0 16" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width=".5"/>
-                  </pattern>
-                  <rect width="500" height="160" fill="url(#g)"/>
-                  <!-- union highlight -->
-                  <circle cx="170" cy="80" r="64" fill="rgba(232,196,104,0.38)" stroke="rgba(232,196,104,0.8)" stroke-width="2" stroke-dasharray="5 3"/>
-                  <circle cx="330" cy="80" r="64" fill="rgba(124,198,255,0.32)" stroke="rgba(124,198,255,0.8)" stroke-width="2" stroke-dasharray="5 3"/>
-                  <!-- base circles on top -->
-                  <circle cx="170" cy="80" r="64" fill="rgba(232,196,104,0.10)" stroke="rgba(232,196,104,0.6)" stroke-width="2"/>
-                  <circle cx="330" cy="80" r="64" fill="rgba(124,198,255,0.08)" stroke="rgba(124,198,255,0.6)" stroke-width="2"/>
-                  <!-- labels -->
-                  <text x="170" y="24" text-anchor="middle" fill="rgba(232,196,104,0.9)" font-size="14" font-weight="700" font-family="Georgia,serif">A</text>
-                  <text x="330" y="24" text-anchor="middle" fill="rgba(124,198,255,0.9)" font-size="14" font-weight="700" font-family="Georgia,serif">B</text>
-                  <text x="18" y="18" fill="#475569" font-size="9" font-family="monospace" letter-spacing="1">U</text>
-                  <!-- shading label -->
-                  <text x="250" y="152" text-anchor="middle" fill="#e8c468" font-size="12" font-weight="600" font-family="Georgia,serif">A ∪ B</text>
-                </svg>
-              </div>
-            </div>
+            <p style="font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#fde68a;margin-bottom:4px;">Teaching note &nbsp;<span style="color:#60a5fa;">← covers the whole stage</span></p>
+            <p style="font-size:12px;color:#cbd5e1;line-height:1.5;">A ∪ B (union) = in A or B or both. A ∩ B (intersection) = overlap only. Use buttons to compare.</p>
           </div>
-
-          <div class="ui-status-row">
-            <div class="ui-status-box">
-              <div class="ui-status-head">Current operation</div>
-              <div class="ui-status-text">
-                <span class="ui-dot"></span>
-                Union — elements in A or B or both.
-              </div>
-              <div class="ui-status-expl">Both circles together form the union.</div>
+        </div>
+        <!-- status row -->
+        <div style="display:grid;grid-template-columns:1.3fr .7fr;gap:8px;">
+          <div style="border-radius:13px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);padding:12px 14px;">
+            <p class="muted-text" style="font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px;">Current operation &nbsp;<span style="color:#fb923c;">← updates on every click</span></p>
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;">
+              <span class="dot-pulse dot-color" style="display:inline-flex;width:10px;height:10px;border-radius:50%;flex-shrink:0;"></span>
+              <span class="heading-text" style="font-size:13px;font-weight:600;">Union — elements in A or B or both.</span>
             </div>
-            <div class="ui-status-box">
-              <div class="ui-status-head">Symbol notation</div>
-              <div class="ui-symbol-box">
-                <span class="ui-symbol-text">A ∪ B</span>
-              </div>
+            <p class="sub-text" style="font-size:11px;">Both circles together form the union.</p>
+          </div>
+          <div style="border-radius:13px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);padding:12px 14px;">
+            <p class="muted-text" style="font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px;">Symbol &nbsp;<span style="color:#e8c468;">← exam notation</span></p>
+            <div style="background:rgba(0,0,0,.2);border-radius:9px;padding:8px;display:flex;align-items:center;justify-content:center;">
+              <span class="heading-text" style="font-family:'Fraunces',serif;font-size:22px;font-weight:700;">A ∪ B</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ANNOTATIONS OVERLAY -->
-      <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;" viewBox="0 0 900 540" preserveAspectRatio="none">
-        <!-- 1: Sidebar -->
-        <line x1="0" y1="270" x2="-40" y2="90" stroke="var(--anno)" stroke-width="1.5" stroke-dasharray="4 3" opacity=".7"/>
-        <circle cx="-40" cy="90" r="12" fill="var(--anno)" opacity=".9"/>
-        <text x="-40" y="94" text-anchor="middle" fill="#fff" font-size="11" font-family="monospace" font-weight="700">1</text>
-
-        <!-- 2: Theme toggle -->
-        <line x1="230" y1="18" x2="270" y2="-20" stroke="var(--anno2)" stroke-width="1.5" stroke-dasharray="4 3" opacity=".7"/>
-        <circle cx="270" cy="-20" r="12" fill="var(--anno2)" opacity=".9"/>
-        <text x="270" y="-16" text-anchor="middle" fill="#fff" font-size="11" font-family="monospace" font-weight="700">2</text>
-
-        <!-- 3: Stage list items -->
-        <line x1="120" y1="310" x2="-40" y2="360" stroke="var(--anno3)" stroke-width="1.5" stroke-dasharray="4 3" opacity=".7"/>
-        <circle cx="-40" cy="360" r="12" fill="var(--anno3)" opacity=".9"/>
-        <text x="-40" y="364" text-anchor="middle" fill="#fff" font-size="11" font-family="monospace" font-weight="700">3</text>
-
-        <!-- 4: Operation buttons -->
-        <line x1="680" y1="148" x2="940" y2="90" stroke="var(--anno4)" stroke-width="1.5" stroke-dasharray="4 3" opacity=".7"/>
-        <circle cx="940" cy="90" r="12" fill="var(--anno4)" opacity=".9"/>
-        <text x="940" y="94" text-anchor="middle" fill="#fff" font-size="11" font-family="monospace" font-weight="700">4</text>
-
-        <!-- 5: Teaching note -->
-        <line x1="700" y1="240" x2="940" y2="240" stroke="var(--anno5)" stroke-width="1.5" stroke-dasharray="4 3" opacity=".7"/>
-        <circle cx="940" cy="240" r="12" fill="var(--anno5)" opacity=".9"/>
-        <text x="940" y="244" text-anchor="middle" fill="#fff" font-size="11" font-family="monospace" font-weight="700">5</text>
-
-        <!-- 6: Canvas -->
-        <line x1="700" y1="360" x2="940" y2="390" stroke="rgba(232,196,104,1)" stroke-width="1.5" stroke-dasharray="4 3" opacity=".7"/>
-        <circle cx="940" cy="390" r="12" fill="var(--gold)" opacity=".9"/>
-        <text x="940" y="394" text-anchor="middle" fill="#1f2937" font-size="11" font-family="monospace" font-weight="700">6</text>
-
-        <!-- 7: Status + Symbol -->
-        <line x1="700" y1="490" x2="940" y2="510" stroke="var(--anno3)" stroke-width="1.5" stroke-dasharray="4 3" opacity=".7"/>
-        <circle cx="940" cy="510" r="12" fill="var(--anno3)" opacity=".9"/>
-        <text x="940" y="514" text-anchor="middle" fill="#fff" font-size="11" font-family="monospace" font-weight="700">7</text>
-      </svg>
-    </div>
-
-    <!-- LEGEND -->
-    <div class="legend" style="margin-top:32px;">
-      <div class="legend-item">
-        <div class="legend-num c1">1</div>
-        <div class="legend-text">
-          <strong>Left Panel — Stage Navigator</strong>
-          <span>Lists all 7 learning stages. Click any stage to jump to it. Active stage is highlighted in gold.</span>
-        </div>
+      <div class="legend-grid mt-5" style="grid-template-columns:1fr;">
+        <div class="legend-item"><span class="legend-num" style="background:#60a5fa;">①</span><div><p class="heading-text text-sm font-semibold mb-1">Teaching Note (💡 panel)</p><p class="muted-text text-xs leading-5">Provides the conceptual explanation for the <em>entire stage</em>. This panel does not change when you click different operation buttons — it gives the broader context.</p></div></div>
+        <div class="legend-item"><span class="legend-num" style="background:#fb923c;">②</span><div><p class="heading-text text-sm font-semibold mb-1">Current Operation Description</p><p class="muted-text text-xs leading-5">Updates every time you click an operation button. Gives a plain-English definition (e.g. "Elements in A but NOT in B") plus a sentence explaining what the shaded region means.</p></div></div>
+        <div class="legend-item"><span class="legend-num" style="background:#e8c468;color:#1f2937;">③</span><div><p class="heading-text text-sm font-semibold mb-1">Symbol Notation Badge</p><p class="muted-text text-xs leading-5">Shows the formal mathematical expression for the selected operation — the exact notation used in textbooks and exams: <code>A ∪ B</code>, <code>A′</code>, <code>A \ B</code>, <code>(A ∩ B)′</code>, etc.</p></div></div>
       </div>
-      <div class="legend-item">
-        <div class="legend-num c2">2</div>
-        <div class="legend-text">
-          <strong>Theme Toggle</strong>
-          <span>Switch between 🌙 Dark and ☀️ Light mode at any time.</span>
-        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ════════════════════════════════ -->
+    <!-- 07 ALL STAGES -->
+    <!-- ════════════════════════════════ -->
+    <section class="mb-14">
+      <p class="section-label">Section 07</p>
+      <h2 class="heading-text text-3xl font-semibold mb-3" style="font-family:'Fraunces',serif;">All 7 Learning Stages</h2>
+      <p class="sub-text text-sm leading-7 mb-4 max-w-2xl">SetViz progresses from the basic definition of a set all the way to De Morgan's Laws. Each stage builds on the previous one.</p>
+
+      <div style="overflow-x:auto;">
+        <table class="stg-table" style="border-radius:14px;overflow:hidden;">
+          <thead><tr><th>Stage</th><th>Title</th><th>Operations</th><th>Concept covered</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge-stage">0</span></td><td class="heading-text font-semibold text-sm">Orientation</td><td>—</td><td>Universal set U as bounding frame; definition of a set</td></tr>
+            <tr><td><span class="badge-stage">1</span></td><td class="heading-text font-semibold text-sm">One Set (A)</td><td><span class="badge-op">A</span><span class="badge-op">A′</span></td><td>Single set and its complement; everything outside A</td></tr>
+            <tr><td><span class="badge-stage">2</span></td><td class="heading-text font-semibold text-sm">Two Sets Overlapping</td><td><span class="badge-op">A</span><span class="badge-op">B</span><span class="badge-op">A′</span><span class="badge-op">B′</span><span class="badge-op">A∪B</span><span class="badge-op">A∩B</span></td><td>Union, intersection, complements with two overlapping circles</td></tr>
+            <tr><td><span class="badge-stage">3</span></td><td class="heading-text font-semibold text-sm">Mutually Exclusive</td><td><span class="badge-op">A</span><span class="badge-op">B</span><span class="badge-op">A∪B</span><span class="badge-op">A∩B=∅</span></td><td>Disjoint sets; why A∩B=∅ when circles don't overlap</td></tr>
+            <tr><td><span class="badge-stage">4</span></td><td class="heading-text font-semibold text-sm">Set Differences</td><td><span class="badge-op">A\B</span><span class="badge-op">B\A</span><span class="badge-op">AΔB</span></td><td>Set difference (crescent) and symmetric difference</td></tr>
+            <tr><td><span class="badge-stage">5</span></td><td class="heading-text font-semibold text-sm">Subset / Superset</td><td><span class="badge-op">A⊂B</span><span class="badge-op">A=B</span><span class="badge-op">A⊄B</span><span class="badge-op">disjoint</span></td><td>Proper subsets, equal sets — diagram repositions dynamically</td></tr>
+            <tr><td><span class="badge-stage">6</span></td><td class="heading-text font-semibold text-sm">Complements &amp; De Morgan</td><td><span class="badge-op">A′</span><span class="badge-op">B′</span><span class="badge-op">(A∪B)′</span><span class="badge-op">(A∩B)′</span></td><td>De Morgan's Laws: (A∪B)′=A′∩B′ and (A∩B)′=A′∪B′</td></tr>
+          </tbody>
+        </table>
       </div>
-      <div class="legend-item">
-        <div class="legend-num c3">3</div>
-        <div class="legend-text">
-          <strong>Stage Cards</strong>
-          <span>Each card shows the stage number, title, and a short description. Active = gold; others = blue tint.</span>
-        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ════════════════════════════════ -->
+    <!-- 08 QUICK START -->
+    <!-- ════════════════════════════════ -->
+    <section class="mb-14">
+      <p class="section-label">Section 08</p>
+      <h2 class="heading-text text-3xl font-semibold mb-3" style="font-family:'Fraunces',serif;">Quick-Start Workflow</h2>
+      <p class="sub-text text-sm leading-7 mb-5 max-w-2xl">Follow this sequence for first-time use or classroom demonstration.</p>
+
+      <div class="step-card"><div class="step-num">1</div><div><p class="heading-text text-sm font-semibold mb-0.5">Open Stage 0 — Orientation</p><p class="sub-text text-sm">Read the teaching note. Observe the empty bounding rectangle — this is the universal set U. No circles appear yet.</p></div></div>
+      <div class="step-card"><div class="step-num">2</div><div><p class="heading-text text-sm font-semibold mb-0.5">Stage 1 — Click A then A′</p><p class="sub-text text-sm">Click <code>A</code> to shade the circle gold, then click <code>A′</code> to shade its complement grey. Compare the two. Check the Symbol badge for the notation.</p></div></div>
+      <div class="step-card"><div class="step-num">3</div><div><p class="heading-text text-sm font-semibold mb-0.5">Stage 2 — Work through all 6 buttons</p><p class="sub-text text-sm">Click A, B, A′, B′, A∪B, A∩B one by one. Focus on the difference between ∪ (both circles) and ∩ (only the lens-shaped overlap).</p></div></div>
+      <div class="step-card"><div class="step-num">4</div><div><p class="heading-text text-sm font-semibold mb-0.5">Stage 3 — Compare disjoint vs overlapping</p><p class="sub-text text-sm">Click A∩B here and notice the <code>A ∩ B = ∅</code> badge. Compare with Stage 2 to understand why the result changes when circles don't touch.</p></div></div>
+      <div class="step-card"><div class="step-num">5</div><div><p class="heading-text text-sm font-semibold mb-0.5">Stage 6 — Verify De Morgan's Laws</p><p class="sub-text text-sm">Click <code>(A∪B)′</code> — note the region outside both circles. Then click <code>(A∩B)′</code> — note it shades everything except the small lens. Cross-reference with your textbook.</p></div></div>
+
+      <div class="callout callout-tip mt-4">
+        <span style="font-size:16px;flex-shrink:0;">🎓</span>
+        <div><p class="heading-text text-sm font-semibold mb-1">For lecturers</p><p class="sub-text text-xs leading-5">SetViz works well as a live demonstration tool. Open it on a projector, select operations as you explain each concept. Students can follow along on their own devices simultaneously — no setup or accounts needed.</p></div>
       </div>
-      <div class="legend-item">
-        <div class="legend-num c4">4</div>
-        <div class="legend-text">
-          <strong>Operation Buttons</strong>
-          <span>Select an operation (e.g. A∪B, A∩B, A′). Active button turns gold; Venn diagram shades instantly.</span>
-        </div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-num c5">5</div>
-        <div class="legend-text">
-          <strong>Teaching Note Panel</strong>
-          <span>Contextual explanation for the current stage. Updates as you move between stages.</span>
-        </div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-num c6">6</div>
-        <div class="legend-text">
-          <strong>Venn Diagram Canvas</strong>
-          <span>Dynamic SVG diagram. The shaded region changes instantly when you select an operation.</span>
-        </div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-num c3">7</div>
-        <div class="legend-text">
-          <strong>Status Bar &amp; Symbol Notation</strong>
-          <span>Shows the operation description in plain English (left) and its formal mathematical symbol (right).</span>
-        </div>
-      </div>
-    </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <div class="divider"></div>
+    <footer class="text-center pb-6">
+      <p class="footer-text text-xs">© 2026 SetViz by Suriyati Ujang &nbsp;·&nbsp; Universiti Teknologi MARA Pahang, Raub Campus</p>
+      <p class="footer-text text-xs mt-1">
+        <a href="index.html" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.15);">← Back to SetViz</a>
+        &nbsp;·&nbsp;
+        <a href="about.html" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.15);">About</a>
+        &nbsp;·&nbsp; Inspired by ProbViz &nbsp;·&nbsp; Built with ❤️ + JS
+      </p>
+    </footer>
+
   </div>
-
-  <div class="divider"></div>
-
-  <!-- ══ 3. LEFT PANEL ══ -->
-  <div class="section">
-    <div class="section-label">Section 03</div>
-    <h2>Left Panel — Stage Navigator</h2>
-    <p>The left panel is your learning roadmap. It lists all seven stages in order and shows which stage you are currently on.</p>
-
-    <!-- Sidebar close-up mock -->
-    <div class="diagram-wrap" style="max-width:320px; margin-top:28px;">
-      <div class="mock-ui" style="padding:20px; display:flex; flex-direction:column; gap:12px;">
-        <div class="ui-eyebrow">
-          <span>SetViz path</span>
-          <button class="ui-theme-btn">🌙 Dark</button>
-        </div>
-        <div class="ui-title">SetViz –<br>Basic Concepts</div>
-        <div class="ui-subtitle">An interactive learning tool for set theory concepts through visualizations.</div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <div class="ui-stage-item inactive"><div><span class="ui-stage-num">0</span><span class="ui-stage-title">Orientation</span></div><div class="ui-stage-desc">Learn about the universal set U</div></div>
-          <div class="ui-stage-item inactive"><div><span class="ui-stage-num">1</span><span class="ui-stage-title">One Set (A)</span></div><div class="ui-stage-desc">Learn what a set is; A, A′</div></div>
-          <div class="ui-stage-item active"><div><span class="ui-stage-num">2</span><span class="ui-stage-title">Two Sets Overlapping</span></div><div class="ui-stage-desc">A, B, A∪B, A∩B, A′, B′</div></div>
-          <div class="ui-stage-item inactive"><div><span class="ui-stage-num">3</span><span class="ui-stage-title">Mutually Exclusive</span></div><div class="ui-stage-desc">A ∩ B = ∅ visually</div></div>
-          <div class="ui-stage-item inactive"><div><span class="ui-stage-num">4</span><span class="ui-stage-title">Set Differences</span></div><div class="ui-stage-desc">A\B, B\A, A Δ B</div></div>
-          <div class="ui-stage-item inactive"><div><span class="ui-stage-num">5</span><span class="ui-stage-title">Subset / Superset</span></div><div class="ui-stage-desc">A⊆B, A⊂B, A⊄B</div></div>
-          <div class="ui-stage-item inactive"><div><span class="ui-stage-num">6</span><span class="ui-stage-title">Complements &amp; De Morgan</span></div><div class="ui-stage-desc">(A∪B)′, (A∩B)′, De Morgan</div></div>
-        </div>
-      </div>
-
-      <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;" viewBox="0 0 320 520" preserveAspectRatio="none">
-        <line x1="290" y1="40" x2="360" y2="20" stroke="var(--anno2)" stroke-width="1.5" stroke-dasharray="3 2" opacity=".8"/>
-        <circle cx="360" cy="20" r="11" fill="var(--anno2)"/>
-        <text x="360" y="24" text-anchor="middle" fill="#fff" font-size="10" font-family="monospace" font-weight="700">A</text>
-
-        <line x1="160" y1="200" x2="360" y2="200" stroke="var(--anno)" stroke-width="1.5" stroke-dasharray="3 2" opacity=".8"/>
-        <circle cx="360" cy="200" r="11" fill="var(--anno)"/>
-        <text x="360" y="204" text-anchor="middle" fill="#fff" font-size="10" font-family="monospace" font-weight="700">B</text>
-
-        <line x1="160" y1="280" x2="360" y2="310" stroke="var(--anno3)" stroke-width="1.5" stroke-dasharray="3 2" opacity=".8"/>
-        <circle cx="360" cy="310" r="11" fill="var(--anno3)"/>
-        <text x="360" y="314" text-anchor="middle" fill="#fff" font-size="10" font-family="monospace" font-weight="700">C</text>
-      </svg>
-    </div>
-
-    <div class="legend" style="margin-top:24px; grid-template-columns:1fr;">
-      <div class="legend-item">
-        <div class="legend-num c2">A</div>
-        <div class="legend-text">
-          <strong>Theme Toggle Button</strong>
-          <span>Located in the top-right of the sidebar. Click to switch between Dark mode (🌙) and Light mode (☀️). Your preference is applied immediately across the entire interface.</span>
-        </div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-num c1">B</div>
-        <div class="legend-text">
-          <strong>Active Stage Card (Gold highlight)</strong>
-          <span>The stage you are currently viewing. Shown with a gold border and gold stage number badge. The main panel on the right updates to match this stage.</span>
-        </div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-num c3">C</div>
-        <div class="legend-text">
-          <strong>Inactive Stage Cards</strong>
-          <span>All other stages, shown with a subtle blue tint. <strong style="color:#fff">Click any card to jump directly to that stage</strong> — no need to go in order.</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="callout tip" style="margin-top:20px;">
-      <div class="callout-icon">💡</div>
-      <div class="callout-body">
-        <strong>Tip: Non-linear navigation</strong>
-        <span>You can click any stage at any time. If you already understand Stage 1, skip straight to Stage 4 (Set Differences) — there is no forced sequence.</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- ══ 4. OPERATION BUTTONS ══ -->
-  <div class="section">
-    <div class="section-label">Section 04</div>
-    <h2>Operation Buttons</h2>
-    <p>Each stage shows a row of operation buttons at the top of the main panel. Clicking a button instantly shades the corresponding region in the Venn diagram.</p>
-
-    <!-- Ops mock -->
-    <div class="diagram-wrap" style="max-width:560px; margin-top:24px;">
-      <div class="mock-ui" style="padding:20px;">
-        <div class="ui-ops-label">Choose an operation</div>
-        <div class="ui-ops-row" style="gap:8px;">
-          <button class="ui-op-btn inactive">A</button>
-          <button class="ui-op-btn inactive">B</button>
-          <button class="ui-op-btn inactive">A′</button>
-          <button class="ui-op-btn inactive">B′</button>
-          <button class="ui-op-btn active">A ∪ B</button>
-          <button class="ui-op-btn inactive">A ∩ B</button>
-        </div>
-      </div>
-
-      <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;" viewBox="0 0 560 80" preserveAspectRatio="none">
-        <line x1="80" y1="55" x2="80" y2="100" stroke="var(--anno3)" stroke-width="1.5" stroke-dasharray="3 2" opacity=".8"/>
-        <circle cx="80" cy="110" r="11" fill="var(--anno3)"/>
-        <text x="80" y="114" text-anchor="middle" fill="#fff" font-size="10" font-family="monospace" font-weight="700">A</text>
-
-        <line x1="300" y1="55" x2="300" y2="100" stroke="var(--anno)" stroke-width="1.5" stroke-dasharray="3 2" opacity=".8"/>
-        <circle cx="300" cy="110" r="11" fill="var(--anno)"/>
-        <text x="300" y="114" text-anchor="middle" fill="#fff" font-size="10" font-family="monospace" font-weight="700">B</text>
-      </svg>
-    </div>
-
-    <div class="legend" style="margin-top:32px; grid-template-columns:1fr;">
-      <div class="legend-item">
-        <div class="legend-num c3">A</div>
-        <div class="legend-text">
-          <strong>Inactive Button (default state)</strong>
-          <span>Shown with a subtle dark background and light text. Click to activate. Multiple operations can be explored in sequence without leaving the stage.</span>
-        </div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-num c1">B</div>
-        <div class="legend-text">
-          <strong>Active Button (selected operation)</strong>
-          <span>Highlighted in gold with a shadow glow. The Venn diagram and status panel immediately reflect this operation. Only one button is active at a time per stage.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- ══ 5. VENN DIAGRAM CANVAS ══ -->
-  <div class="section">
-    <div class="section-label">Section 05</div>
-    <h2>The Venn Diagram Canvas</h2>
-    <p>The canvas renders a live SVG Venn diagram. The shaded region updates the moment you click an operation button — no page reload required.</p>
-
-    <!-- 3 canvas examples side by side -->
-    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-top:28px;">
-
-      <!-- A only -->
-      <div>
-        <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.15em; color:var(--gold); text-align:center; margin-bottom:8px; text-transform:uppercase;">A</div>
-        <div class="mock-ui" style="padding:10px;">
-          <div class="ui-canvas-inner" style="height:110px;">
-            <svg viewBox="0 0 300 110" width="100%" height="100%">
-              <pattern id="g2" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M14 0L0 0 0 14" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width=".5"/></pattern>
-              <rect width="300" height="110" fill="url(#g2)"/>
-              <circle cx="105" cy="55" r="48" fill="rgba(232,196,104,0.42)" stroke="rgba(232,196,104,0.85)" stroke-width="2" stroke-dasharray="5 3"/>
-              <circle cx="195" cy="55" r="48" fill="rgba(124,198,255,0.08)" stroke="rgba(124,198,255,0.5)" stroke-width="1.5"/>
-              <text x="105" y="17" text-anchor="middle" fill="rgba(232,196,104,.9)" font-size="12" font-weight="700" font-family="Georgia,serif">A</text>
-              <text x="195" y="17" text-anchor="middle" fill="rgba(124,198,255,.7)" font-size="12" font-weight="700" font-family="Georgia,serif">B</text>
-              <text x="14" y="14" fill="#475569" font-size="8" font-family="monospace">U</text>
-              <text x="150" y="103" text-anchor="middle" fill="#e8c468" font-size="10" font-family="Georgia,serif">A</text>
-            </svg>
-          </div>
-        </div>
-        <div style="font-size:11px; color:var(--muted); text-align:center; margin-top:8px;">Circle A shaded gold</div>
-      </div>
-
-      <!-- Intersection -->
-      <div>
-        <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.15em; color:var(--green); text-align:center; margin-bottom:8px; text-transform:uppercase;">A ∩ B</div>
-        <div class="mock-ui" style="padding:10px;">
-          <div class="ui-canvas-inner" style="height:110px;">
-            <svg viewBox="0 0 300 110" width="100%" height="100%">
-              <defs>
-                <clipPath id="caI"><circle cx="105" cy="55" r="48"/></clipPath>
-              </defs>
-              <pattern id="g3" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M14 0L0 0 0 14" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width=".5"/></pattern>
-              <rect width="300" height="110" fill="url(#g3)"/>
-              <circle cx="105" cy="55" r="48" fill="rgba(232,196,104,0.08)" stroke="rgba(232,196,104,0.5)" stroke-width="1.5"/>
-              <circle cx="195" cy="55" r="48" fill="rgba(124,198,255,0.08)" stroke="rgba(124,198,255,0.5)" stroke-width="1.5"/>
-              <circle cx="195" cy="55" r="48" fill="rgba(74,222,128,0.48)" stroke="rgba(74,222,128,0.85)" stroke-width="2" stroke-dasharray="4 3" clip-path="url(#caI)"/>
-              <text x="105" y="17" text-anchor="middle" fill="rgba(232,196,104,.7)" font-size="12" font-weight="700" font-family="Georgia,serif">A</text>
-              <text x="195" y="17" text-anchor="middle" fill="rgba(124,198,255,.7)" font-size="12" font-weight="700" font-family="Georgia,serif">B</text>
-              <text x="14" y="14" fill="#475569" font-size="8" font-family="monospace">U</text>
-              <text x="150" y="103" text-anchor="middle" fill="#4ade80" font-size="10" font-family="Georgia,serif">A ∩ B</text>
-            </svg>
-          </div>
-        </div>
-        <div style="font-size:11px; color:var(--muted); text-align:center; margin-top:8px;">Overlap region shaded green</div>
-      </div>
-
-      <!-- Complement -->
-      <div>
-        <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.15em; color:var(--muted); text-align:center; margin-bottom:8px; text-transform:uppercase;">A′ Complement</div>
-        <div class="mock-ui" style="padding:10px;">
-          <div class="ui-canvas-inner" style="height:110px;">
-            <svg viewBox="0 0 300 110" width="100%" height="100%">
-              <defs>
-                <mask id="mAc2"><rect width="300" height="110" fill="white"/><circle cx="105" cy="55" r="48" fill="black"/></mask>
-              </defs>
-              <pattern id="g4" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M14 0L0 0 0 14" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width=".5"/></pattern>
-              <rect width="300" height="110" fill="url(#g4)"/>
-              <rect width="300" height="110" fill="rgba(148,163,184,0.38)" mask="url(#mAc2)"/>
-              <circle cx="105" cy="55" r="48" fill="rgba(232,196,104,0.08)" stroke="rgba(232,196,104,0.5)" stroke-width="1.5"/>
-              <circle cx="195" cy="55" r="48" fill="rgba(124,198,255,0.08)" stroke="rgba(124,198,255,0.5)" stroke-width="1.5"/>
-              <text x="105" y="17" text-anchor="middle" fill="rgba(232,196,104,.7)" font-size="12" font-weight="700" font-family="Georgia,serif">A</text>
-              <text x="195" y="17" text-anchor="middle" fill="rgba(124,198,255,.7)" font-size="12" font-weight="700" font-family="Georgia,serif">B</text>
-              <text x="14" y="14" fill="#475569" font-size="8" font-family="monospace">U</text>
-              <text x="150" y="103" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="Georgia,serif">A′</text>
-            </svg>
-          </div>
-        </div>
-        <div style="font-size:11px; color:var(--muted); text-align:center; margin-top:8px;">Everything outside A shaded grey</div>
-      </div>
-    </div>
-
-    <!-- Disjoint example -->
-    <div style="margin-top:24px;">
-      <div style="font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.15em; color:var(--red); margin-bottom:8px; text-transform:uppercase;">Special case: Mutually Exclusive (Stage 3) — A ∩ B = ∅</div>
-      <div class="mock-ui" style="padding:10px; max-width:360px;">
-        <div class="ui-canvas-inner" style="height:110px;">
-          <svg viewBox="0 0 360 110" width="100%" height="100%">
-            <pattern id="g5" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M14 0L0 0 0 14" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width=".5"/></pattern>
-            <rect width="360" height="110" fill="url(#g5)"/>
-            <circle cx="90" cy="55" r="52" fill="rgba(232,196,104,0.12)" stroke="rgba(232,196,104,0.6)" stroke-width="1.5"/>
-            <circle cx="270" cy="55" r="52" fill="rgba(124,198,255,0.10)" stroke="rgba(124,198,255,0.6)" stroke-width="1.5"/>
-            <text x="90" y="14" text-anchor="middle" fill="rgba(232,196,104,.9)" font-size="12" font-weight="700" font-family="Georgia,serif">A</text>
-            <text x="270" y="14" text-anchor="middle" fill="rgba(124,198,255,.9)" font-size="12" font-weight="700" font-family="Georgia,serif">B</text>
-            <text x="14" y="14" fill="#475569" font-size="8" font-family="monospace">U</text>
-            <!-- empty badge -->
-            <rect x="130" y="40" width="100" height="28" rx="14" fill="rgba(15,23,42,0.9)" stroke="rgba(248,113,113,0.5)" stroke-width="1.5"/>
-            <text x="180" y="59" text-anchor="middle" fill="#f87171" font-size="11" font-weight="600" font-family="Georgia,serif">A ∩ B = ∅</text>
-          </svg>
-        </div>
-      </div>
-      <div style="font-size:12px; color:var(--muted); margin-top:8px;">When circles don't overlap, the <code>A ∩ B = ∅</code> badge appears automatically in Stage 3.</div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- ══ 6. STATUS BAR ══ -->
-  <div class="section">
-    <div class="section-label">Section 06</div>
-    <h2>Teaching Note &amp; Status Bar</h2>
-    <p>Below the Venn diagram, two panels provide the conceptual context for what you are seeing.</p>
-
-    <div class="diagram-wrap" style="max-width:600px; margin-top:24px;">
-      <div class="mock-ui" style="padding:16px; display:flex; flex-direction:column; gap:12px;">
-        <div class="ui-note">
-          <div class="ui-note-icon">💡</div>
-          <div>
-            <div class="ui-note-head">Teaching note</div>
-            <div class="ui-note-body">A ∪ B (union) = in A or B or both. A ∩ B (intersection) = overlap only. Use buttons to shade each region and compare.</div>
-          </div>
-        </div>
-        <div class="ui-status-row">
-          <div class="ui-status-box">
-            <div class="ui-status-head">Current operation</div>
-            <div class="ui-status-text"><span class="ui-dot"></span>Union — elements in A or B or both.</div>
-            <div class="ui-status-expl">Both circles together form the union.</div>
-          </div>
-          <div class="ui-status-box">
-            <div class="ui-status-head">Symbol notation</div>
-            <div class="ui-symbol-box"><span class="ui-symbol-text">A ∪ B</span></div>
-          </div>
-        </div>
-      </div>
-
-      <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;" viewBox="0 0 600 175" preserveAspectRatio="none">
-        <line x1="0" y1="50" x2="-40" y2="50" stroke="var(--anno5)" stroke-width="1.5" stroke-dasharray="3 2" opacity=".8"/>
-        <circle cx="-40" cy="50" r="11" fill="var(--anno5)"/>
-        <text x="-40" y="54" text-anchor="middle" fill="#fff" font-size="10" font-family="monospace" font-weight="700">A</text>
-
-        <line x1="0" y1="130" x2="-40" y2="130" stroke="var(--anno)" stroke-width="1.5" stroke-dasharray="3 2" opacity=".8"/>
-        <circle cx="-40" cy="130" r="11" fill="var(--anno)"/>
-        <text x="-40" y="134" text-anchor="middle" fill="#fff" font-size="10" font-family="monospace" font-weight="700">B</text>
-
-        <line x1="480" y1="130" x2="640" y2="130" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="3 2" opacity=".8"/>
-        <circle cx="640" cy="130" r="11" fill="var(--gold)"/>
-        <text x="640" y="134" text-anchor="middle" fill="#1f2937" font-size="10" font-family="monospace" font-weight="700">C</text>
-      </svg>
-    </div>
-
-    <div class="legend" style="margin-top:24px; grid-template-columns:1fr;">
-      <div class="legend-item">
-        <div class="legend-num c5">A</div>
-        <div class="legend-text">
-          <strong>Teaching Note (💡 panel)</strong>
-          <span>Explains the concept for the whole stage — not just the selected operation. Useful for understanding the broader context and common student mistakes.</span>
-        </div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-num c1">B</div>
-        <div class="legend-text">
-          <strong>Current Operation Description</strong>
-          <span>Plain-English description of exactly what the selected operation means, plus a brief explanation of the shaded region. Updates every time you click a button.</span>
-        </div>
-      </div>
-      <div class="legend-item">
-        <div class="legend-num c6">C</div>
-        <div class="legend-text">
-          <strong>Symbol Notation Badge</strong>
-          <span>Displays the formal mathematical symbol for the active operation (e.g. <code>A ∪ B</code>, <code>A′</code>, <code>(A∩B)′</code>). This is the notation you will use in exams and textbooks.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- ══ 7. ALL STAGES ══ -->
-  <div class="section">
-    <div class="section-label">Section 07</div>
-    <h2>All 7 Learning Stages</h2>
-    <p>SetViz organises content into seven progressive stages, from the basic idea of a set all the way to De Morgan's Laws.</p>
-
-    <table class="stage-table">
-      <thead>
-        <tr>
-          <th>Stage</th>
-          <th>Title</th>
-          <th>Operations Available</th>
-          <th>What You Learn</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="stage-badge">0</span></td>
-          <td style="color:var(--text); font-weight:600;">Orientation</td>
-          <td>—</td>
-          <td>What a set is; the universal set U as the bounding rectangle</td>
-        </tr>
-        <tr>
-          <td><span class="stage-badge">1</span></td>
-          <td style="color:var(--text); font-weight:600;">One Set (A)</td>
-          <td><span class="ops-tag">A</span><span class="ops-tag">A′</span></td>
-          <td>Single set and its complement; everything outside A</td>
-        </tr>
-        <tr>
-          <td><span class="stage-badge">2</span></td>
-          <td style="color:var(--text); font-weight:600;">Two Sets Overlapping</td>
-          <td><span class="ops-tag">A</span><span class="ops-tag">B</span><span class="ops-tag">A′</span><span class="ops-tag">B′</span><span class="ops-tag">A∪B</span><span class="ops-tag">A∩B</span></td>
-          <td>Union, intersection, complements with two overlapping circles</td>
-        </tr>
-        <tr>
-          <td><span class="stage-badge">3</span></td>
-          <td style="color:var(--text); font-weight:600;">Mutually Exclusive</td>
-          <td><span class="ops-tag">A</span><span class="ops-tag">B</span><span class="ops-tag">A∪B</span><span class="ops-tag">A∩B=∅</span></td>
-          <td>Disjoint sets; why A∩B=∅ when circles don't touch</td>
-        </tr>
-        <tr>
-          <td><span class="stage-badge">4</span></td>
-          <td style="color:var(--text); font-weight:600;">Set Differences</td>
-          <td><span class="ops-tag">A\B</span><span class="ops-tag">B\A</span><span class="ops-tag">AΔB</span></td>
-          <td>Set difference and symmetric difference (crescents)</td>
-        </tr>
-        <tr>
-          <td><span class="stage-badge">5</span></td>
-          <td style="color:var(--text); font-weight:600;">Subset / Superset</td>
-          <td><span class="ops-tag">A⊂B</span><span class="ops-tag">A=B</span><span class="ops-tag">A⊄B</span><span class="ops-tag">disjoint</span></td>
-          <td>Proper subsets, equal sets, non-subsets — diagram repositions dynamically</td>
-        </tr>
-        <tr>
-          <td><span class="stage-badge">6</span></td>
-          <td style="color:var(--text); font-weight:600;">Complements &amp; De Morgan</td>
-          <td><span class="ops-tag">A′</span><span class="ops-tag">B′</span><span class="ops-tag">(A∪B)′</span><span class="ops-tag">(A∩B)′</span></td>
-          <td>De Morgan's Laws: (A∪B)′=A′∩B′ and (A∩B)′=A′∪B′, visualised</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- ══ 8. QUICK START ══ -->
-  <div class="section">
-    <div class="section-label">Section 08</div>
-    <h2>Quick-Start Workflow</h2>
-    <p>Follow this sequence for first-time use or classroom demonstration.</p>
-
-    <div class="steps">
-      <div class="step-card">
-        <div class="step-num">1</div>
-        <div class="step-content">
-          <strong>Open Stage 0 — Orientation</strong>
-          <span>Read the teaching note. Observe the empty bounding rectangle — this is the universal set U. No circles appear yet.</span>
-        </div>
-      </div>
-      <div class="step-card">
-        <div class="step-num">2</div>
-        <div class="step-content">
-          <strong>Move to Stage 1 — One Set (A)</strong>
-          <span>Click <code>A</code> to shade circle A gold, then click <code>A′</code> to shade its complement. Compare the two. Check the Symbol Notation badge for the formal expression.</span>
-        </div>
-      </div>
-      <div class="step-card">
-        <div class="step-num">3</div>
-        <div class="step-content">
-          <strong>Stage 2 — Work through all 6 operations</strong>
-          <span>Click A, B, A′, B′, A∪B, A∩B one by one. After each click, look at the shaded region and read the operation description below. Focus on the difference between ∪ and ∩.</span>
-        </div>
-      </div>
-      <div class="step-card">
-        <div class="step-num">4</div>
-        <div class="step-content">
-          <strong>Stage 3 — Compare with disjoint circles</strong>
-          <span>Click A∩B here and compare with Stage 2. The empty-set badge reinforces why A∩B=∅ when sets don't overlap.</span>
-        </div>
-      </div>
-      <div class="step-card">
-        <div class="step-num">5</div>
-        <div class="step-content">
-          <strong>Stage 6 — Verify De Morgan's Laws</strong>
-          <span>Click <code>(A∪B)′</code> and note which region is shaded. Then click <code>(A∩B)′</code>. Cross-reference with your textbook to confirm the logical equivalences visually.</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="callout tip" style="margin-top:24px;">
-      <div class="callout-icon">🎓</div>
-      <div class="callout-body">
-        <strong>For lecturers</strong>
-        <span>SetViz works well as a live demonstration tool during lectures. Open it on the projector, select operations as you explain each concept, and let students interact on their own devices simultaneously. No setup required.</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <div class="divider"></div>
-  <div style="text-align:center; font-size:12px; color:var(--muted); padding:8px 0 24px;">
-    © 2026 SetViz by Suriyati Ujang &nbsp;·&nbsp; Universiti Teknologi MARA Pahang, Raub Campus &nbsp;·&nbsp;
-    <a href="https://ciksuriyati.github.io/SetViz/" style="color:var(--gold); text-decoration:none;">ciksuriyati.github.io/SetViz</a>
-  </div>
-
 </div>
+
+<script>
+// theme toggle — mirrors index.html logic
+const btn = document.getElementById('themeToggle');
+let dark = true;
+function applyTheme() {
+  document.body.className = dark ? 'dark' : 'light';
+  btn.textContent = dark ? '☀️ Light' : '🌙 Dark';
+  // update canvas inner borders (dashed)
+  document.querySelectorAll('.canvas-inner').forEach(el => {
+    el.style.borderColor = dark ? 'rgba(255,255,255,.1)' : 'rgba(0,0,0,.1)';
+  });
+}
+btn.addEventListener('click', () => { dark = !dark; applyTheme(); });
+applyTheme();
+</script>
 </body>
 </html>
