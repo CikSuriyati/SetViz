@@ -117,4 +117,20 @@ Created by **Suriyati Ujang**. Design approach inspired by ProbViz.
 
 ## License
 
-MIT
+© 2025–2026 Suriyati Ujang. All rights reserved.
+
+| Version | Licence |
+|---|---|
+| v1.0 (this build, from the relicence commit onward) | [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/) |
+| v2.0 and later | [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/) |
+| v1.0 copies obtained before the relicence | MIT (that grant is irrevocable for those copies) |
+
+**CC BY-NC-ND 4.0** — you may use and share SetViz in teaching and private study
+provided you credit the author and link the licence. You may not use it commercially,
+and you may not distribute modified versions. This covers the source code, the
+interface design and the instructional content.
+
+Republishing SetViz under another name, or copying its code, interface design, staged
+instructional sequence or visualisation approach into a separate application, is not
+permitted. See [`LICENSE`](LICENSE) for the full terms; permission for any other use
+must be requested from the copyright holder.
