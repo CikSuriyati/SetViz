@@ -1,6 +1,8 @@
 # SetViz
 
-**Interactive Set Theory Learning Tool** — a browser-based visualiser that teaches set concepts and Venn diagram notation through progressive, shaded SVG diagrams.
+**Version 1.0** · Interactive Set Theory Learning Tool — a browser-based visualiser that teaches set concepts and Venn diagram notation through progressive, shaded SVG diagrams.
+
+This repository contains **v1.0**, the build submitted to the DIIID 2026 competition. See [Version history](#version-history) for what is in development.
 
 Live site: https://ciksuriyati.github.io/SetViz/
 *(GitHub Pages does not serve private repositories on the free plan — the repo must be public, or on a paid plan, for this URL to work.)*
@@ -9,13 +11,13 @@ Live site: https://ciksuriyati.github.io/SetViz/
 
 ## What it is
 
-SetViz is a single-page teaching aid for introductory statistics and discrete mathematics courses. Students step through six stages, click an operation (A ∪ B, A ∩ B, A′, A \ B, A Δ B, …), and immediately see the corresponding region shaded on a Venn diagram — with a plain-language teaching note and the formal symbol shown alongside.
+SetViz is a single-page teaching aid for introductory statistics and discrete mathematics courses. Students step through seven stages (Stage 0–6), click an operation (A ∪ B, A ∩ B, A′, A \ B, A Δ B, …), and immediately see the corresponding region shaded on a Venn diagram — with a plain-language teaching note and the formal symbol shown alongside.
 
 It is deliberately dependency-light: one HTML file, pure SVG rendering, no build step.
 
 ## Features
 
-- **Six progressive stages**, from "what is a universal set" to De Morgan's Laws
+- **Seven progressive stages** (Stage 0–6), from "what is a universal set" to De Morgan's Laws
 - **Shaded-region visualisation** built from SVG `clipPath` and `mask` primitives — correct shading for complements, differences and symmetric difference
 - **Teaching note** and **symbol notation** panel updated per operation
 - **Light / dark mode** toggle
@@ -71,10 +73,42 @@ api/stats.js             Placeholder serverless endpoint
 
 `script.js`, `style.css`, `design.html`, `backend-example.js` and `frontend-api-example.js` predate the pure-SVG rebuild and are **not loaded by `index.html`**. They are kept for reference — notably `script.js`, which contains an English/Bahasa Melayu bilingual string table and an eight-step guided tutorial that has not yet been ported to the current version.
 
+## Version history
+
+### v1.0 — current (this repository)
+
+Seven stages (Stage 0–6), recognition-based interaction: the student selects an
+operation and the tool shades the matching region. Separate `SetViz_UserManual.html`,
+light/dark mode, static hosting. This is the build described in the DIIID 2026
+extended abstract.
+
+### v2.0 — in development (not in this repository)
+
+A substantial rework, developed after the competition submission and held back from
+deployment until judging concluded. Headline changes:
+
+- **Eleven stages**, adding set notation (∈, ∉, roster and set-builder form), power
+  sets, three-set Venn diagrams, counting problems and inclusion–exclusion
+- **Production tasks, not just recognition** — students shade a named region
+  themselves and name a shaded region, with marking that distinguishes
+  over-generalisation from under-generalisation
+- **Elements mode** — students enter their own U, A, B (and C); the diagram
+  re-arranges to match and n(A ∪ B) = n(A) + n(B) − n(A ∩ B) is evaluated live
+- **Ten-item quiz** with review, streak tracking and a three-set hard mode
+- **Worksheet generator** — printable practice sheet with a matching answer key
+- **Deep links** to a specific stage and operation (`?stage=…&op=…`)
+- **Offline capable and installable** via service worker and web manifest
+- **Accessibility** — screen-reader region descriptions, keyboard navigation,
+  reduced-motion support
+- Help built into the application, replacing the separate manual page
+
+Release files: `index.html`, `sw.js`, `manifest.webmanifest`, `icon.svg`.
+Deployment supersedes the v1.0 `index.html` and retires `SetViz_UserManual.html`.
+
 ## Roadmap
 
-- Restore bilingual (EN / BM) support in the rebuilt app
-- Re-implement the guided tutorial and practice mode
+- Deploy v2.0 to a permanent site and redirect from the current address
+- Restore bilingual (EN / BM) support, retired in the pure-SVG rebuild
 - Interactive booth-game variant for teaching set theory
 
 ## Credits
