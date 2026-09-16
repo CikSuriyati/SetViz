@@ -1,7 +1,7 @@
 {
   "name": "setviz",
-  "version": "1.0.0",
-  "description": "Interactive Set Theory Learning Tool",
+  "version": "2.0.0",
+  "description": "SetViz 2.0 — See set theory, don't just memorise it",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -12,6 +12,5 @@
     "cors": "^2.8.5"
   },
   "keywords": ["set-theory", "education", "visualization", "learning"],
-  "author": "Suriyati Ujang",
   "license": "CC-BY-NC-ND-4.0"
 }

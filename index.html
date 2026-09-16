@@ -1,484 +1,734 @@
 <!doctype html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
-    <meta name="author" content="Suriyati Ujang">
-    <meta name="copyright" content="© 2025–2026 Suriyati Ujang. Licensed CC BY-NC-ND 4.0.">
+    <meta name="copyright" content="© 2025–2026 SetViz. Licensed CC BY-NC-ND 4.0.">
     <link rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SetViz – Basic Concepts</title>
-    <meta name="description" content="Learn basic set theory concepts step by step. Understand sets, symbols, and relationships visually.">
+    <title>SetViz 2.0 — See set theory, don't just memorise it</title>
+    <meta name="description" content="See set theory, don't just memorise it. Interactive Venn diagrams covering sets, symbols, relationships, three-set operations and a self-check quiz.">
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500..700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        html, body { height: 100%; }
+        html, body { margin: 0; padding: 0; }
+        :root {
+            --paper:#F8F4F2; --panel:#FFFFFF; --panel-2:#EDE7E4;
+            --ink:#211E1D; --ink-2:#66605D; --ink-3:#847E7C;
+            --rule:#E3DCD8;
+            --accent:#A8481A; --accent-soft:#FBEADF;
+            --setA:#41569B; --setB:#DF876E; --setC:#96529E;
+            --shade:#D9AE47; --ok:#3E7A46; --ok-soft:#E6F0E3; --bad:#B23A2E; --bad-soft:#F9E7E3;
+            --cta:#FF7E3E; --cta-press:#F06A28; --on-cta:#211E1D;
+        }
+        :root[data-theme="dark"] {
+            --paper:#1E1C1B; --panel:#262322; --panel-2:#322E2C;
+            --ink:#F8F4F2; --ink-2:#A8A19E; --ink-3:#847E7C;
+            --rule:#3A3533;
+            --accent:#FF8556; --accent-soft:#2E1E16;
+            --setA:#5A81E6; --setB:#CE7A5E; --setC:#A868B6;
+            --shade:#D9AE47; --ok:#7FB86C; --ok-soft:#1B2A1A; --bad:#E2705A; --bad-soft:#2C1A16;
+            --cta:#FF7E3E; --cta-press:#F06A28; --on-cta:#211E1D;
+        }
         body {
-            margin: 0;
-            font-family: "Manrope", sans-serif;
-            transition: background 400ms ease, color 400ms ease;
+            background: var(--paper); color: var(--ink);
+            font-family: 'Figtree', -apple-system, sans-serif;
+            transition: background 300ms ease, color 300ms ease;
         }
+        * { box-sizing: border-box; }
+        .serif { font-family: 'Fraunces', Georgia, serif; }
+        .math { font-family: 'Fraunces', Georgia, serif; font-style: italic; }
+        .card { background: var(--panel); border: 1px solid var(--rule); border-radius: 16px; }
+        .btn { border: 2px solid var(--ink); border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; transition: transform 80ms ease, box-shadow 80ms ease, background 150ms ease; }
+        .btn-primary { background: var(--cta); color: var(--on-cta); box-shadow: 0 3px 0 var(--ink); }
+        .btn-primary:hover:not(:disabled) { background: var(--cta-press); }
+        .btn-primary:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
+        .btn-primary:disabled { opacity: .35; cursor: default; }
+        .btn-ghost { background: var(--panel); color: var(--ink); box-shadow: 0 3px 0 var(--ink); }
+        .btn-ghost:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+        .btn-ghost:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
+        .btn-ghost:disabled { opacity: .35; cursor: default; }
+        .btn-sm { padding: 8px 14px; font-size: 12px; }
 
-        /* ===== LIGHT MODE (default) ===== */
-        body.light {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
-            color: #1e293b;
-        }
-        body.light .glass-panel {
-            background: rgba(255, 255, 255, 0.82);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-        }
-        body.light .eyebrow-text { color: #b45309; }
-        body.light .heading-text { color: #0f172a; }
-        body.light .sub-text { color: #475569; }
-        body.light .muted-text { color: #64748b; }
-        body.light .note-panel { background: rgba(251, 191, 36, 0.08); border-color: rgba(251, 191, 36, 0.2); }
-        body.light .note-icon-bg { background: rgba(251, 191, 36, 0.15); color: #b45309; }
-        body.light .note-heading { color: #92400e; }
-        body.light .note-body { color: #475569; }
-        body.light .status-panel { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.06); }
-        body.light .canvas-outer { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06); }
-        body.light .canvas-inner { background: #ffffff; border-color: rgba(0,0,0,0.1); }
-        body.light .stage-item-active { background-color: rgba(251,191,36,0.12) !important; border-color: rgba(251,191,36,0.5) !important; }
-        body.light .stage-item-active .stage-num { background: #f59e0b !important; color: #fff !important; }
-        body.light .stage-item-active .stage-title-text { color: #92400e !important; }
-        body.light .stage-item-active .stage-desc-text { color: #b45309 !important; }
-        body.light .stage-item-inactive { background-color: rgba(0,0,0,0.02) !important; border-color: rgba(0,0,0,0.06) !important; }
-        body.light .stage-item-inactive .stage-num { background: rgba(59,130,246,0.1) !important; color: #3b82f6 !important; }
-        body.light .stage-item-inactive .stage-title-text { color: #1e293b !important; }
-        body.light .stage-item-inactive .stage-desc-text { color: #64748b !important; }
-        body.light .choice-active { background: #f59e0b !important; border-color: #f59e0b !important; color: #fff !important; box-shadow: 0 4px 16px rgba(245,158,11,0.25) !important; }
-        body.light .choice-inactive { background: rgba(0,0,0,0.02) !important; border-color: rgba(0,0,0,0.08) !important; color: #334155 !important; }
-        body.light .symbol-box { background: rgba(0,0,0,0.04); }
-        body.light .symbol-text-color { color: #0f172a; }
-        body.light .universe-label { fill: #94a3b8; }
-        body.light .grid-lines { stroke: rgba(0,0,0,0.04); }
-        body.light .footer-text { color: #94a3b8; }
-        body.light .theme-toggle { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.1); color: #475569; }
-        body.light .theme-toggle:hover { background: rgba(0,0,0,0.1); }
-        body.light .dot-color { background-color: #f59e0b; }
+        .rail { display: flex; gap: 0; flex-wrap: wrap; border-bottom: 1px solid var(--rule); }
+        .rail-tab { display: flex; align-items: baseline; gap: 8px; padding: 12px 14px 10px; background: transparent; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; white-space: nowrap; }
+        .rail-tab:hover { opacity: .75; }
+        .rail-tab.active { border-bottom-color: var(--accent); }
+        .rail-num { font-size: 10px; letter-spacing: .05em; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+        .rail-tab.active .rail-num { color: var(--accent); }
+        .rail-label { font-size: 13.5px; font-weight: 400; color: var(--ink-2); }
+        .rail-tab.active .rail-label { color: var(--ink); font-weight: 600; }
 
-        /* ===== DARK MODE ===== */
-        body.dark {
-            background:
-                radial-gradient(circle at top left, rgba(232, 196, 104, 0.16), transparent 28%),
-                radial-gradient(circle at bottom right, rgba(90, 138, 198, 0.18), transparent 30%),
-                linear-gradient(135deg, #0f172a 0%, #111827 45%, #1f2937 100%);
-            color: #e5eef9;
-        }
-        body.dark .glass-panel {
-            background: rgba(22, 29, 45, 0.72);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
-        }
-        body.dark .eyebrow-text { color: rgba(251,191,36,0.8); }
-        body.dark .heading-text { color: #ffffff; }
-        body.dark .sub-text { color: #cbd5e1; }
-        body.dark .muted-text { color: #94a3b8; }
-        body.dark .note-panel { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
-        body.dark .note-icon-bg { background: rgba(232,196,104,0.2); color: #fde68a; }
-        body.dark .note-heading { color: #fde68a; }
-        body.dark .note-body { color: #cbd5e1; }
-        body.dark .status-panel { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
-        body.dark .canvas-outer { background: rgba(15,23,42,0.45); border-color: rgba(255,255,255,0.1); }
-        body.dark .canvas-inner { background: rgba(15,23,42,0.5); border-color: rgba(255,255,255,0.1); }
-        body.dark .stage-item-active { background-color: rgba(232,196,104,0.14) !important; border-color: rgba(232,196,104,0.5) !important; }
-        body.dark .stage-item-active .stage-num { background: #e8c468 !important; color: #1f2937 !important; }
-        body.dark .stage-item-active .stage-title-text { color: #fff7dd !important; }
-        body.dark .stage-item-active .stage-desc-text { color: #e2d6aa !important; }
-        body.dark .stage-item-inactive { background-color: rgba(255,255,255,0.03) !important; border-color: rgba(255,255,255,0.08) !important; }
-        body.dark .stage-item-inactive .stage-num { background: rgba(124,198,255,0.16) !important; color: #bfe5ff !important; }
-        body.dark .stage-item-inactive .stage-title-text { color: #e5eef9 !important; }
-        body.dark .stage-item-inactive .stage-desc-text { color: #97a6ba !important; }
-        body.dark .choice-active { background: #e8c468 !important; border-color: #e8c468 !important; color: #1f2937 !important; box-shadow: 0 8px 22px rgba(232,196,104,0.28) !important; }
-        body.dark .choice-inactive { background: rgba(255,255,255,0.03) !important; border-color: rgba(255,255,255,0.1) !important; color: #d9e5f5 !important; }
-        body.dark .symbol-box { background: rgba(0,0,0,0.2); }
-        body.dark .symbol-text-color { color: #ffffff; }
-        body.dark .universe-label { fill: #475569; }
-        body.dark .grid-lines { stroke: rgba(255,255,255,0.04); }
-        body.dark .footer-text { color: #475569; }
-        body.dark .theme-toggle { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); color: #cbd5e1; }
-        body.dark .theme-toggle:hover { background: rgba(255,255,255,0.12); }
-        body.dark .dot-color { background-color: #e8c468; }
+        .op-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 12px 6px; border: 1px solid var(--rule); border-radius: 8px; cursor: pointer; background: var(--panel); transition: border-color 150ms ease, background 150ms ease, color 150ms ease; }
+        .op-btn:hover { border-color: var(--accent); }
+        .op-btn.active { background: var(--ink); border-color: var(--ink); }
+        .op-sym { font-size: 18px; line-height: 1.1; color: var(--ink); }
+        .op-btn.active .op-sym { color: var(--paper); }
+        .op-name { font-size: 9px; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-3); }
+        .op-btn.active .op-name { color: color-mix(in srgb, var(--paper) 64%, transparent); }
 
-        /* ===== Shared ===== */
-        .stage-item { transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease; }
-        .stage-item:hover { transform: translateX(3px); }
-        .choice-btn { transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease; }
-        .choice-btn:hover { transform: translateY(-1px); }
-        .fade-up { animation: fadeUp 500ms ease both; }
-        .fade-up-delay { animation: fadeUp 650ms ease both; }
-        @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+        .pill { padding: 7px 13px; border: 1px solid var(--rule); border-radius: 999px; cursor: pointer; font-size: 12px; background: var(--panel); color: var(--ink-2); }
+        .pill:hover { border-color: var(--accent); }
+        .pill.active { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+        .note-panel { background: var(--accent-soft); border: 1px solid var(--rule); border-radius: 4px; padding: 16px; }
+        .eyebrow { font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+        .theme-toggle, .manual-link { padding: 9px 14px; border: 1px solid var(--rule); border-radius: 8px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); background: var(--panel); cursor: pointer; text-decoration: none; }
+        .theme-toggle:hover, .manual-link:hover { border-color: var(--accent); color: var(--accent); }
+        .symbol-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--rule); font-size: 12.5px; }
+        .symbol-row:last-child { border-bottom: none; }
+        .symbol-sym { font-family: 'Fraunces', Georgia, serif; font-style: italic; font-size: 18px; width: 40px; flex: none; color: var(--accent); }
+        .symbol-desc { color: var(--ink-2); line-height: 1.4; }
         .dot-pulse { animation: pulseSoft 1400ms ease-in-out infinite; }
         @keyframes pulseSoft { 0%,100% { transform:scale(1); opacity:0.95; } 50% { transform:scale(1.08); opacity:1; } }
-        .shading-label {
-            font-family: "Fraunces", serif; font-size: 16px; font-weight: 600;
-            text-shadow: 0 1px 6px rgba(0,0,0,0.3);
-            pointer-events: none;
-        }
+
+        .field-label { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 4px; font-weight: 600; }
+        .field-input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 2px solid var(--rule); background: var(--paper); color: var(--ink); font-variant-numeric: tabular-nums; font-size: 12px; }
+        .field-input:focus { outline: none; border-color: var(--accent); }
+        .toggle-track { width: 36px; height: 20px; border-radius: 999px; position: relative; flex: none; border: 1px solid var(--rule); display: block; transition: background .18s; cursor: pointer; }
+        .toggle-knob { position: absolute; top: 1px; left: 1px; width: 16px; height: 16px; border-radius: 50%; background: var(--panel); transition: transform .18s; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+
+        .badge { font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 700; padding: 6px 12px; border: 2px solid var(--ink); border-radius: 999px; background: var(--panel); }
+        .choice-btn { padding: 13px; border: 2px solid var(--rule); border-radius: 10px; cursor: pointer; background: var(--panel); }
+        .choice-btn:hover { border-color: var(--accent); }
+        .choice-btn.ok { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+        .choice-btn.err { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); }
+        .feedback { margin-top: 12px; padding: 12px 14px; border-radius: 10px; font-size: 13.5px; line-height: 1.5; border: 1.5px solid; }
+        .feedback.ok { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+        .feedback.err { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); }
     </style>
 </head>
-<body class="h-full light">
-    <div id="app" class="h-full w-full overflow-auto">
-        <div class="w-full h-full p-4 md:p-6">
-            <div class="mx-auto flex h-full w-full max-w-7xl flex-col gap-4 lg:flex-row">
-                <!-- Sidebar -->
-                <aside class="glass-panel fade-up w-full rounded-[28px] p-4 md:p-5 lg:w-[290px] lg:shrink-0 flex flex-col lg:max-h-[calc(100vh-3rem)]">
-                    <div class="mb-5 shrink-0">
-                        <div class="flex items-center justify-between mb-2">
-                            <p class="text-xs font-semibold uppercase tracking-[0.26em] eyebrow-text">SetViz path</p>
-                            <div class="flex items-center gap-2">
-                                <a href="SetViz_UserManual.html" target="_blank" class="theme-toggle rounded-full px-3 py-1.5 text-xs font-semibold border cursor-pointer no-underline" title="Open User Manual">📖 Manual</a>
-                                <button id="themeToggle" class="theme-toggle rounded-full px-3 py-1.5 text-xs font-semibold border cursor-pointer" title="Toggle light/dark mode">🌙 Dark</button>
-                            </div>
-                        </div>
-                        <h1 class="text-2xl font-semibold heading-text" style="font-family:'Fraunces',serif;">SetViz – Basic Concepts</h1>
-                        <p class="mt-2 text-sm leading-6 sub-text">An interactive learning tool for set theory concepts through visualizations.</p>
+<body>
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-6">
+
+        <!-- Header -->
+        <header class="flex items-end gap-5 flex-wrap pb-4 mb-5" style="border-bottom:2px solid var(--ink)">
+            <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true" class="flex-none">
+                <circle cx="15" cy="20" r="11" fill="none" stroke="var(--setA)" stroke-width="1.8"/>
+                <circle cx="25" cy="20" r="11" fill="none" stroke="var(--accent)" stroke-width="1.8"/>
+                <path d="M20 10.4a11 11 0 0 0 0 19.2 11 11 0 0 0 0-19.2z" fill="var(--accent)" opacity=".28"/>
+            </svg>
+            <div class="mr-auto">
+                <h1 class="serif" style="font-weight:700;font-size:32px;line-height:.95;letter-spacing:-.02em;margin:0;">SetViz <span style="color:var(--accent);">2.0</span></h1>
+                <p class="mt-1 text-sm" style="color:var(--ink-2);max-width:52ch;">See set theory, don't just memorise it.</p>
+            </div>
+            <div class="flex gap-2 items-center pb-1">
+                <a href="SetViz_UserManual.html" target="_blank" class="manual-link">Manual</a>
+                <button id="themeToggle" class="theme-toggle">Dark</button>
+            </div>
+        </header>
+
+        <!-- Stage rail -->
+        <nav class="rail mb-6" aria-label="Lesson stages">
+            <ol id="stageRail" class="flex flex-wrap m-0 p-0" style="list-style:none;"></ol>
+        </nav>
+
+        <div class="flex flex-wrap gap-6 items-start">
+
+            <!-- Left column -->
+            <div class="flex-1 flex flex-col gap-4" style="flex-basis:230px;min-width:220px;">
+                <section id="opsCard" class="card p-4">
+                    <h2 class="eyebrow mb-3">Choose an operation</h2>
+                    <div id="choiceRow" class="grid grid-cols-2 gap-1.5"></div>
+                </section>
+                <section id="relCard" class="card p-4">
+                    <h2 class="eyebrow mb-3">How the sets sit</h2>
+                    <div id="relRow" class="flex flex-wrap gap-1.5"></div>
+                </section>
+                <section class="note-panel">
+                    <h2 class="eyebrow mb-2" style="color:var(--accent);">Teaching note</h2>
+                    <p id="teachingNote" class="text-sm leading-relaxed m-0" style="color:var(--ink-2);"></p>
+                </section>
+            </div>
+
+            <!-- Center column -->
+            <div class="flex-none flex flex-col gap-4" style="flex:4 1 520px;min-width:320px;">
+                <div class="flex items-start gap-4 flex-wrap">
+                    <div class="mr-auto" style="max-width:58ch;">
+                        <p id="stageEyebrow" class="eyebrow mb-1"></p>
+                        <h2 id="conceptTitle" class="serif" style="font-weight:700;font-size:28px;letter-spacing:-.02em;line-height:1.05;margin:0;"></h2>
+                        <p id="conceptDescription" class="text-sm mt-2" style="color:var(--ink-2);"></p>
                     </div>
-                    <nav class="overflow-y-auto flex-1 min-h-0"><ol id="stageList" class="space-y-2 pb-1"></ol></nav>
-                </aside>
+                    <div class="flex gap-2 pt-1">
+                        <button id="prevBtn" class="btn btn-ghost px-4 py-2.5">← Back</button>
+                        <button id="nextBtn" class="btn btn-primary px-4 py-2.5">Next →</button>
+                    </div>
+                </div>
 
-                <!-- Main -->
-                <main class="glass-panel fade-up-delay flex w-full flex-1 flex-col rounded-[28px] p-4 md:p-6">
-                    <header class="mb-5">
-                        <p id="stageEyebrow" class="mb-2 text-xs font-semibold uppercase tracking-[0.26em] eyebrow-text">Stage 0</p>
-                        <h2 id="conceptTitle" class="text-3xl font-semibold heading-text md:text-4xl" style="font-family:'Fraunces',serif;">Orientation</h2>
-                        <p id="conceptDescription" class="mt-3 max-w-3xl text-sm leading-7 sub-text md:text-base">Learn about the universal set U.</p>
-                    </header>
-
-                    <!-- Operations -->
-                    <section class="mb-4">
-                        <h3 class="mb-3 text-sm font-semibold uppercase tracking-[0.22em] muted-text">Choose an operation</h3>
-                        <div id="choiceRow" class="flex flex-wrap gap-2"></div>
-                    </section>
-
-                    <!-- Teaching note -->
-                    <section class="mb-4 rounded-3xl note-panel border p-4">
-                        <div class="flex items-start gap-3">
-                            <div class="mt-1 rounded-full note-icon-bg p-2">💡</div>
-                            <div>
-                                <h3 class="text-sm font-semibold uppercase tracking-[0.2em] note-heading">Teaching note</h3>
-                                <p id="teachingNote" class="mt-2 text-sm leading-7 note-body">A set is a collection of things.</p>
-                            </div>
+                <!-- Normal (learn) panel -->
+                <section id="learnPanel" class="card p-3 md:p-4">
+                    <svg id="vennSvg" viewBox="0 0 500 350" width="100%" style="display:block;height:auto;touch-action:manipulation;"></svg>
+                    <div class="flex gap-5 flex-wrap justify-center mt-3 text-xs" style="color:var(--ink-3);">
+                        <span><i style="display:inline-block;width:11px;height:11px;border-radius:2px;background:var(--shade);opacity:.55;margin-right:6px;vertical-align:-1px;"></i>Shaded = the answer region</span>
+                        <span><i style="display:inline-block;width:11px;height:11px;border-radius:2px;background:var(--panel-2);border:1px solid var(--rule);margin-right:6px;vertical-align:-1px;"></i>Box = universal set U</span>
+                    </div>
+                    <div class="mt-4 pt-4 flex items-baseline gap-4 flex-wrap" style="border-top:1px solid var(--rule);">
+                        <div id="symbolText" class="math flex-none" style="font-size:30px;color:var(--accent);">U</div>
+                        <div class="flex-1" style="min-width:220px;">
+                            <p id="statusText" class="font-semibold m-0" style="font-size:16px;"></p>
+                            <p id="statusExpl" class="text-sm mt-1 m-0" style="color:var(--ink-2);"></p>
                         </div>
-                    </section>
+                    </div>
+                </section>
 
-                    <!-- Visualization - PURE SVG -->
-                    <section class="flex-1">
-                        <div class="mb-3 flex items-center justify-between">
-                            <h3 class="text-sm font-semibold uppercase tracking-[0.22em] muted-text">Visualization canvas</h3>
-                            <div class="text-xs muted-text">Universal set U</div>
+                <!-- De Morgan panel -->
+                <section id="dualPanel" class="card p-4" style="display:none;">
+                    <div id="lawRow" class="flex gap-2 flex-wrap mb-4"></div>
+                    <div class="flex gap-3 flex-wrap">
+                        <div class="flex-1" style="flex-basis:280px;border:1px solid var(--rule);border-radius:8px;padding:8px;background:var(--paper);">
+                            <h4 id="lawLTitle" class="math text-center m-0 mb-1" style="font-size:20px;font-weight:400;"></h4>
+                            <svg id="lawLSvg" viewBox="0 0 500 350" width="100%" style="display:block;height:auto;"></svg>
                         </div>
-                        <div class="relative rounded-[30px] canvas-outer border p-3 md:p-4">
-                            <div class="relative rounded-[24px] canvas-inner border border-dashed overflow-hidden" style="height:420px;">
-                                <svg id="vennSvg" viewBox="0 0 800 420" width="100%" height="100%" preserveAspectRatio="none" style="display:block;">
-                                    <defs>
-                                        <!-- Grid pattern -->
-                                        <pattern id="gridPattern" width="24" height="24" patternUnits="userSpaceOnUse">
-                                            <path d="M 24 0 L 0 0 0 24" fill="none" class="grid-lines" stroke-width="0.5"/>
-                                        </pattern>
-                                        <!-- Clip paths and masks use these def circles -->
-                                        <circle id="defA" cx="280" cy="210" r="130"/>
-                                        <circle id="defB" cx="520" cy="210" r="130"/>
-                                        <clipPath id="clipA"><use href="#defA"/></clipPath>
-                                        <clipPath id="clipB"><use href="#defB"/></clipPath>
-                                        <clipPath id="clipU"><rect x="0" y="0" width="800" height="420"/></clipPath>
-                                        <!-- Mask: NOT A (universe minus A) -->
-                                        <mask id="mNotA"><rect width="800" height="420" fill="white"/><use href="#defA" fill="black"/></mask>
-                                        <!-- Mask: NOT B -->
-                                        <mask id="mNotB"><rect width="800" height="420" fill="white"/><use href="#defB" fill="black"/></mask>
-                                        <!-- Mask: NOT (A∪B) = universe minus both -->
-                                        <mask id="mNotAuB"><rect width="800" height="420" fill="white"/><use href="#defA" fill="black"/><use href="#defB" fill="black"/></mask>
-                                        <!-- Mask: NOT (A∩B) = universe minus intersection only -->
-                                        <mask id="mNotAnB"><rect width="800" height="420" fill="white"/><use href="#defB" fill="black" clip-path="url(#clipA)"/></mask>
-                                    </defs>
-
-                                    <!-- Background grid -->
-                                    <rect width="800" height="420" fill="url(#gridPattern)"/>
-
-                                    <!-- U label -->
-                                    <text x="24" y="28" font-size="13" font-weight="600" letter-spacing="0.2em" class="universe-label" style="font-family:'Manrope',sans-serif;">U</text>
-
-                                    <!-- ========== HIGHLIGHT LAYERS ========== -->
-                                    <!-- hl-A: full circle A -->
-                                    <use id="hlA" href="#defA" fill="rgba(232,196,104,0.45)" stroke="rgba(232,196,104,0.9)" stroke-width="3" stroke-dasharray="6 3" opacity="0"/>
-                                    <!-- hl-B: full circle B -->
-                                    <use id="hlB" href="#defB" fill="rgba(124,198,255,0.40)" stroke="rgba(124,198,255,0.92)" stroke-width="3" stroke-dasharray="6 3" opacity="0"/>
-                                    <!-- hl-Union: A ∪ B -->
-                                    <g id="hlUnion" opacity="0"><use href="#defA" fill="rgba(232,196,104,0.40)"/><use href="#defB" fill="rgba(124,198,255,0.35)"/></g>
-                                    <!-- hl-Intersection: A ∩ B -->
-                                    <use id="hlInter" href="#defB" fill="rgba(74,222,128,0.50)" stroke="rgba(74,222,128,0.9)" stroke-width="3" stroke-dasharray="5 3" clip-path="url(#clipA)" opacity="0"/>
-                                    <!-- hl-A': complement of A -->
-                                    <rect id="hlAc" width="800" height="420" fill="rgba(148,163,184,0.35)" mask="url(#mNotA)" clip-path="url(#clipU)" opacity="0"/>
-                                    <!-- hl-B': complement of B -->
-                                    <rect id="hlBc" width="800" height="420" fill="rgba(148,163,184,0.35)" mask="url(#mNotB)" clip-path="url(#clipU)" opacity="0"/>
-                                    <!-- hl-A\B: A minus B -->
-                                    <use id="hlAmB" href="#defA" fill="rgba(232,196,104,0.50)" stroke="rgba(232,196,104,0.9)" stroke-width="3" stroke-dasharray="6 3" mask="url(#mNotB)" opacity="0"/>
-                                    <!-- hl-B\A: B minus A -->
-                                    <use id="hlBmA" href="#defB" fill="rgba(124,198,255,0.45)" stroke="rgba(124,198,255,0.92)" stroke-width="3" stroke-dasharray="6 3" mask="url(#mNotA)" opacity="0"/>
-                                    <!-- hl-AΔB: symmetric difference -->
-                                    <g id="hlSym" opacity="0"><use href="#defA" fill="rgba(232,196,104,0.45)" mask="url(#mNotB)"/><use href="#defB" fill="rgba(124,198,255,0.40)" mask="url(#mNotA)"/></g>
-                                    <!-- hl-(A∪B)': complement of union -->
-                                    <rect id="hlAuBc" width="800" height="420" fill="rgba(148,163,184,0.40)" mask="url(#mNotAuB)" clip-path="url(#clipU)" opacity="0"/>
-                                    <!-- hl-(A∩B)': complement of intersection -->
-                                    <rect id="hlAnBc" width="800" height="420" fill="rgba(148,163,184,0.40)" mask="url(#mNotAnB)" clip-path="url(#clipU)" opacity="0"/>
-
-                                    <!-- ========== BASE CIRCLES (drawn on top of highlights) ========== -->
-                                    <use id="baseA" href="#defA" fill="rgba(232,196,104,0.18)" stroke="rgba(232,196,104,0.7)" stroke-width="2.5" style="display:none;"/>
-                                    <use id="baseB" href="#defB" fill="rgba(124,198,255,0.15)" stroke="rgba(124,198,255,0.7)" stroke-width="2.5" style="display:none;"/>
-
-                                    <!-- ========== LABELS ========== -->
-                                    <text id="labelA" x="280" y="100" font-size="22" font-weight="700" text-anchor="middle" fill="rgba(232,196,104,0.95)" style="font-family:'Fraunces',serif; display:none;">A</text>
-                                    <text id="labelB" x="520" y="100" font-size="22" font-weight="700" text-anchor="middle" fill="rgba(124,198,255,0.95)" style="font-family:'Fraunces',serif; display:none;">B</text>
-
-                                    <!-- Empty set badge -->
-                                    <g id="emptyBadge" style="display:none;">
-                                        <rect x="320" y="190" width="160" height="40" rx="20" fill="rgba(15,23,42,0.85)" stroke="rgba(248,113,113,0.5)" stroke-width="1.5"/>
-                                        <text x="400" y="215" font-size="16" font-weight="600" text-anchor="middle" fill="#f87171" style="font-family:'Fraunces',serif;">A ∩ B = ∅</text>
-                                    </g>
-
-                                    <!-- Shading label at bottom -->
-                                    <text id="shadingLbl" x="400" y="400" font-size="18" font-weight="600" text-anchor="middle" fill="#e8c468" style="font-family:'Fraunces',serif; display:none;"></text>
-                                </svg>
-                            </div>
+                        <div class="flex-1" style="flex-basis:280px;border:1px solid var(--rule);border-radius:8px;padding:8px;background:var(--paper);">
+                            <h4 id="lawRTitle" class="math text-center m-0 mb-1" style="font-size:20px;font-weight:400;"></h4>
+                            <svg id="lawRSvg" viewBox="0 0 500 350" width="100%" style="display:block;height:auto;"></svg>
                         </div>
-                    </section>
+                    </div>
+                    <p id="lawVerdict" class="text-center m-0 mt-4" style="padding:13px;border:1px solid var(--ok);border-radius:8px;background:var(--ok-soft);color:var(--ok);font-size:13.5px;font-weight:500;"></p>
+                </section>
 
-                    <!-- Status -->
-                    <section class="mt-4 grid gap-3 md:grid-cols-[1.3fr_0.7fr]">
-                        <div class="rounded-3xl status-panel border p-4">
-                            <h3 class="text-sm font-semibold uppercase tracking-[0.22em] muted-text">Current operation</h3>
-                            <div class="mt-3 flex items-center gap-3">
-                                <span class="dot-pulse dot-color inline-flex h-3 w-3 rounded-full"></span>
-                                <p id="statusText" class="text-lg font-semibold heading-text">Select an operation to see the shaded region.</p>
-                            </div>
-                            <p id="statusExpl" class="mt-2 text-sm leading-7 sub-text">Click the buttons above to visualize different set operations.</p>
-                        </div>
-                        <div class="rounded-3xl status-panel border p-4">
-                            <h3 class="text-sm font-semibold uppercase tracking-[0.22em] muted-text">Symbol notation</h3>
-                            <div class="mt-3 symbol-box rounded-2xl px-3 py-3 flex items-center justify-center">
-                                <span id="symbolText" class="text-2xl font-bold symbol-text-color" style="font-family:'Fraunces',serif;">U</span>
-                            </div>
-                        </div>
-                    </section>
-                </main>
+                <!-- Quiz panel -->
+                <section id="quizPanel" class="card p-4" style="display:none;">
+                    <div class="flex items-center gap-2 flex-wrap mb-3">
+                        <span id="qScore" class="badge" style="color:var(--accent);"></span>
+                        <span id="qStreak" class="badge" style="color:var(--ink-2);"></span>
+                        <label class="ml-auto flex items-center gap-2 text-xs cursor-pointer select-none" style="color:var(--ink-2);">
+                            <span class="toggle-track" id="hardToggle"><span class="toggle-knob" id="hardKnob"></span></span>
+                            Hard mode (3 sets)
+                        </label>
+                    </div>
+                    <div class="p-3 mb-3" style="border-left:3px solid var(--accent);background:var(--paper);border-radius:4px;">
+                        <div class="text-xs uppercase mb-1" style="letter-spacing:.12em;color:var(--ink-3);" id="qLead"></div>
+                        <div id="qText" class="math" style="font-size:28px;color:var(--ink);"></div>
+                    </div>
+                    <svg id="quizSvg" viewBox="0 0 500 350" width="100%" style="display:block;height:auto;touch-action:manipulation;"></svg>
+                    <div id="qChoices" class="grid grid-cols-2 gap-2 mt-3"></div>
+                    <div id="qFeedback"></div>
+                    <div class="flex gap-2 mt-4 flex-wrap">
+                        <button id="qCheck" class="btn btn-primary btn-sm">Check answer</button>
+                        <button id="qNext" class="btn btn-ghost btn-sm">Next question →</button>
+                        <button id="qClear" class="btn-sm" style="background:transparent;border:none;color:var(--ink-3);cursor:pointer;">Clear</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right column -->
+            <div class="flex-1 flex flex-col gap-4" style="flex-basis:220px;min-width:210px;">
+                <section id="elemCard" class="card p-4">
+                    <h2 class="eyebrow mb-3">Try with real numbers</h2>
+                    <label class="flex items-center gap-2 text-xs cursor-pointer select-none" style="color:var(--ink-2);">
+                        <span class="toggle-track" id="elemToggle"><span class="toggle-knob" id="elemKnob"></span></span>
+                        Show elements
+                    </label>
+                    <div id="elemFields" class="mt-3 flex flex-col gap-2" style="display:none;"></div>
+                    <div id="elemSummary" class="mt-3" style="display:none;"></div>
+                    <p id="elemHint" class="text-xs m-0" style="color:var(--ink-3);line-height:1.5;">Turn this on to drop real numbers into the diagram and watch the answer set build itself.</p>
+                </section>
+                <section class="card p-4">
+                    <h2 class="eyebrow mb-3">Symbols to remember</h2>
+                    <div>
+                        <div class="symbol-row"><span class="symbol-sym">∪</span><span class="symbol-desc">union — in A or B (or both)</span></div>
+                        <div class="symbol-row"><span class="symbol-sym">∩</span><span class="symbol-desc">intersection — only what's in both</span></div>
+                        <div class="symbol-row"><span class="symbol-sym">A′</span><span class="symbol-desc">complement — everything not in A</span></div>
+                        <div class="symbol-row"><span class="symbol-sym">−</span><span class="symbol-desc">difference — in A but not B</span></div>
+                        <div class="symbol-row"><span class="symbol-sym">Δ</span><span class="symbol-desc">symmetric difference — in one, not both</span></div>
+                        <div class="symbol-row"><span class="symbol-sym">⊂</span><span class="symbol-desc">subset — every element of A is in B</span></div>
+                        <div class="symbol-row"><span class="symbol-sym">∅</span><span class="symbol-desc">empty set — no elements at all</span></div>
+                        <div class="symbol-row"><span class="symbol-sym">n(A)</span><span class="symbol-desc">the number of elements in A</span></div>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    <footer class="text-center text-xs footer-text py-4">
-        © 2025–2026 Suriyati Ujang. All rights reserved. SetViz is licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="license noopener">CC BY-NC-ND 4.0</a> — free for classroom use with attribution; no commercial use or derivatives.
+
+    <footer class="text-center text-xs py-6" style="color:var(--ink-3);">
+        © 2025–2026 SetViz. All rights reserved. Licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="license noopener" style="color:var(--accent);">CC BY-NC-ND 4.0</a> — free for classroom use with attribution; no commercial use or derivatives.
         <div class="mt-2">
             <a target="_blank" href="https://smallcounter.com/cc_stats/1776864226/"><img alt="visitor counter" border="0" src="https://smallcounter.com/online/ccc.php?id=1776864226"></a>
         </div>
     </footer>
 
 <script>
-// ===== STAGES =====
-const stages = [
-    { id:0, stage:"Stage 0", title:"Orientation", description:"Learn about the universal set U and what a set is.", note:"A set is a collection of things. The box is the universal set U — it contains everything we work with.", ops:[], visual:"none" },
-    { id:1, stage:"Stage 1", title:"One Set (A)", description:"Learn what a set is and understand set A.", note:"This is set A — all elements belonging to A. A′ (complement) represents everything outside A.", ops:[
-        {id:"A",label:"A",sym:"A",desc:"All elements in set A.",expl:"The shaded region shows everything inside circle A."},
-        {id:"Ac",label:"A′",sym:"A′",desc:"Complement of A — everything NOT in A.",expl:"The shaded region shows everything in U that is outside circle A."}
-    ], visual:"single" },
-    { id:2, stage:"Stage 2", title:"Two Sets Overlapping", description:"Learn to read A, B, A∪B, A∩B, A′, B′ from shading.", note:"A ∪ B (union) = in A or B or both. A ∩ B (intersection) = overlap only.", ops:[
-        {id:"A",label:"A",sym:"A",desc:"All elements in set A.",expl:"Everything inside circle A, including the overlap."},
-        {id:"B",label:"B",sym:"B",desc:"All elements in set B.",expl:"Everything inside circle B, including the overlap."},
-        {id:"Ac",label:"A′",sym:"A′",desc:"Complement of A.",expl:"Everything outside circle A but inside U."},
-        {id:"Bc",label:"B′",sym:"B′",desc:"Complement of B.",expl:"Everything outside circle B but inside U."},
-        {id:"AuB",label:"A ∪ B",sym:"A ∪ B",desc:"Union — elements in A or B or both.",expl:"Both circles together form the union."},
-        {id:"AnB",label:"A ∩ B",sym:"A ∩ B",desc:"Intersection — elements in BOTH A and B.",expl:"Only the lens-shaped overlap region."}
-    ], visual:"overlap" },
-    { id:3, stage:"Stage 3", title:"Mutually Exclusive", description:"See A ∩ B = ∅ visually — the circles don't overlap.", note:"Mutually exclusive = no element in common. A ∩ B = ∅ (empty set).", ops:[
-        {id:"A",label:"A",sym:"A",desc:"All elements in set A.",expl:"Circle A is separate from B."},
-        {id:"B",label:"B",sym:"B",desc:"All elements in set B.",expl:"Circle B is separate from A."},
-        {id:"AuB",label:"A ∪ B",sym:"A ∪ B",desc:"Union — both circles (no overlap).",expl:"Both separate circles together."},
-        {id:"AnB",label:"A ∩ B",sym:"A ∩ B = ∅",desc:"Intersection is empty.",expl:"Since the circles don't overlap, there's nothing in common."}
-    ], visual:"disjoint" },
-    { id:4, stage:"Stage 4", title:"Set Differences", description:"Learn A \\ B, B \\ A, and A Δ B (symmetric difference).", note:"A \\ B = only A (exclude overlap). A Δ B = parts not shared = (A \\ B) ∪ (B \\ A).", ops:[
-        {id:"A",label:"A",sym:"A",desc:"All elements in set A.",expl:"The full circle A."},
-        {id:"B",label:"B",sym:"B",desc:"All elements in set B.",expl:"The full circle B."},
-        {id:"AmB",label:"A \\ B",sym:"A \\ B",desc:"Elements in A but NOT in B.",expl:"Only the part of A that doesn't overlap with B."},
-        {id:"BmA",label:"B \\ A",sym:"B \\ A",desc:"Elements in B but NOT in A.",expl:"Only the part of B that doesn't overlap with A."},
-        {id:"AsdB",label:"A Δ B",sym:"A Δ B",desc:"Symmetric difference — in A or B but not both.",expl:"Both non-overlapping crescents combined."}
-    ], visual:"overlap" },
-    { id:5, stage:"Stage 5", title:"Subset / Superset", description:"Understand A ⊆ B, A ⊂ B, A ⊄ B relationships.", note:"⊂ = proper subset (strict). ⊆ = subset (allow equality). Use buttons to see different relationships.", ops:[
-        {id:"sub",label:"A ⊂ B",sym:"A ⊂ B",desc:"A is a proper subset of B.",expl:"Every element in A is in B, but B has more.",vl:"subset"},
-        {id:"eq",label:"A = B",sym:"A = B",desc:"A and B are equal sets.",expl:"Both sets contain exactly the same elements.",vl:"equal"},
-        {id:"olap",label:"Overlap",sym:"A ⊄ B",desc:"A is NOT a subset of B.",expl:"Some elements of A are outside B.",vl:"overlap"},
-        {id:"disj",label:"Disjoint",sym:"A ⊄ B",desc:"A is NOT a subset of B (disjoint).",expl:"A and B share nothing.",vl:"disjoint"}
-    ], visual:"subset" },
-    { id:6, stage:"Stage 6", title:"Complements & De Morgan", description:"Visualize complements and De Morgan's Laws.", note:"De Morgan's Laws: (A ∪ B)′ = A′ ∩ B′ and (A ∩ B)′ = A′ ∪ B′.", ops:[
-        {id:"A",label:"A",sym:"A",desc:"Set A.",expl:"Circle A highlighted."},
-        {id:"B",label:"B",sym:"B",desc:"Set B.",expl:"Circle B highlighted."},
-        {id:"Ac",label:"A′",sym:"A′",desc:"Complement of A.",expl:"Everything outside A."},
-        {id:"Bc",label:"B′",sym:"B′",desc:"Complement of B.",expl:"Everything outside B."},
-        {id:"AuBc",label:"(A∪B)′",sym:"(A ∪ B)′",desc:"Complement of union — outside both A and B.",expl:"Region outside both circles. Equals A′ ∩ B′ (De Morgan)."},
-        {id:"AnBc",label:"(A∩B)′",sym:"(A ∩ B)′",desc:"Complement of intersection — everything except the overlap.",expl:"Everything except the lens. Equals A′ ∪ B′ (De Morgan)."}
-    ], visual:"overlap" }
-];
+const NS = "http://www.w3.org/2000/svg";
+const mk = (t, a = {}) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+const LETTERS = ["A", "B", "C"];
+const BOX = { x: 15, y: 15, w: 470, h: 320, rx: 8 };
+const SET_COLOR = { A: "var(--setA)", B: "var(--setB)", C: "var(--setC)" };
 
-// ===== LAYOUTS =====
-const layouts = {
-    none:    { a:null, b:null },
-    single:  { a:{cx:400,cy:210,r:130}, b:null },
-    overlap: { a:{cx:280,cy:210,r:130}, b:{cx:520,cy:210,r:130} },
-    disjoint:{ a:{cx:180,cy:210,r:120}, b:{cx:620,cy:210,r:120} },
-    subset:  { a:{cx:420,cy:220,r:70},  b:{cx:400,cy:210,r:140} },
-    equal:   { a:{cx:400,cy:210,r:120}, b:{cx:400,cy:210,r:120} }
+// ===== OPERATIONS (boolean fn over membership in A,B,C) =====
+const OPS = {
+  U:      { sym:"U",           name:"universal set", fn:()=>true,                       desc:"Everything we are talking about. The whole box." },
+  A:      { sym:"A",           name:"set A",         fn:(a)=>a,                          desc:"Only what is inside circle A." },
+  B:      { sym:"B",           name:"set B",         fn:(a,b)=>b,                        desc:"Only what is inside circle B." },
+  empty:  { sym:"∅",           name:"empty set",     fn:()=>false,                       desc:"Nothing is shaded — the empty set has no elements." },
+  notA:   { sym:"A′",          name:"complement",    fn:(a)=>!a,                         desc:"Everything in U that is NOT in A." },
+  notB:   { sym:"B′",          name:"complement",    fn:(a,b)=>!b,                       desc:"Everything in U that is NOT in B." },
+  AuB:    { sym:"A ∪ B",       name:"union",         fn:(a,b)=>a||b,                     desc:"In A, or in B, or in both. Everything the two circles cover." },
+  AnB:    { sym:"A ∩ B",       name:"intersection",  fn:(a,b)=>a&&b,                     desc:"Only the overlap — elements that belong to A and to B." },
+  AmB:    { sym:"A − B",       name:"difference",    fn:(a,b)=>a&&!b,                    desc:"In A but not in B. Take A, then remove the overlap." },
+  BmA:    { sym:"B − A",       name:"difference",    fn:(a,b)=>b&&!a,                    desc:"In B but not in A." },
+  AdB:    { sym:"A Δ B",       name:"sym. diff.",    fn:(a,b)=>a!==b,                    desc:"In exactly one of the sets — the union minus the overlap." },
+  notAuB: { sym:"(A ∪ B)′",    name:"not (a∪b)",     fn:(a,b)=>!(a||b),                  desc:"Outside both circles." },
+  notAnB: { sym:"(A ∩ B)′",    name:"not (a∩b)",     fn:(a,b)=>!(a&&b),                  desc:"Everything except the overlap." },
+  nAnB:   { sym:"A′ ∩ B′",     name:"neither",       fn:(a,b)=>!a&&!b,                   desc:"Not in A and not in B — the outside region." },
+  nAuB:   { sym:"A′ ∪ B′",     name:"not both",      fn:(a,b)=>!a||!b,                   desc:"Everything that misses at least one of the sets." },
+  AuBuC:  { sym:"A ∪ B ∪ C",   name:"union of three",fn:(a,b,c)=>a||b||c,                desc:"Anything covered by at least one circle." },
+  AnBnC:  { sym:"A ∩ B ∩ C",   name:"all three",     fn:(a,b,c)=>a&&b&&c,                desc:"The very centre — in A and B and C." },
+  An_BuC: { sym:"A ∩ (B ∪ C)", name:"A and (B or C)",fn:(a,b,c)=>a&&(b||c),              desc:"Start inside A, then keep only what B or C also covers." },
+  AnB_mC: { sym:"(A ∩ B) − C", name:"A and B, not C",fn:(a,b,c)=>a&&b&&!c,               desc:"The A–B overlap with the C part cut away." },
+  AuB_nC: { sym:"(A ∪ B) ∩ C", name:"(A or B) and C",fn:(a,b,c)=>(a||b)&&c,              desc:"Inside C, but only where A or B reaches." },
+  notABC: { sym:"(A ∪ B ∪ C)′",name:"outside all",   fn:(a,b,c)=>!(a||b||c),             desc:"None of the three sets contain it." }
 };
 
-// ===== STATE =====
-let curStage = 0, curOp = null, isDark = false;
+// ===== GEOMETRY per relation =====
+const GEOM = {
+  overlap:  { n:2, A:{cx:190,cy:175,r:105}, B:{cx:310,cy:175,r:105}, C:{cx:250,cy:175,r:0} },
+  disjoint: { n:2, A:{cx:145,cy:175,r:95},  B:{cx:355,cy:175,r:95},  C:{cx:250,cy:175,r:0} },
+  subset:   { n:2, A:{cx:250,cy:175,r:135}, B:{cx:285,cy:190,r:68},  C:{cx:250,cy:175,r:0} },
+  equal:    { n:2, A:{cx:250,cy:175,r:110}, B:{cx:250,cy:175,r:110}, C:{cx:250,cy:175,r:0} },
+  three:    { n:3, A:{cx:200,cy:145,r:100}, B:{cx:300,cy:145,r:100}, C:{cx:250,cy:230,r:100} }
+};
+const REL_LABEL = { overlap:"Overlapping", disjoint:"Disjoint", subset:"B ⊂ A", equal:"A = B", three:"Three sets" };
+const LAWS = [
+  { l:"(A ∪ B)′", r:"A′ ∩ B′", lf:(a,b)=>!(a||b), rf:(a,b)=>!a&&!b, say:"The complement of a union is the intersection of the complements." },
+  { l:"(A ∩ B)′", r:"A′ ∪ B′", lf:(a,b)=>!(a&&b), rf:(a,b)=>!a||!b, say:"The complement of an intersection is the union of the complements." }
+];
+const ANCHORS = {
+  overlap:  { "10":[137,175],"01":[363,175],"11":[250,175],"00":[62,300] },
+  disjoint: { "10":[145,175],"01":[355,175],"11":null,      "00":[250,305] },
+  subset:   { "10":[168,175],"01":null,     "11":[285,190], "00":[62,300] },
+  equal:    { "10":null,     "01":null,     "11":[250,175], "00":[62,300] },
+  three:    { "100":[170,110],"010":[330,110],"001":[250,268],"110":[250,108],"101":[184,205],"011":[316,205],"111":[250,178],"000":[58,300] }
+};
+
+// ===== STAGES =====
+const stages = [
+  { id:"intro", title:"Basics", heading:"What is a set?",
+    description:"A set is a collection of things. The box is the universal set U — everything we are allowed to talk about.",
+    sets:2, relation:"overlap", ops:["U","A","B","empty"], defaultOp:"U",
+    note:"Each circle is a set. The rectangle around them is U, the universal set. An element is either inside a circle or outside it — never half-way." },
+  { id:"union", title:"Union & Intersection", heading:"Union and intersection",
+    description:"Two of the most-used operations. Union collects, intersection filters.",
+    sets:2, relation:"overlap", ops:["AuB","AnB","A","B"], defaultOp:"AuB",
+    note:"Read ∪ as “or” and ∩ as “and”. Tip: ∪ looks like a cup that holds everything; ∩ is the small bit where the circles meet." },
+  { id:"comp", title:"Complement & Difference", heading:"Complement and difference",
+    description:"What happens when we take things away.",
+    sets:2, relation:"overlap", ops:["notA","notB","AmB","BmA","AdB","notAnB"], defaultOp:"notA",
+    note:"A′ means everything in U except A — so A and A′ together always fill the whole box. A − B keeps A but throws away anything B also owns." },
+  { id:"rel", title:"Subset & Disjoint", heading:"How sets can be related",
+    description:"Switch the arrangement below and watch how the same operation changes meaning.",
+    sets:2, relation:"subset", relations:["overlap","subset","disjoint","equal"], ops:["AnB","AuB","AmB","BmA"], defaultOp:"AnB",
+    note:"If B ⊂ A then A ∩ B = B and A ∪ B = A. If the sets are disjoint they share nothing, so A ∩ B = ∅." },
+  { id:"three", title:"Three Sets", heading:"Three-set Venn diagrams",
+    description:"Eight regions now. Work from the inside out and brackets first.",
+    sets:3, relation:"three", ops:["AuBuC","AnBnC","An_BuC","AnB_mC","AuB_nC","notABC"], defaultOp:"AnBnC",
+    note:"Always do the brackets first, exactly like in arithmetic. Shade the bracket lightly in your head, then apply the outer operation." },
+  { id:"demorgan", title:"De Morgan's Laws", heading:"De Morgan's laws",
+    description:"Two identities worth memorising — and here is the visual proof.",
+    special:"demorgan", sets:2, relation:"overlap",
+    note:"Both diagrams shade exactly the same region, which is what “equal” means for sets. In words: the complement flips the operation — ∪ becomes ∩, and ∩ becomes ∪." },
+  { id:"quiz", title:"Quiz", heading:"Check yourself",
+    description:"Click regions to shade them, or pick the right notation. Instant feedback.",
+    special:"quiz", sets:2, relation:"overlap",
+    note:"No penalty for wrong answers — try, look at the feedback, and go again. Build a streak!" }
+];
+
+const POOL2 = ["AuB","AnB","notA","notB","AmB","BmA","AdB","notAuB","notAnB","nAnB","nAuB"];
+const POOL3 = ["AuBuC","AnBnC","An_BuC","AnB_mC","AuB_nC","notABC"];
+const parseSet = str => [...new Set(String(str||"").split(/[,\s;]+/).map(t=>t.trim()).filter(Boolean))];
+const keysFor = (opKey,n) => {
+  const fn = OPS[opKey].fn, out = [];
+  for (let m=0;m<(1<<n);m++){
+    let key="", bits=[];
+    for (let i=0;i<n;i++){ const on = !!(m&(1<<i)); key += on?"1":"0"; bits.push(on); }
+    if (fn(bits[0],bits[1],bits[2]||false)) out.push(key);
+  }
+  return out.sort();
+};
+const shuffle = a => { for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+
+// ===== Venn engine: builds atomic boolean regions for n=2 or n=3 circles =====
+class Venn {
+  constructor(svg) { this.svg = svg; this.n = 2; this.relation = "overlap"; this.geo = JSON.parse(JSON.stringify(GEOM.overlap));
+    this.regions = {}; this.st = {}; this.hovKey = null; this.circleRefs = {A:[],B:[],C:[]}; this.elements = null; this.onRegionClick = null; this.build(); }
+
+  build() {
+    const svg = this.svg, n = this.n;
+    svg.innerHTML = ""; this.regions = {}; this.st = {}; this.circleRefs = {A:[],B:[],C:[]};
+    const defs = mk("defs"); const sets = LETTERS.slice(0,n);
+    sets.forEach(S => { const cp = mk("clipPath",{id:`clip-${this.uid}-${S}`}); const c = mk("circle"); this.circleRefs[S].push(c); cp.appendChild(c); defs.appendChild(cp); });
+    for (let m=1;m<(1<<n);m++){
+      const ex = sets.filter((_,i)=>m&(1<<i));
+      const mask = mk("mask",{id:`ex-${this.uid}-${ex.join("")}`});
+      mask.appendChild(mk("rect",{x:0,y:0,width:500,height:350,fill:"#fff"}));
+      ex.forEach(S => { const c = mk("circle",{fill:"#000"}); this.circleRefs[S].push(c); mask.appendChild(c); });
+      defs.appendChild(mask);
+    }
+    svg.appendChild(defs);
+
+    const ur = mk("rect",{x:BOX.x,y:BOX.y,width:BOX.w,height:BOX.h,rx:BOX.rx});
+    ur.style.fill = "var(--panel-2)"; ur.style.stroke = "var(--rule)"; ur.style.strokeWidth = "1.5";
+    svg.appendChild(ur);
+    const ul = mk("text",{x:BOX.x+14,y:BOX.y+26}); ul.textContent = "U";
+    ul.setAttribute("class","math"); ul.style.cssText = "font-size:16px;fill:var(--ink-3);";
+    svg.appendChild(ul);
+
+    const rg = mk("g",{"pointer-events":"none"});
+    for (let m=0;m<(1<<n);m++){
+      const key = this.keyOf(m,n);
+      const inc = sets.filter((_,i)=>m&(1<<i));
+      const exc = sets.filter((_,i)=>!(m&(1<<i)));
+      const g = mk("g"); let host = g;
+      if (exc.length){ const w = mk("g",{mask:`url(#ex-${this.uid}-${exc.join("")})`}); host.appendChild(w); host = w; }
+      inc.forEach(S => { const w = mk("g",{"clip-path":`url(#clip-${this.uid}-${S})`}); host.appendChild(w); host = w; });
+      const r = mk("rect",{x:BOX.x,y:BOX.y,width:BOX.w,height:BOX.h,rx:BOX.rx});
+      r.style.opacity = "0"; r.style.transition = "opacity .2s ease, fill .2s ease";
+      host.appendChild(r); g.__rect = r; rg.appendChild(g); this.regions[key] = g; this.st[key] = "";
+    }
+    svg.appendChild(rg);
+
+    const og = mk("g",{"pointer-events":"none"});
+    sets.forEach(S => { const c = mk("circle"); c.style.fill="none"; c.style.stroke=SET_COLOR[S]; c.style.strokeWidth="2.4"; this.circleRefs[S].push(c); og.appendChild(c); });
+    svg.appendChild(og);
+
+    this.dotLayer = mk("g",{"pointer-events":"none"}); svg.appendChild(this.dotLayer);
+    this.labelLayer = mk("g",{"pointer-events":"none"});
+    sets.forEach(S => { const t = mk("text",{"text-anchor":"middle"}); t.textContent=S; t.setAttribute("class","math");
+      t.style.cssText = `font-size:24px;fill:${SET_COLOR[S]};`; this.labelLayer.appendChild(t); this["lbl"+S]=t; });
+    svg.appendChild(this.labelLayer);
+
+    const hit = mk("rect",{x:0,y:0,width:500,height:350}); hit.style.fill="transparent"; hit.style.cursor="default";
+    svg.appendChild(hit); this.hit = hit;
+    hit.addEventListener("pointermove", e => this.hover(e));
+    hit.addEventListener("pointerleave", () => { this.hovKey=null; this.paint(); });
+    hit.addEventListener("click", e => { if (!this.onRegionClick) return; const k=this.keyAtEvent(e); if (k) this.onRegionClick(k); });
+    this.applyGeo(); this.paint();
+  }
+  keyOf(m,n){ let s=""; for(let i=0;i<n;i++) s += (m&(1<<i))?"1":"0"; return s; }
+  setSize(n){ if (n===this.n) return; this.n=n; this.build(); }
+  setRelation(rel){ this.relation = rel; const target = GEOM[rel]; this.setSize(target.n); this.geo = JSON.parse(JSON.stringify(target)); this.applyGeo(); }
+  applyGeo(){
+    LETTERS.slice(0,this.n).forEach(S => {
+      const g = this.geo[S];
+      this.circleRefs[S].forEach(c => { c.setAttribute("cx",g.cx); c.setAttribute("cy",g.cy); c.setAttribute("r",g.r); });
+      const t = this["lbl"+S]; if (!t) return;
+      if (this.relation==="equal" && S==="B"){ t.style.display="none"; return; }
+      t.style.display = "";
+      if (this.relation==="equal" && S==="A"){ t.textContent="A = B"; t.setAttribute("x",g.cx); t.setAttribute("y",g.cy-g.r-14); return; }
+      t.textContent = S;
+      const dx = S==="B" ? 0.75 : (S==="A" ? -0.75 : 0);
+      const dy = S==="C" ? 0.8 : -0.5;
+      t.setAttribute("x", g.cx+dx*g.r); t.setAttribute("y", g.cy+dy*g.r+10);
+    });
+    this.drawDots();
+  }
+  paint(){
+    const FILLS = { on:["var(--shade)",.30], hovOn:["var(--shade)",.42], hov:["var(--shade)",.12],
+      sel:["var(--setA)",.34], selHov:["var(--setA)",.44], ok:["var(--ok)",.38], err:["var(--bad)",.40], miss:["var(--bad)",.14] };
+    for (const k in this.regions){
+      const r = this.regions[k].__rect, st = this.st[k]||"", hov = this.hovKey===k && !!this.onRegionClick;
+      let spec = null;
+      if (st==="on") spec = hov ? FILLS.hovOn : FILLS.on;
+      else if (st==="sel") spec = hov ? FILLS.selHov : FILLS.sel;
+      else if (st) spec = FILLS[st];
+      else if (hov) spec = FILLS.hov;
+      if (spec){ r.style.fill = spec[0]; r.style.opacity = spec[1]; } else { r.style.opacity = "0"; }
+    }
+  }
+  keyAt(x,y){
+    if (x<BOX.x||x>BOX.x+BOX.w||y<BOX.y||y>BOX.y+BOX.h) return null;
+    let k=""; for (let i=0;i<this.n;i++){ const g=this.geo[LETTERS[i]]; k += (Math.hypot(x-g.cx,y-g.cy)<=g.r)?"1":"0"; } return k;
+  }
+  keyAtEvent(e){ const pt=this.svg.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY; const p=pt.matrixTransform(this.svg.getScreenCTM().inverse()); return this.keyAt(p.x,p.y); }
+  hover(e){ if (!this.onRegionClick) return; const k=this.keyAtEvent(e); if (k===this.hovKey) return; this.hovKey=k; this.paint(); }
+  shade(fn){ for (const key in this.regions){ const b = key.split("").map(c=>c==="1"); this.st[key] = fn(b[0],b[1],b[2]||false) ? "on" : ""; } this.paint(); }
+  clearMarks(){ for (const k in this.st) this.st[k]=""; this.paint(); }
+  toggleSel(k){ this.st[k] = this.st[k]==="sel" ? "" : "sel"; this.paint(); }
+  mark(k,cls){ if (this.regions[k]){ this.st[k]=cls; this.paint(); } }
+  selected(){ return Object.keys(this.st).filter(k=>this.st[k]==="sel"); }
+  setElements(d){ this.elements = d; this.drawDots(); }
+  drawDots(){
+    if (!this.dotLayer) return; this.dotLayer.innerHTML = "";
+    const d = this.elements; if (!d) return;
+    const anchors = ANCHORS[this.relation]; if (!anchors) return;
+    const buckets = {};
+    d.U.forEach(v => { let k=""; for (let i=0;i<this.n;i++) k += d[LETTERS[i]].has(v)?"1":"0"; (buckets[k]=buckets[k]||[]).push(v); });
+    for (const k in buckets){
+      const a = anchors[k]; if (!a) continue;
+      const items = buckets[k], per = items.length>6?4:3, sx = items.length>6?24:27, sy=25;
+      const rows = Math.ceil(items.length/per);
+      items.forEach((v,i) => {
+        const row=Math.floor(i/per), col=i%per, inRow=Math.min(per, items.length-row*per);
+        const x=a[0]+(col-(inRow-1)/2)*sx, y=a[1]+(row-(rows-1)/2)*sy;
+        const inside = k.includes("1");
+        const g = mk("g"); const c = mk("circle",{cx:x,cy:y,r:11});
+        c.style.fill = inside ? "var(--setA)" : "var(--panel)"; c.style.stroke = inside ? "var(--setA)" : "var(--ink-3)"; c.style.strokeWidth="1.4";
+        g.appendChild(c);
+        const t = mk("text",{x:x,y:y}); t.textContent = v;
+        t.style.cssText = "font-family:'Figtree',sans-serif;font-variant-numeric:tabular-nums;font-size:11px;font-weight:600;text-anchor:middle;dominant-baseline:central;fill:"+(inside?"var(--panel)":"var(--ink)");
+        g.appendChild(t); this.dotLayer.appendChild(g);
+      });
+    }
+  }
+}
+Venn.prototype.uid = "v";
+
+// ===== APP STATE =====
+const state = {
+  stage: 0, op: "U", relation: "overlap", law: 0,
+  showElems: false, inU:"1,2,3,4,5,6,7,8,9,10", inA:"1,2,3,4,5,6", inB:"4,5,6,7,8", inC:"2,4,6,8,10",
+  hard:false, qOp:"AuB", qType:"shade", qAnswered:false, qChoices:[], score:0, total:0, streak:0, feedback:"", fbOk:true, choiceMarks:{}
+};
+let vLearn = null, vQuiz = null, vLawL = null, vLawR = null, isDark = false;
 
 // ===== THEME =====
-function applyTheme() {
-    document.body.className = isDark ? "h-full dark" : "h-full light";
-    document.getElementById("themeToggle").textContent = isDark ? "☀️ Light" : "🌙 Dark";
+function applyTheme(){
+  if (isDark) document.documentElement.setAttribute("data-theme","dark"); else document.documentElement.removeAttribute("data-theme");
+  document.getElementById("themeToggle").textContent = isDark ? "Light" : "Dark";
+  try { localStorage.setItem("setviz-theme", isDark?"dark":"light"); } catch(e){}
 }
 document.getElementById("themeToggle").addEventListener("click", () => { isDark = !isDark; applyTheme(); });
 
-// ===== SVG HELPERS =====
-function setCircle(id, cx, cy, r) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.setAttribute("cx", cx); el.setAttribute("cy", cy); el.setAttribute("r", r);
+function stage(){ return stages[state.stage]; }
+
+// ===== STAGE RAIL =====
+function renderStageRail(){
+  const rail = document.getElementById("stageRail"); rail.innerHTML = "";
+  stages.forEach((s,i) => {
+    const li = document.createElement("li"); const btn = document.createElement("button");
+    btn.type = "button"; btn.className = `rail-tab${i===state.stage?" active":""}`;
+    btn.innerHTML = `<span class="rail-num">${String(i).padStart(2,"0")}</span><span class="rail-label">${s.title}</span>`;
+    btn.addEventListener("click", () => go(i)); li.appendChild(btn); rail.appendChild(li);
+  });
 }
 
-function updateSvgPositions(layout) {
-    if (layout.a) { setCircle("defA", layout.a.cx, layout.a.cy, layout.a.r); }
-    if (layout.b) { setCircle("defB", layout.b.cx, layout.b.cy, layout.b.r); }
+function go(i){
+  const n = Math.max(0, Math.min(stages.length-1, i)); if (n===state.stage) return;
+  const s = stages[n]; state.stage = n; state.feedback = "";
+  if (!s.special){ state.relation = s.relation; state.op = s.defaultOp; }
+  render(); window.scrollTo({top:0,behavior:"smooth"});
+}
+document.getElementById("prevBtn").addEventListener("click", () => go(state.stage-1));
+document.getElementById("nextBtn").addEventListener("click", () => go(state.stage+1));
+document.addEventListener("keydown", e => {
+  if (e.target && e.target.tagName === "INPUT") return;
+  if (e.key === "ArrowRight") go(state.stage+1);
+  if (e.key === "ArrowLeft") go(state.stage-1);
+});
 
-    // Update the mask circle for intersection complement
-    const mAnB = document.querySelector("#mNotAnB circle");
-    if (mAnB && layout.b) {
-        mAnB.setAttribute("cx", layout.b.cx);
-        mAnB.setAttribute("cy", layout.b.cy);
-        mAnB.setAttribute("r", layout.b.r);
-    }
-
-    // Base circles
-    const bA = document.getElementById("baseA");
-    const bB = document.getElementById("baseB");
-    const lA = document.getElementById("labelA");
-    const lB = document.getElementById("labelB");
-
-    if (layout.a) {
-        bA.style.display = "block";
-        lA.style.display = "block";
-        lA.setAttribute("x", layout.a.cx);
-        lA.setAttribute("y", layout.a.cy - layout.a.r - 12);
-    } else { bA.style.display = "none"; lA.style.display = "none"; }
-
-    if (layout.b) {
-        bB.style.display = "block";
-        lB.style.display = "block";
-        lB.setAttribute("x", layout.b.cx);
-        lB.setAttribute("y", layout.b.cy - layout.b.r - 12);
-    } else { bB.style.display = "none"; lB.style.display = "none"; }
+// ===== LEARN MODE =====
+function renderOps(s){
+  const row = document.getElementById("choiceRow"); row.innerHTML = "";
+  (s.ops||[]).forEach(key => {
+    const o = OPS[key]; const btn = document.createElement("button"); btn.type="button";
+    btn.className = `op-btn${key===state.op?" active":""}`;
+    btn.innerHTML = `<span class="op-sym math">${o.sym}</span><span class="op-name">${o.name}</span>`;
+    btn.addEventListener("click", () => { state.op = key; syncLearn(); renderOps(s); syncStatus(); });
+    row.appendChild(btn);
+  });
+}
+function renderRelations(s){
+  const card = document.getElementById("relCard"); const row = document.getElementById("relRow");
+  if (!s.relations || !s.relations.length){ card.style.display = "none"; return; }
+  card.style.display = ""; row.innerHTML = "";
+  s.relations.forEach(r => {
+    const btn = document.createElement("button"); btn.type="button"; btn.className = `pill${r===state.relation?" active":""}`;
+    btn.textContent = REL_LABEL[r];
+    btn.addEventListener("click", () => { state.relation = r; syncLearn(); renderRelations(s); });
+    row.appendChild(btn);
+  });
+}
+function syncLearn(){
+  if (!vLearn) return;
+  vLearn.setRelation(state.relation);
+  vLearn.shade(OPS[state.op].fn);
+  syncElements();
+}
+function syncStatus(){
+  const o = OPS[state.op];
+  document.getElementById("statusText").textContent = o.desc;
+  document.getElementById("statusExpl").textContent = "";
+  document.getElementById("symbolText").textContent = o.sym;
 }
 
-// ===== HIGHLIGHTS =====
-const hlIds = ["hlA","hlB","hlAc","hlBc","hlAmB","hlBmA","hlAuBc","hlAnBc","hlUnion","hlInter","hlSym"];
-
-function clearHL() {
-    hlIds.forEach(id => { const e = document.getElementById(id); if(e) e.setAttribute("opacity","0"); });
-    document.getElementById("emptyBadge").style.display = "none";
-    document.getElementById("shadingLbl").style.display = "none";
+// ===== ELEMENTS PANEL =====
+function renderElemFields(s){
+  const wrap = document.getElementById("elemFields"); wrap.innerHTML = "";
+  const fields = [["Universal set U","inU"],["Set A","inA"],["Set B","inB"]];
+  if (s.sets===3) fields.push(["Set C","inC"]);
+  fields.forEach(([label,key]) => {
+    const d = document.createElement("div");
+    d.innerHTML = `<label class="field-label">${label}</label><input class="field-input" type="text" value="${state[key]}">`;
+    d.querySelector("input").addEventListener("change", e => { state[key]=e.target.value; syncElements(); renderElemSummary(s); });
+    wrap.appendChild(d);
+  });
 }
-
-function showHL(opId, stage) {
-    clearHL();
-    if (!opId) return;
-    const map = { A:"hlA", B:"hlB", Ac:"hlAc", Bc:"hlBc", AuB:"hlUnion", AnB:"hlInter", AmB:"hlAmB", BmA:"hlBmA", AsdB:"hlSym", AuBc:"hlAuBc", AnBc:"hlAnBc" };
-    const lbl = { A:"A", B:"B", Ac:"A′", Bc:"B′", AuB:"A ∪ B", AnB:"A ∩ B", AmB:"A \\ B", BmA:"B \\ A", AsdB:"A Δ B", AuBc:"(A ∪ B)′", AnBc:"(A ∩ B)′" };
-
-    // Handle disjoint intersection specially
-    if (opId === "AnB" && stage.visual === "disjoint") {
-        document.getElementById("emptyBadge").style.display = "block";
-        showLabel("A ∩ B = ∅");
-        return;
-    }
-    // Stage 5 position ops: just change layout, no highlight
-    if (["sub","eq","olap","disj"].includes(opId)) return;
-
-    const hlId = map[opId];
-    if (hlId) { document.getElementById(hlId).setAttribute("opacity","1"); }
-    if (lbl[opId]) showLabel(lbl[opId]);
+function syncElements(){
+  if (!vLearn) return;
+  const s = stage();
+  if (!state.showElems || s.special){ vLearn.setElements(null); return; }
+  const U = parseSet(state.inU); const pick = str => new Set(parseSet(str).filter(x=>U.includes(x)));
+  const A = pick(state.inA), B = pick(state.inB), C = s.sets===3 ? pick(state.inC) : new Set();
+  vLearn.setElements({U,A,B,C});
 }
-
-function showLabel(text) {
-    const el = document.getElementById("shadingLbl");
-    el.textContent = text;
-    el.style.display = "block";
+function renderElemSummary(s){
+  const box = document.getElementById("elemSummary");
+  if (!state.showElems || s.special){ box.style.display="none"; document.getElementById("elemHint").style.display = s.special?"none":""; return; }
+  box.style.display = ""; document.getElementById("elemHint").style.display="none";
+  const U = parseSet(state.inU); const pick = x => new Set(parseSet(x).filter(v=>U.includes(v)));
+  const A = pick(state.inA), B = pick(state.inB), C = s.sets===3 ? pick(state.inC) : new Set();
+  const o = OPS[state.op]; const fmt = a => a.length ? "{ "+a.join(", ")+" }" : "∅";
+  const res = U.filter(v => o.fn(A.has(v), B.has(v), C.has(v)));
+  let rows = [["A",fmt([...A])],["B",fmt([...B])]];
+  if (s.sets===3) rows.push(["C",fmt([...C])]);
+  rows.push([o.sym, fmt(res)]); rows.push(["n("+o.sym+")", String(res.length)]);
+  box.innerHTML = rows.map(([k,v],i) => `<div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;${i<rows.length-1?'border-bottom:1px solid var(--rule);':''}font-size:12.5px;">
+    <span class="math" style="font-size:16px;color:${i>=rows.length-2?'var(--accent)':'var(--ink-3)'};">${k}</span>
+    <span style="font-variant-numeric:tabular-nums;font-size:11.5px;text-align:right;word-break:break-word;color:${i>=rows.length-2?'var(--accent)':'var(--ink-2)'};">${v}</span></div>`).join("");
+  if (s.sets===2){
+    const inter=U.filter(v=>A.has(v)&&B.has(v)), uni=U.filter(v=>A.has(v)||B.has(v));
+    box.innerHTML += `<p style="margin:10px 0 0;padding:10px;border-radius:8px;background:var(--paper);border:1px solid var(--rule);font-family:'Fraunces',serif;font-style:italic;font-size:13px;text-align:center;color:var(--ink-2);">n(A∪B) = n(A)+n(B)−n(A∩B)<br>${uni.length} = ${A.size} + ${B.size} − ${inter.length}</p>`;
+  }
 }
+function setToggle(trackId, knobId, on){
+  const track = document.getElementById(trackId), knob = document.getElementById(knobId);
+  track.style.background = on ? "var(--accent)" : "var(--panel-2)";
+  knob.style.transform = on ? "translateX(16px)" : "translateX(0)";
+}
+document.getElementById("elemToggle").addEventListener("click", () => { state.showElems = !state.showElems; render(); });
 
-// ===== RENDER =====
-function renderStageList() {
-    const list = document.getElementById("stageList");
-    list.innerHTML = "";
-    stages.forEach((s, i) => {
-        const li = document.createElement("li");
-        const btn = document.createElement("button");
-        btn.type = "button";
-        const isActive = i === curStage;
-        btn.className = `stage-item w-full rounded-2xl border px-4 py-3 text-left ${isActive ? "stage-item-active" : "stage-item-inactive"}`;
-        btn.innerHTML = `<div class="mb-1 flex items-center gap-3"><span class="stage-num inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold">${i}</span><span class="stage-title-text text-sm font-semibold">${s.title}</span></div><p class="stage-desc-text text-xs leading-6">${s.description}</p>`;
-        btn.addEventListener("click", () => { curStage = i; curOp = null; render(); });
-        li.appendChild(btn);
-        list.appendChild(li);
+// ===== QUIZ MODE =====
+function newQuestion(){
+  const pool = state.hard ? POOL3 : POOL2;
+  const key = pool[Math.floor(Math.random()*pool.length)];
+  const type = Math.random() < 0.6 ? "shade" : "name";
+  let choices = [];
+  if (type === "name"){
+    const n = state.hard?3:2; const sig = k => keysFor(k,n).join("|"); const right = sig(key);
+    const others = shuffle(pool.filter(k=>k!==key && sig(k)!==right));
+    choices = shuffle([key, ...others.slice(0,3)]);
+  }
+  state.qOp = key; state.qType = type; state.qAnswered = false; state.qChoices = choices; state.feedback = ""; state.choiceMarks = {};
+  syncQuiz(); renderQuiz();
+}
+function syncQuiz(){
+  if (!vQuiz) return;
+  vQuiz.setRelation(state.hard ? "three" : "overlap"); vQuiz.clearMarks();
+  if (state.qType === "shade"){ vQuiz.onRegionClick = k => { if (!state.qAnswered) vQuiz.toggleSel(k); }; vQuiz.hit.style.cursor="pointer"; }
+  else { vQuiz.onRegionClick = null; vQuiz.hit.style.cursor="default"; vQuiz.shade(OPS[state.qOp].fn); }
+}
+function checkAnswer(){
+  if (state.qAnswered || state.qType !== "shade") return;
+  const n = state.hard?3:2; const correct = keysFor(state.qOp,n), chosen = vQuiz.selected().sort();
+  const ok = correct.length===chosen.length && correct.every((k,i)=>k===chosen[i]);
+  Object.keys(vQuiz.regions).forEach(k => {
+    const should=correct.includes(k), did=chosen.includes(k);
+    if (should&&did) vQuiz.mark(k,"ok"); else if (did) vQuiz.mark(k,"err"); else if (should) vQuiz.mark(k,"miss"); else vQuiz.mark(k,"");
+  });
+  finishQuestion(ok, ok ? "Correct — that is exactly the region." : `Not quite. Green = right, red = shaded by mistake, faint red = missed. ${OPS[state.qOp].desc}`);
+}
+function pickChoice(k){
+  if (state.qAnswered) return;
+  const n = state.hard?3:2; const sig = x => keysFor(x,n).join("|"); const ok = sig(k)===sig(state.qOp);
+  const marks = {}; state.qChoices.forEach(c => { if (sig(c)===sig(state.qOp)) marks[c]="ok"; else if (c===k) marks[c]="err"; });
+  state.choiceMarks = marks;
+  finishQuestion(ok, ok ? "Correct! "+OPS[state.qOp].desc : `The answer is ${OPS[state.qOp].sym}. ${OPS[state.qOp].desc}`);
+  renderQuiz();
+}
+function finishQuestion(ok, msg){
+  state.qAnswered = true; state.total++; state.score += ok?1:0; state.streak = ok ? state.streak+1 : 0;
+  state.feedback = (ok?"✓ ":"✕ ")+msg; state.fbOk = ok; renderQuiz();
+}
+function renderQuiz(){
+  document.getElementById("qScore").textContent = `Score ${state.score} / ${state.total}`;
+  document.getElementById("qStreak").textContent = `Streak ${state.streak}`;
+  setToggle("hardToggle","hardKnob", state.hard);
+  document.getElementById("qLead").textContent = state.qType==="shade" ? "Click the regions to shade" : "Which expression matches the shaded region?";
+  document.getElementById("qText").textContent = state.qType==="shade" ? OPS[state.qOp].sym : "= ?";
+  const choicesBox = document.getElementById("qChoices"); choicesBox.innerHTML = "";
+  if (state.qType === "name"){
+    state.qChoices.forEach(k => {
+      const btn = document.createElement("button"); const m = state.choiceMarks[k];
+      btn.className = "choice-btn math" + (m?` ${m}`:""); btn.style.fontSize="19px";
+      btn.textContent = OPS[k].sym;
+      btn.addEventListener("click", () => pickChoice(k));
+      choicesBox.appendChild(btn);
     });
+  }
+  const fb = document.getElementById("qFeedback");
+  fb.innerHTML = state.feedback ? `<div class="feedback ${state.fbOk?'ok':'err'}">${state.feedback}</div>` : "";
+  document.getElementById("qCheck").style.display = state.qType==="shade" ? "" : "none";
+  document.getElementById("qCheck").disabled = state.qAnswered;
+}
+document.getElementById("hardToggle").addEventListener("click", () => { state.hard = !state.hard; newQuestion(); });
+document.getElementById("qCheck").addEventListener("click", checkAnswer);
+document.getElementById("qNext").addEventListener("click", newQuestion);
+document.getElementById("qClear").addEventListener("click", () => { if (!state.qAnswered && vQuiz) vQuiz.clearMarks(); });
+
+// ===== MAIN RENDER =====
+// ===== DE MORGAN =====
+function renderLaws(){
+  const row = document.getElementById("lawRow"); row.innerHTML = "";
+  LAWS.forEach((L,i) => {
+    const btn = document.createElement("button"); btn.type = "button";
+    btn.className = `pill math${i===state.law?" active":""}`; btn.style.fontSize = "16px";
+    btn.textContent = `${L.l} = ${L.r}`;
+    btn.addEventListener("click", () => { state.law = i; renderLaws(); });
+    row.appendChild(btn);
+  });
+  const L = LAWS[state.law];
+  document.getElementById("lawLTitle").textContent = L.l;
+  document.getElementById("lawRTitle").textContent = L.r;
+  document.getElementById("lawVerdict").textContent = "✓ Identical shading — " + L.say;
+  if (vLawL){ vLawL.setRelation("overlap"); vLawL.shade(L.lf); }
+  if (vLawR){ vLawR.setRelation("overlap"); vLawR.shade(L.rf); }
 }
 
-function renderChoices(stage) {
-    const row = document.getElementById("choiceRow");
-    row.innerHTML = "";
-    stage.ops.forEach(op => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = `choice-btn rounded-2xl border px-4 py-3 text-sm font-semibold ${op.id === curOp ? "choice-active" : "choice-inactive"}`;
-        btn.textContent = op.label;
-        btn.addEventListener("click", () => { curOp = op.id; render(); });
-        row.appendChild(btn);
-    });
-}
+function render(){
+  const s = stage();
+  renderStageRail();
 
-function render() {
-    const stage = stages[curStage];
-    const op = stage.ops.find(o => o.id === curOp) || null;
+  document.getElementById("stageEyebrow").textContent = s.title;
+  document.getElementById("conceptTitle").textContent = s.heading;
+  document.getElementById("conceptDescription").textContent = s.description;
+  document.getElementById("teachingNote").textContent = s.note;
+  document.getElementById("prevBtn").disabled = state.stage===0;
+  document.getElementById("nextBtn").disabled = state.stage===stages.length-1;
+  document.getElementById("nextBtn").textContent = state.stage===stages.length-1 ? "Done" : "Next →";
 
-    renderStageList();
-    renderChoices(stage);
+  const isQuiz = s.special === "quiz", isDual = s.special === "demorgan", isPlain = !s.special;
+  document.getElementById("learnPanel").style.display = isPlain ? "" : "none";
+  document.getElementById("dualPanel").style.display = isDual ? "" : "none";
+  document.getElementById("quizPanel").style.display = isQuiz ? "" : "none";
+  document.getElementById("opsCard").style.display = isPlain ? "" : "none";
+  document.getElementById("elemCard").style.display = isPlain ? "" : "none";
 
-    document.getElementById("stageEyebrow").textContent = stage.stage;
-    document.getElementById("conceptTitle").textContent = stage.title;
-    document.getElementById("conceptDescription").textContent = stage.description;
-    document.getElementById("teachingNote").textContent = stage.note;
-
-    if (op) {
-        document.getElementById("statusText").textContent = op.desc;
-        document.getElementById("statusExpl").textContent = op.expl;
-        document.getElementById("symbolText").textContent = op.sym;
-    } else {
-        document.getElementById("statusText").textContent = "Select an operation to see the shaded region.";
-        document.getElementById("statusExpl").textContent = "Click the buttons above to visualize different set operations.";
-        document.getElementById("symbolText").textContent = "U";
-    }
-
-    // Determine visual layout
-    let visualKey = stage.visual;
-    if (stage.id === 5 && op && op.vl) visualKey = op.vl;
-    const layout = layouts[visualKey] || layouts.none;
-
-    updateSvgPositions(layout);
-    showHL(curOp, stage);
+  if (isPlain){
+    renderOps(s); renderRelations(s);
+    if (!vLearn) vLearn = new Venn(document.getElementById("vennSvg"));
+    syncLearn(); syncStatus();
+    renderElemFields(s); setToggle("elemToggle","elemKnob",state.showElems);
+    document.getElementById("elemFields").style.display = state.showElems ? "" : "none";
+    renderElemSummary(s);
+  } else if (isDual){
+    document.getElementById("relCard").style.display = "none";
+    if (!vLawL) vLawL = new Venn(document.getElementById("lawLSvg"));
+    if (!vLawR) vLawR = new Venn(document.getElementById("lawRSvg"));
+    renderLaws();
+  } else {
+    document.getElementById("relCard").style.display = "none";
+    if (!vQuiz) vQuiz = new Venn(document.getElementById("quizSvg"));
+    if (!state.qOp || !state.total && !state.qChoices.length) newQuestion(); else { syncQuiz(); renderQuiz(); }
+  }
 }
 
 // ===== INIT =====
-applyTheme();
+(function initTheme(){
+  let saved = null; try { saved = localStorage.getItem("setviz-theme"); } catch(e){}
+  const sys = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  isDark = (saved||sys) === "dark"; applyTheme();
+})();
 render();
 </script>
 </body>
