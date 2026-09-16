@@ -76,7 +76,7 @@ api/stats.js             Placeholder serverless endpoint
 
 ## Version history
 
-### v2.0 — current
+### v2.0 — current (September 2026)
 
 A substantial rework of the interface and the teaching content.
 
@@ -87,9 +87,11 @@ A substantial rework of the interface and the teaching content.
 - New visual design, with light and dark themes driven by CSS custom properties
 - Rewritten user manual
 
-### v1.0
+### v1.0 (October 2025 – August 2026)
 
-Seven stages (Stage 0–6), recognition-based interaction: the student selects an operation and the tool shades the matching region. Light/dark mode, static hosting. This is the build described in the DIIID 2026 extended abstract.
+Seven stages (Stage 0–6), recognition-based interaction: the student selects an operation and the tool shades the matching region. Light/dark mode, static hosting. A separate user manual was added in April 2026.
+
+This is the version entered into the **DIIID 2026** innovation competition, where it was **awarded a Silver medal**, and the build described in the accompanying extended abstract. Relicensed under CC BY-NC-ND 4.0 in August 2026.
 
 ## Roadmap
 
