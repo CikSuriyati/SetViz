@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..700;1,9..144,500..700&family=Figtree:wght@400;500;600;700&display=swap');
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    width: 1200px; height: 630px;
+    background: #F8F4F2;
+    font-family: 'Figtree', -apple-system, sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+  .serif { font-family: 'Fraunces', Georgia, serif; }
+  .grain { position: absolute; inset: 0; border: 14px solid #211E1D; box-sizing: border-box; }
+  .content { position: absolute; inset: 0; padding: 64px 72px; display: flex; flex-direction: column; justify-content: space-between; }
+  .top-row { display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .logo-ring { width: 40px; height: 40px; position: relative; }
+  .logo-ring svg { width: 100%; height: 100%; }
+  .brand-name { font-size: 26px; font-weight: 700; color: #211E1D; }
+  .brand-name .accent { color: #A8481A; }
+  .medal-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+  .medal { display: flex; align-items: center; gap: 8px; background: #FBEADF; border: 1.5px solid #A8481A; color: #A8481A;
+           padding: 9px 16px; border-radius: 999px; font-size: 15px; font-weight: 700; letter-spacing: .01em; }
+  .medal-note { font-size: 12px; color: #847E7C; font-weight: 600; letter-spacing: .04em; }
+  .main { display: flex; align-items: center; gap: 56px; }
+  .text-block { flex: 1.1; }
+  .eyebrow { font-size: 14px; letter-spacing: .18em; text-transform: uppercase; color: #847E7C; font-weight: 600; margin-bottom: 18px; }
+  h1 { font-size: 64px; line-height: 1.05; margin: 0 0 20px; color: #211E1D; font-weight: 700; }
+  h1 .num { color: #A8481A; }
+  p.tag { font-size: 24px; color: #66605D; margin: 0; line-height: 1.4; max-width: 480px; }
+  .venn-wrap { flex: 0 0 380px; display: flex; align-items: center; justify-content: center; }
+  .footer-row { display: flex; align-items: center; justify-content: space-between; font-size: 16px; color: #847E7C; }
+  .footer-row .url { font-weight: 600; color: #211E1D; }
+  .chips { display: flex; gap: 10px; }
+  .chip { border: 1.5px solid #E3DCD8; border-radius: 999px; padding: 7px 14px; font-size: 13px; color: #66605D; background: #FFFFFF; }
+</style>
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="content">
+    <div class="top-row">
+      <div class="brand">
+        <div class="logo-ring">
+          <svg viewBox="0 0 40 40" fill="none">
+            <circle cx="16" cy="20" r="12" stroke="#41569B" stroke-width="2.2" fill="none"/>
+            <circle cx="24" cy="20" r="12" stroke="#DF876E" stroke-width="2.2" fill="none"/>
+          </svg>
+        </div>
+        <div class="brand-name">SetViz <span class="accent">2.0</span></div>
+      </div>
+      <div class="medal-wrap">
+        <div class="medal">🏆 Silver · DIIID 2026</div>
+        <div class="medal-note">awarded to SetViz v1.0</div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="text-block">
+        <div class="eyebrow">Sets &middot; Venn Diagrams &middot; Free</div>
+        <h1>See set theory,<br>don't just <span class="num">memorise</span> it.</h1>
+        <p class="tag">Interactive Venn diagrams for union, intersection, complement and De Morgan's laws — drag, click, and watch the answer build.</p>
+      </div>
+      <div class="venn-wrap">
+        <svg width="380" height="380" viewBox="0 0 380 380">
+          <rect x="10" y="60" width="360" height="260" rx="14" fill="none" stroke="#847E7C" stroke-width="2" stroke-dasharray="4 6"/>
+          <text x="26" y="86" font-family="Fraunces, Georgia, serif" font-style="italic" font-size="20" fill="#847E7C">U</text>
+          <defs>
+            <clipPath id="clipA"><circle cx="150" cy="190" r="105"/></clipPath>
+            <clipPath id="clipB"><circle cx="245" cy="190" r="105"/></clipPath>
+          </defs>
+          <circle cx="150" cy="190" r="105" fill="#41569B" fill-opacity="0.14" stroke="#41569B" stroke-width="3.5"/>
+          <circle cx="245" cy="190" r="105" fill="#DF876E" fill-opacity="0.14" stroke="#DF876E" stroke-width="3.5"/>
+          <g clip-path="url(#clipA)">
+            <g clip-path="url(#clipB)">
+              <circle cx="150" cy="190" r="105" fill="#D9AE47" fill-opacity="0.55"/>
+            </g>
+          </g>
+          <text x="95" y="150" font-family="Fraunces, Georgia, serif" font-style="italic" font-weight="600" font-size="34" fill="#2E3E70">A</text>
+          <text x="278" y="150" font-family="Fraunces, Georgia, serif" font-style="italic" font-weight="600" font-size="34" fill="#A85234">B</text>
+          <text x="197" y="196" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-style="italic" font-weight="600" font-size="22" fill="#5C4413">A∩B</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="footer-row">
+      <div class="url">setviz.visuallymath.com</div>
+      <div class="chips">
+        <div class="chip">No sign-up</div>
+        <div class="chip">Free forever</div>
+        <div class="chip">Works on mobile</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

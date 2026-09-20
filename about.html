@@ -5,6 +5,45 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About SetViz 2.0 — See set theory, don't just memorise it</title>
 <meta name="description" content="About SetViz 2.0 — an interactive tool for learning set theory through Venn diagram visualisations.">
+<link rel="canonical" href="https://setviz.visuallymath.com/about.html">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://setviz.visuallymath.com/about.html">
+<meta property="og:site_name" content="Visualab">
+<meta property="og:title" content="About SetViz 2.0 — See set theory, don't just memorise it">
+<meta property="og:description" content="The story behind SetViz: from its Silver Medal-winning v1.0 at DIIID 2026 to the free, interactive v2.0 tool it is today.">
+<meta property="og:image" content="https://setviz.visuallymath.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SetViz 2.0 — a Venn diagram of sets A and B with the intersection A∩B shaded">
+<meta property="og:locale" content="en_US">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="About SetViz 2.0 — See set theory, don't just memorise it">
+<meta name="twitter:description" content="The story behind SetViz: from its Silver Medal-winning v1.0 at DIIID 2026 to the free, interactive v2.0 tool it is today.">
+<meta name="twitter:image" content="https://setviz.visuallymath.com/og-image.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "url": "https://setviz.visuallymath.com/about.html",
+  "name": "About SetViz 2.0",
+  "description": "The story and version history behind SetViz, an interactive Venn diagram tool for learning set theory.",
+  "isPartOf": {
+    "@type": ["WebApplication", "LearningResource"],
+    "name": "SetViz 2.0",
+    "url": "https://setviz.visuallymath.com/",
+    "award": "Silver Medal, DIIID 2026 Innovation Competition (awarded to SetViz v1.0)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Visualab",
+    "url": "https://visuallymath.com"
+  }
+}
+</script>
+
 <meta name="copyright" content="© 2025–2026 SetViz. Licensed CC BY-NC-ND 4.0.">
 <link rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -38,7 +77,6 @@
     transition:background 300ms ease, color 300ms ease;
   }
   .serif { font-family:'Fraunces',Georgia,serif; }
-  .math  { font-family:'Fraunces',Georgia,serif; font-style:italic; }
   .card  { background:var(--panel); border:1px solid var(--rule); border-radius:16px; }
   .eyebrow { font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3); font-weight:600; }
   .muted { color:var(--ink-2); }
@@ -65,12 +103,6 @@
        font-weight:600; padding:10px 12px; border-bottom:2px solid var(--ink); }
   td { padding:11px 12px; border-bottom:1px solid var(--rule); vertical-align:top; color:var(--ink-2); }
   tr:last-child td { border-bottom:none; }
-  .chip { display:inline-block; border:1px solid var(--rule); border-radius:6px; padding:2px 7px; margin:2px 3px 2px 0;
-          font-family:'Fraunces',Georgia,serif; font-style:italic; font-size:13px; color:var(--ink); background:var(--paper); }
-  .feature { padding:13px 0; border-bottom:1px solid var(--rule); }
-  .feature:last-child { border-bottom:none; }
-  .feature h3 { margin:0 0 3px; font-size:14.5px; font-weight:600; color:var(--ink); }
-  .feature p { margin:0; font-size:13.5px; line-height:1.55; color:var(--ink-2); }
   .step { display:flex; gap:12px; padding:11px 0; border-bottom:1px solid var(--rule); }
   .step:last-child { border-bottom:none; }
   .num-badge { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; flex:none;
@@ -128,86 +160,20 @@
   </section>
 
   <!-- What it teaches -->
-  <section class="mb-12">
+  <section class="mb-12" id="what-it-teaches">
     <p class="sec-num mb-1">02</p>
     <h2 class="serif mb-3" style="font-weight:700;font-size:26px;letter-spacing:-.02em;">What it teaches</h2>
-    <p class="text-sm leading-7 muted mb-5" style="max-width:62ch;">
-      Seven stages, each building on the one before. You can take them in order or jump straight to
-      the one you need.
+    <p class="text-base leading-7 muted mb-0" style="max-width:62ch;">
+      Seven stages, each building on the one before — Basics, Union &amp; Intersection, Complement &amp;
+      Difference, Subset &amp; Disjoint, Three Sets, De Morgan's Laws, and a Quiz. Every stage can also
+      be opened directly, in any order. The <a href="SetViz_UserManual.html">manual</a> has the
+      full stage-by-stage breakdown.
     </p>
-    <div class="card p-5">
-      <table>
-        <thead><tr><th style="width:8%;">#</th><th style="width:28%;">Stage</th><th>What it covers</th></tr></thead>
-        <tbody>
-          <tr><td class="math" style="color:var(--accent);font-size:15px;">00</td>
-              <td class="font-semibold" style="color:var(--ink);">Basics</td>
-              <td>What a set is, the universal set as the surrounding box, and the empty set.</td></tr>
-          <tr><td class="math" style="color:var(--accent);font-size:15px;">01</td>
-              <td class="font-semibold" style="color:var(--ink);">Union &amp; Intersection</td>
-              <td><span class="chip">A ∪ B</span><span class="chip">A ∩ B</span> — reading ∪ as "or" and ∩ as "and".</td></tr>
-          <tr><td class="math" style="color:var(--accent);font-size:15px;">02</td>
-              <td class="font-semibold" style="color:var(--ink);">Complement &amp; Difference</td>
-              <td><span class="chip">A′</span><span class="chip">A − B</span><span class="chip">A Δ B</span><span class="chip">(A ∩ B)′</span></td></tr>
-          <tr><td class="math" style="color:var(--accent);font-size:15px;">03</td>
-              <td class="font-semibold" style="color:var(--ink);">Subset &amp; Disjoint</td>
-              <td>How the same operation changes meaning as the arrangement changes.</td></tr>
-          <tr><td class="math" style="color:var(--accent);font-size:15px;">04</td>
-              <td class="font-semibold" style="color:var(--ink);">Three Sets</td>
-              <td>Eight regions, and working brackets first — <span class="chip">A ∩ (B ∪ C)</span></td></tr>
-          <tr><td class="math" style="color:var(--accent);font-size:15px;">05</td>
-              <td class="font-semibold" style="color:var(--ink);">De Morgan's Laws</td>
-              <td>Both identities proved visually, side by side.</td></tr>
-          <tr><td class="math" style="color:var(--accent);font-size:15px;">06</td>
-              <td class="font-semibold" style="color:var(--ink);">Quiz</td>
-              <td>Self-check with instant feedback, score and streak.</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- Features -->
-  <section class="mb-12">
-    <p class="sec-num mb-1">03</p>
-    <h2 class="serif mb-3" style="font-weight:700;font-size:26px;letter-spacing:-.02em;">What's in it</h2>
-    <div class="card p-5">
-      <div class="feature">
-        <h3>Region-accurate shading</h3>
-        <p>Every operation is composed from the individual regions of the diagram, so <code>A − B</code> produces a true crescent with the overlap cleanly removed — not an approximation drawn on top.</p>
-      </div>
-      <div class="feature">
-        <h3>Two- and three-set diagrams</h3>
-        <p>Most stages use two circles and four regions. The three-set stage opens up all eight, including bracketed expressions.</p>
-      </div>
-      <div class="feature">
-        <h3>Change how the sets sit</h3>
-        <p>Hold an operation fixed and switch between overlapping, <code>B ⊂ A</code>, disjoint and <code>A = B</code>. The notation stays put while the shaded region changes — the point students usually miss.</p>
-      </div>
-      <div class="feature">
-        <h3>Try it with real numbers</h3>
-        <p>Enter your own sets and the elements drop into their correct regions as numbered dots, with the result listed in set notation and <code>n(A∪B) = n(A) + n(B) − n(A∩B)</code> evaluated using your own values.</p>
-      </div>
-      <div class="feature">
-        <h3>De Morgan's Laws, proved</h3>
-        <p>Both identities shown as two diagrams side by side that shade identically — which is what "equal" means for sets.</p>
-      </div>
-      <div class="feature">
-        <h3>A quiz that marks properly</h3>
-        <p>Shade a named region or name a shaded one. Marking is per region: green for correct, red for shaded by mistake, faint red for missed. Score and streak are tracked, and a hard mode switches to three-set questions.</p>
-      </div>
-      <div class="feature">
-        <h3>Light and dark themes</h3>
-        <p>Follows your system setting and remembers your choice. Arrow keys move between stages, which helps when projecting.</p>
-      </div>
-      <div class="feature">
-        <h3>A standing symbol reference</h3>
-        <p>The eight symbols used throughout stay visible beside the diagram, so nobody has to remember what Δ meant three stages ago.</p>
-      </div>
-    </div>
   </section>
 
   <!-- How to use -->
   <section class="mb-12">
-    <p class="sec-num mb-1">04</p>
+    <p class="sec-num mb-1">03</p>
     <h2 class="serif mb-3" style="font-weight:700;font-size:26px;letter-spacing:-.02em;">How to use it</h2>
     <div class="card p-5">
       <div class="step"><span class="num-badge">1</span><div>
@@ -217,12 +183,6 @@
         <p class="font-semibold text-sm mb-0.5">Click an operation</p>
         <p class="text-sm muted">The diagram shades immediately, and a plain-English explanation appears underneath.</p></div></div>
       <div class="step"><span class="num-badge">3</span><div>
-        <p class="font-semibold text-sm mb-0.5">Predict before you click</p>
-        <p class="text-sm muted">Especially with a class. Being wrong about <code>(A ∩ B)′</code> once is worth more than being told twice.</p></div></div>
-      <div class="step"><span class="num-badge">4</span><div>
-        <p class="font-semibold text-sm mb-0.5">Turn on real numbers</p>
-        <p class="text-sm muted">Put your own values in and watch every figure update as an element moves in or out of the overlap.</p></div></div>
-      <div class="step"><span class="num-badge">5</span><div>
         <p class="font-semibold text-sm mb-0.5">Finish at the quiz</p>
         <p class="text-sm muted">Nothing is graded or recorded, so wrong answers cost nothing.</p></div></div>
       <p class="text-sm muted mt-4 mb-0">The <a href="SetViz_UserManual.html">user manual</a> walks through every part of the interface in detail, and includes a suggested lesson route.</p>
@@ -231,7 +191,7 @@
 
   <!-- History -->
   <section class="mb-12">
-    <p class="sec-num mb-1">05</p>
+    <p class="sec-num mb-1">04</p>
     <h2 class="serif mb-3" style="font-weight:700;font-size:26px;letter-spacing:-.02em;">Project history</h2>
     <p class="text-sm leading-7 muted mb-5" style="max-width:62ch;">
       SetViz began in October 2025 as a single-page teaching aid and has been developed openly ever
@@ -243,9 +203,15 @@
       <p class="text-sm leading-relaxed muted mb-3">
         The first release established the approach that still defines the tool: a student picks an
         operation, and the diagram shades exactly the region it describes, with a teaching note
-        alongside. It covered seven stages, from the universal set through to De Morgan's Laws, and
-        gained a separate user manual in April 2026.
+        alongside.
       </p>
+      <p class="eyebrow mb-2" style="color:var(--accent);">Introduced</p>
+      <ul class="text-sm leading-relaxed muted mb-3" style="padding-left:20px;">
+        <li>The core interaction — pick an operation, the diagram shades the exact region</li>
+        <li>Seven stages, from the universal set through to De Morgan's Laws</li>
+        <li>A teaching note alongside every stage</li>
+        <li>A separate user manual, added April 2026</li>
+      </ul>
       <p class="mb-3"><span class="medal">Silver medal · DIIID 2026</span></p>
       <p class="text-sm leading-relaxed muted m-0">
         This is the version entered into the DIIID 2026 innovation competition, and the build
@@ -262,13 +228,14 @@
         foundation: every operation is now defined as a plain true-or-false rule over the individual
         regions of the diagram. That one change is what made the rest possible.
       </p>
+      <p class="eyebrow mb-2" style="color:var(--accent);">New in this version</p>
       <ul class="text-sm leading-relaxed muted m-0" style="padding-left:20px;">
-        <li>Three-set diagrams, with all eight regions</li>
-        <li>Switching how the sets sit, independently of the operation</li>
-        <li>Real numbers placed into their regions, with the counting formula evaluated live</li>
-        <li>De Morgan's Laws proved side by side</li>
-        <li>A quiz with per-region marking and a three-set hard mode</li>
-        <li>Seven stages that build on one another, a redesigned interface, and a rewritten manual</li>
+        <li>Three-set diagrams — eight regions instead of four, including bracketed expressions</li>
+        <li>Switchable set arrangements (overlapping, subset, disjoint, equal), independent of the operation</li>
+        <li>Real numbers dropped into their regions, with the counting formula evaluated live</li>
+        <li>Quiz rebuilt with per-region marking, score, streak, and a three-set hard mode</li>
+        <li>De Morgan's Laws as a side-by-side visual proof, not just another operation</li>
+        <li>Redesigned interface and a rewritten manual</li>
       </ul>
     </div>
 
@@ -280,7 +247,7 @@
 
   <!-- Technical -->
   <section class="mb-12">
-    <p class="sec-num mb-1">06</p>
+    <p class="sec-num mb-1">05</p>
     <h2 class="serif mb-3" style="font-weight:700;font-size:26px;letter-spacing:-.02em;">Technical details &amp; licence</h2>
     <div class="card p-5">
       <table>
