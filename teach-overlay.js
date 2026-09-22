@@ -29,7 +29,7 @@
     // normally get nothing at all. Once you arrive with the flag, it sticks
     // for the rest of that browser tab, so you can move around your site
     // without retyping it. Set to null to make it always available.
-    gate: 'teach',
+    gate: null,
 
     toggleKey: 'd',          // used with Option/Alt
     colors: [
