@@ -170,12 +170,13 @@
             </svg>
             <div class="mr-auto">
                 <h1 class="serif" style="font-weight:700;font-size:32px;line-height:.95;letter-spacing:-.02em;margin:0;">SetViz <span style="color:var(--accent);">2.0</span></h1>
-                <p class="mt-1 text-sm" style="color:var(--ink-2);max-width:52ch;">See set theory, don't just memorise it.</p>
+                <p id="tagline" class="mt-1 text-sm" style="color:var(--ink-2);max-width:52ch;">See set theory, don't just memorise it.</p>
             </div>
             <div class="flex gap-2 items-center pb-1">
                 <a href="https://visuallymath.com" class="manual-link">← Visualab</a>
-                <a href="about.html" class="manual-link">About</a>
-                <a href="SetViz_UserManual.html" target="_blank" class="manual-link">Manual</a>
+                <a href="about.html" id="navAbout" class="manual-link">About</a>
+                <a href="SetViz_UserManual.html" target="_blank" id="navManual" class="manual-link">Manual</a>
+                <button id="langToggle" class="theme-toggle">BM</button>
                 <button id="themeToggle" class="theme-toggle">Dark</button>
             </div>
         </header>
@@ -190,16 +191,16 @@
             <!-- Left column -->
             <div class="flex-1 flex flex-col gap-4" style="flex-basis:230px;min-width:220px;">
                 <section id="opsCard" class="card p-4">
-                    <h2 class="eyebrow mb-3">Choose an operation</h2>
+                    <h2 id="opsCardTitle" class="eyebrow mb-3">Choose an operation</h2>
                     <div id="choiceRow" class="grid grid-cols-2 gap-1.5"></div>
                 </section>
                 <section id="relCard" class="card p-4">
-                    <h2 class="eyebrow mb-3">How the sets sit</h2>
+                    <h2 id="relCardTitle" class="eyebrow mb-3">How the sets sit</h2>
                     <div id="relRow" class="flex flex-wrap gap-1.5"></div>
                     <p id="relDiagramNote" class="text-xs mt-2 mb-0" style="color:var(--ink-3);"></p>
                 </section>
                 <section class="note-panel">
-                    <h2 class="eyebrow mb-2" style="color:var(--accent);">Teaching note</h2>
+                    <h2 id="teachingNoteTitle" class="eyebrow mb-2" style="color:var(--accent);">Teaching note</h2>
                     <p id="teachingNote" class="text-sm leading-relaxed m-0" style="color:var(--ink-2);"></p>
                 </section>
             </div>
@@ -222,8 +223,8 @@
                 <section id="learnPanel" class="card p-3 md:p-4">
                     <svg id="vennSvg" viewBox="0 0 500 350" width="100%" style="display:block;height:auto;touch-action:manipulation;"></svg>
                     <div class="flex gap-5 flex-wrap justify-center mt-3 text-xs" style="color:var(--ink-3);">
-                        <span><i style="display:inline-block;width:11px;height:11px;border-radius:2px;background:var(--shade);opacity:.55;margin-right:6px;vertical-align:-1px;"></i>Shaded = the answer region</span>
-                        <span><i style="display:inline-block;width:11px;height:11px;border-radius:2px;background:var(--panel-2);border:1px solid var(--rule);margin-right:6px;vertical-align:-1px;"></i>Box = universal set U</span>
+                        <span><i style="display:inline-block;width:11px;height:11px;border-radius:2px;background:var(--shade);opacity:.55;margin-right:6px;vertical-align:-1px;"></i><span id="legendShaded">Shaded = the answer region</span></span>
+                        <span><i style="display:inline-block;width:11px;height:11px;border-radius:2px;background:var(--panel-2);border:1px solid var(--rule);margin-right:6px;vertical-align:-1px;"></i><span id="legendBox">Box = universal set U</span></span>
                     </div>
                     <div class="mt-4 pt-4 flex items-baseline gap-4 flex-wrap" style="border-top:1px solid var(--rule);">
                         <div id="symbolText" class="math flex-none" style="font-size:30px;color:var(--accent);">U</div>
@@ -257,11 +258,11 @@
                         <span id="qStreak" class="badge" style="color:var(--ink-2);"></span>
                         <label class="flex items-center gap-2 text-xs cursor-pointer select-none ml-auto" style="color:var(--ink-2);">
                             <span class="toggle-track" id="scenarioToggle"><span class="toggle-knob" id="scenarioKnob"></span></span>
-                            Scenario questions
+                            <span id="scenarioToggleLabel">Scenario questions</span>
                         </label>
                         <label class="flex items-center gap-2 text-xs cursor-pointer select-none" style="color:var(--ink-2);">
                             <span class="toggle-track" id="hardToggle"><span class="toggle-knob" id="hardKnob"></span></span>
-                            Hard mode (3 sets)
+                            <span id="hardToggleLabel">Hard mode (3 sets)</span>
                         </label>
                     </div>
                     <div class="p-3 mb-3" style="border-left:3px solid var(--accent);background:var(--paper);border-radius:4px;">
@@ -273,11 +274,11 @@
                     <svg id="quizSvg" viewBox="0 0 500 350" width="100%" style="display:block;height:auto;touch-action:manipulation;"></svg>
                     <div id="qChoices" class="grid grid-cols-2 gap-2 mt-3"></div>
                     <div id="qCountRow" class="mt-3 flex items-center gap-2" style="display:none;">
-                        <label class="field-label m-0" style="white-space:nowrap;">Your answer:</label>
+                        <label id="qCountLabel" class="field-label m-0" style="white-space:nowrap;">Your answer:</label>
                         <input id="qCountInput" class="field-input" type="number" inputmode="numeric" style="max-width:100px;">
                     </div>
                     <div id="qListRow" class="mt-3 flex items-center gap-2 flex-wrap" style="display:none;">
-                        <label class="field-label m-0" style="white-space:nowrap;">Your answer:</label>
+                        <label id="qListLabel" class="field-label m-0" style="white-space:nowrap;">Your answer:</label>
                         <input id="qListInput" class="field-input" type="text" placeholder="e.g. 2, 4, 6" style="max-width:220px;">
                     </div>
                     <div id="qFeedback"></div>
@@ -300,10 +301,10 @@
                         <div id="bzTimeBar" style="height:100%;background:var(--cta);width:100%;transition:width 120ms linear, background 300ms ease;"></div>
                     </div>
                     <div id="bzIdle" class="text-center" style="padding:36px 10px;">
-                        <p class="serif" style="font-size:22px;font-weight:700;margin:0 0 8px;">Ready for Venn Blitz?</p>
-                        <p class="text-sm" style="color:var(--ink-2);margin:0 auto 18px;max-width:40ch;">Tap the region that matches each description before time runs out. Wrong taps cost time — not the round.</p>
+                        <p id="bzReadyTitle" class="serif" style="font-size:22px;font-weight:700;margin:0 0 8px;">Ready for Venn Blitz?</p>
+                        <p id="bzReadyDesc" class="text-sm" style="color:var(--ink-2);margin:0 auto 18px;max-width:40ch;">Tap the region that matches each description before time runs out. Wrong taps cost time — not the round.</p>
                         <div style="max-width:220px;margin:0 auto 16px;">
-                            <label class="field-label" style="text-align:left;">Class / session code</label>
+                            <label id="bzSessionLabel" class="field-label" style="text-align:left;">Class / session code</label>
                             <input id="bzSessionInput" class="field-input" type="text" placeholder="e.g. 5A" style="text-align:center;">
                         </div>
                         <button id="bzStart" class="btn btn-primary px-6 py-3">Start (60s)</button>
@@ -317,7 +318,7 @@
                         <svg id="blitzSvg" viewBox="0 0 500 350" width="100%" style="display:block;height:auto;touch-action:manipulation;"></svg>
                     </div>
                     <div id="bzEnd" style="display:none;text-align:center;padding:26px 10px;">
-                        <p class="serif" style="font-size:24px;font-weight:700;margin:0 0 4px;">Time's up!</p>
+                        <p id="bzTimesUp" class="serif" style="font-size:24px;font-weight:700;margin:0 0 4px;">Time's up!</p>
                         <p style="font-size:15px;color:var(--ink-2);margin:0 0 16px;" id="bzEndSummary"></p>
                         <input id="bzNameInput" class="field-input" type="text" placeholder="Your name" style="max-width:220px;margin:0 auto 10px;text-align:center;display:block;">
                         <div class="flex gap-2 justify-center flex-wrap">
@@ -328,8 +329,8 @@
                     </div>
                     <div id="bzBoard" style="display:none;border-top:1px solid var(--rule);margin-top:18px;padding-top:14px;">
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="eyebrow m-0">Class leaderboard <span id="bzBoardSession" style="color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0;"></span></h3>
-                            <button id="bzRefreshBoard" class="btn-sm" style="background:transparent;border:none;color:var(--ink-3);cursor:pointer;">↻ Refresh</button>
+                            <h3 class="eyebrow m-0"><span id="bzBoardTitle">Class leaderboard</span> <span id="bzBoardSession" style="color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0;"></span></h3>
+                            <button id="bzRefreshBoard" class="btn-sm" style="background:transparent;border:none;color:var(--ink-3);cursor:pointer;">↻ <span id="bzRefreshLabel">Refresh</span></button>
                         </div>
                         <div id="bzBoardList"></div>
                     </div>
@@ -339,34 +340,25 @@
             <!-- Right column -->
             <div class="flex-1 flex flex-col gap-4" style="flex-basis:220px;min-width:210px;">
                 <section id="elemCard" class="card p-4">
-                    <h2 class="eyebrow mb-3">Try with real numbers</h2>
+                    <h2 id="tryRealNumbersTitle" class="eyebrow mb-3">Try with real numbers</h2>
                     <label class="flex items-center gap-2 text-xs cursor-pointer select-none" style="color:var(--ink-2);">
                         <span class="toggle-track" id="elemToggle"><span class="toggle-knob" id="elemKnob"></span></span>
-                        Show elements
+                        <span id="showElementsLabel">Show elements</span>
                     </label>
                     <div id="elemFields" class="mt-3 flex flex-col gap-2" style="display:none;"></div>
                     <div id="elemSummary" class="mt-3" style="display:none;"></div>
                     <p id="elemHint" class="text-xs m-0" style="color:var(--ink-3);line-height:1.5;">Turn this on to drop real numbers into the diagram and watch the answer set build itself.</p>
                 </section>
                 <section class="card p-4">
-                    <h2 class="eyebrow mb-3">Symbols to remember</h2>
-                    <div>
-                        <div class="symbol-row"><span class="symbol-sym">∪</span><span class="symbol-desc">union — in A or B (or both)</span></div>
-                        <div class="symbol-row"><span class="symbol-sym">∩</span><span class="symbol-desc">intersection — only what's in both</span></div>
-                        <div class="symbol-row"><span class="symbol-sym">A′</span><span class="symbol-desc">complement — everything not in A</span></div>
-                        <div class="symbol-row"><span class="symbol-sym">−</span><span class="symbol-desc">difference — in A but not B</span></div>
-                        <div class="symbol-row"><span class="symbol-sym">Δ</span><span class="symbol-desc">symmetric difference — in one, not both</span></div>
-                        <div class="symbol-row"><span class="symbol-sym">⊂</span><span class="symbol-desc">subset — every element of A is in B</span></div>
-                        <div class="symbol-row"><span class="symbol-sym">∅</span><span class="symbol-desc">empty set — no elements at all</span></div>
-                        <div class="symbol-row"><span class="symbol-sym">n(A)</span><span class="symbol-desc">the number of elements in A</span></div>
-                    </div>
+                    <h2 id="symbolsTitle" class="eyebrow mb-3">Symbols to remember</h2>
+                    <div id="symbolsList"></div>
                 </section>
             </div>
         </div>
     </div>
 
     <footer class="text-center text-xs py-6" style="color:var(--ink-3);">
-        © 2025–2026 SetViz. All rights reserved. Licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="license noopener" style="color:var(--accent);">CC BY-NC-ND 4.0</a> — free for classroom use with attribution; no commercial use or derivatives.
+        <span id="footerText">© 2025–2026 SetViz. All rights reserved. Licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="license noopener" style="color:var(--accent);">CC BY-NC-ND 4.0</a> — free for classroom use with attribution; no commercial use or derivatives.</span>
         <div class="mt-2">
             <span class="page-counter" data-page-counter hidden></span>
         </div>
@@ -381,29 +373,161 @@ const LETTERS = ["A", "B", "C"];
 const BOX = { x: 15, y: 15, w: 470, h: 320, rx: 8 };
 const SET_COLOR = { A: "var(--setA)", B: "var(--setB)", C: "var(--setC)" };
 
+// ===== LANGUAGE =====
+let LANG = "en";
+const tr = f => (f && typeof f === "object" && ("en" in f)) ? (f[LANG] ?? f.en) : f;
+
+const I18N = {
+  tagline: {en:"See set theory, don't just memorise it.", bm:"Lihat teori set, jangan hanya hafal."},
+  navAbout: {en:"About", bm:"Tentang"},
+  navManual: {en:"Manual", bm:"Manual"},
+  themeDark: {en:"Dark", bm:"Gelap"},
+  themeLight: {en:"Light", bm:"Cerah"},
+  opsCardTitle: {en:"Choose an operation", bm:"Pilih satu operasi"},
+  relCardTitle: {en:"How the sets sit", bm:"Susunan set"},
+  teachingNoteTitle: {en:"Teaching note", bm:"Nota pengajaran"},
+  backBtn: {en:"← Back", bm:"← Kembali"},
+  nextBtn: {en:"Next →", bm:"Seterusnya →"},
+  doneBtn: {en:"Done", bm:"Selesai"},
+  legendShaded: {en:"Shaded = the answer region", bm:"Berlorek = kawasan jawapan"},
+  legendBox: {en:"Box = universal set U", bm:"Kotak = set semesta U"},
+  demorganVerdictPrefix: {en:"✓ Identical shading — ", bm:"✓ Lorekan sama — "},
+  eulerNote: {en:"Circles no longer overlap the same way — this is technically an Euler diagram, drawn to match how A and B actually relate.",
+              bm:"Bulatan tidak lagi bertindih dengan cara yang sama — ini sebenarnya rajah Euler, dilukis mengikut hubungan sebenar antara A dan B."},
+  scenarioToggleLabel: {en:"Scenario questions", bm:"Soalan senario"},
+  hardToggleLabel: {en:"Hard mode (3 sets)", bm:"Mod sukar (3 set)"},
+  quizYourAnswer: {en:"Your answer:", bm:"Jawapan anda:"},
+  quizCheck: {en:"Check answer", bm:"Semak jawapan"},
+  quizNext: {en:"Next question →", bm:"Soalan seterusnya →"},
+  quizClear: {en:"Clear", bm:"Kosongkan"},
+  quizListPlaceholder: {en:"e.g. 2, 4, 6", bm:"cth. 2, 4, 6"},
+  quizLeadShadeClick: {en:"Click the regions to shade", bm:"Klik kawasan untuk melorek"},
+  quizLeadShadeFor: {en:"Shade the region for:", bm:"Lorekkan kawasan untuk:"},
+  quizLeadNameShaded: {en:"Which expression matches the shaded region?", bm:"Ungkapan mana sepadan dengan kawasan berlorek?"},
+  quizLeadNameMatch: {en:"Which expression matches:", bm:"Ungkapan mana sepadan dengan:"},
+  quizLeadFind: {en:"Find:", bm:"Cari:"},
+  quizLeadList: {en:"List the elements of:", bm:"Senaraikan ahli bagi:"},
+  quizFbShadeOk: {en:"Correct — that is exactly the region.", bm:"Betul — itulah kawasan yang tepat."},
+  quizFbShadeErr: {en:"Not quite. Green = right, red = shaded by mistake, faint red = missed.", bm:"Belum tepat. Hijau = betul, merah = tersilap lorek, merah pudar = tertinggal."},
+  quizFbNameOk: {en:"Correct!", bm:"Betul!"},
+  quizFbNameErr: {en:"The answer is", bm:"Jawapannya ialah"},
+  quizFbCountOk: {en:"Correct —", bm:"Betul —"},
+  quizFbCountErr: {en:"Not quite.", bm:"Belum tepat."},
+  quizFbListOk: {en:"Correct —", bm:"Betul —"},
+  scoreLabel: {en:"Score", bm:"Skor"},
+  streakLabel: {en:"Streak", bm:"Larian"},
+  waveLabel: {en:"Wave", bm:"Peringkat"},
+  bestLabel: {en:"Best", bm:"Terbaik"},
+  bzBestStreak: {en:"Best streak", bm:"Larian terbaik"},
+  bzNewBest: {en:" · New high score!", bm:" · Rekod tertinggi baharu!"},
+  bzReadyTitle: {en:"Ready for Venn Blitz?", bm:"Sedia untuk Venn Blitz?"},
+  bzReadyDesc: {en:"Tap the region that matches each description before time runs out. Wrong taps cost time — not the round.",
+                bm:"Ketik kawasan yang sepadan dengan setiap huraian sebelum masa tamat. Ketikan salah akan menolak masa — bukan menamatkan pusingan."},
+  bzSessionLabel: {en:"Class / session code", bm:"Kod kelas / sesi"},
+  bzSessionPlaceholder: {en:"e.g. 5A", bm:"cth. 5A"},
+  bzStartBtn: {en:"Start (60s)", bm:"Mula (60s)"},
+  bzTapLead: {en:"Tap the region for:", bm:"Ketik kawasan untuk:"},
+  bzTimesUp: {en:"Time's up!", bm:"Masa tamat!"},
+  bzNamePlaceholder: {en:"Your name", bm:"Nama anda"},
+  bzSubmitBtn: {en:"Submit to leaderboard", bm:"Hantar ke papan pendahulu"},
+  bzReplayBtn: {en:"Play again", bm:"Main semula"},
+  bzBoardTitle: {en:"Class leaderboard", bm:"Papan pendahulu kelas"},
+  bzRefreshBtn: {en:"Refresh", bm:"Muat semula"},
+  bzEnterName: {en:"Enter your name first.", bm:"Sila masukkan nama dahulu."},
+  bzSubmitting: {en:"Submitting…", bm:"Menghantar…"},
+  bzSubmitOkNew: {en:"Submitted — new personal best on the leaderboard!", bm:"Berjaya dihantar — rekod peribadi baharu di papan pendahulu!"},
+  bzSubmitOkOld: {en:"Submitted — but your earlier score was higher, so your leaderboard entry stays as-is.", bm:"Berjaya dihantar — tetapi skor terdahulu anda lebih tinggi, jadi rekod anda kekal sama."},
+  bzSubmitFail: {en:"Couldn't reach the leaderboard — check your connection and try again.", bm:"Tidak dapat menghubungi papan pendahulu — semak sambungan anda dan cuba lagi."},
+  bzLoading: {en:"Loading…", bm:"Memuatkan…"},
+  bzNoScores: {en:'No scores yet for "%S" — be the first!', bm:'Belum ada skor untuk "%S" — jadilah yang pertama!'},
+  bzLoadFail: {en:"Couldn't load the leaderboard.", bm:"Gagal memuatkan papan pendahulu."},
+  tryRealNumbers: {en:"Try with real numbers", bm:"Cuba dengan nombor sebenar"},
+  showElements: {en:"Show elements", bm:"Tunjuk ahli"},
+  elemHint: {en:"Turn this on to drop real numbers into the diagram and watch the answer set build itself.",
+             bm:"Hidupkan ini untuk memasukkan nombor sebenar ke dalam rajah dan lihat set jawapan terbina sendiri."},
+  symbolsToRemember: {en:"Symbols to remember", bm:"Simbol untuk diingati"},
+  universalSetLabel: {en:"Universal set U", bm:"Set semesta U"},
+  setALabel: {en:"Set A", bm:"Set A"},
+  setBLabel: {en:"Set B", bm:"Set B"},
+  setCLabel: {en:"Set C", bm:"Set C"},
+  footerText: {en: '© 2025–2026 SetViz. All rights reserved. Licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="license noopener" style="color:var(--accent);">CC BY-NC-ND 4.0</a> — free for classroom use with attribution; no commercial use or derivatives.',
+               bm: '© 2025–2026 SetViz. Hak cipta terpelihara. Dilesenkan di bawah <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="license noopener" style="color:var(--accent);">CC BY-NC-ND 4.0</a> — bebas untuk kegunaan bilik darjah dengan atribusi; tiada kegunaan komersial atau versi ubah suai.'}
+};
+
+const SYMBOLS = [
+  { sym:"∪", en:"union — in A or B (or both)", bm:"kesatuan — dalam A atau B (atau kedua-duanya)" },
+  { sym:"∩", en:"intersection — only what's in both", bm:"persilangan — hanya yang ada dalam kedua-duanya" },
+  { sym:"A′", en:"complement — everything not in A", bm:"pelengkap — semua yang tiada dalam A" },
+  { sym:"−", en:"difference — in A but not B", bm:"tolak — dalam A tetapi tiada dalam B" },
+  { sym:"Δ", en:"symmetric difference — in one, not both", bm:"beza simetri — dalam satu sahaja, bukan kedua-dua" },
+  { sym:"⊂", en:"subset — every element of A is in B", bm:"subset — setiap ahli A ada dalam B" },
+  { sym:"∅", en:"empty set — no elements at all", bm:"set kosong — tiada ahli langsung" },
+  { sym:"n(A)", en:"the number of elements in A", bm:"bilangan ahli dalam A" }
+];
+
+function applyStaticI18n(){
+  const setText = (id, field) => { const el = document.getElementById(id); if (el) el.textContent = tr(field); };
+  setText("tagline", I18N.tagline);
+  setText("navAbout", I18N.navAbout);
+  setText("navManual", I18N.navManual);
+  setText("opsCardTitle", I18N.opsCardTitle);
+  setText("relCardTitle", I18N.relCardTitle);
+  setText("teachingNoteTitle", I18N.teachingNoteTitle);
+  setText("prevBtn", I18N.backBtn);
+  setText("legendShaded", I18N.legendShaded);
+  setText("legendBox", I18N.legendBox);
+  setText("scenarioToggleLabel", I18N.scenarioToggleLabel);
+  setText("hardToggleLabel", I18N.hardToggleLabel);
+  setText("qCountLabel", I18N.quizYourAnswer);
+  setText("qListLabel", I18N.quizYourAnswer);
+  setText("qCheck", I18N.quizCheck);
+  setText("qNext", I18N.quizNext);
+  setText("qClear", I18N.quizClear);
+  setText("bzReadyTitle", I18N.bzReadyTitle);
+  setText("bzReadyDesc", I18N.bzReadyDesc);
+  setText("bzSessionLabel", I18N.bzSessionLabel);
+  setText("bzStart", I18N.bzStartBtn);
+  setText("bzLead", I18N.bzTapLead);
+  setText("bzTimesUp", I18N.bzTimesUp);
+  setText("bzSubmitScore", I18N.bzSubmitBtn);
+  setText("bzReplay", I18N.bzReplayBtn);
+  setText("bzBoardTitle", I18N.bzBoardTitle);
+  setText("bzRefreshLabel", I18N.bzRefreshBtn);
+  setText("tryRealNumbersTitle", I18N.tryRealNumbers);
+  setText("showElementsLabel", I18N.showElements);
+  setText("elemHint", I18N.elemHint);
+  setText("symbolsTitle", I18N.symbolsToRemember);
+  const qListInput = document.getElementById("qListInput"); if (qListInput) qListInput.placeholder = tr(I18N.quizListPlaceholder);
+  const bzSessionInput = document.getElementById("bzSessionInput"); if (bzSessionInput) bzSessionInput.placeholder = tr(I18N.bzSessionPlaceholder);
+  const bzNameInput = document.getElementById("bzNameInput"); if (bzNameInput) bzNameInput.placeholder = tr(I18N.bzNamePlaceholder);
+  const footer = document.getElementById("footerText"); if (footer) footer.innerHTML = tr(I18N.footerText);
+  const symList = document.getElementById("symbolsList");
+  if (symList) symList.innerHTML = SYMBOLS.map(s => `<div class="symbol-row"><span class="symbol-sym">${s.sym}</span><span class="symbol-desc">${tr({en:s.en,bm:s.bm})}</span></div>`).join("");
+}
+
 // ===== OPERATIONS (boolean fn over membership in A,B,C) =====
 const OPS = {
-  U:      { sym:"U",           name:"universal set", fn:()=>true,                       desc:"Everything we are talking about. The whole box." },
-  A:      { sym:"A",           name:"set A",         fn:(a)=>a,                          desc:"Only what is inside circle A." },
-  B:      { sym:"B",           name:"set B",         fn:(a,b)=>b,                        desc:"Only what is inside circle B." },
-  empty:  { sym:"∅",           name:"empty set",     fn:()=>false,                       desc:"Nothing is shaded — the empty set has no elements." },
-  notA:   { sym:"A′",          name:"complement",    fn:(a)=>!a,                         desc:"Everything in U that is NOT in A." },
-  notB:   { sym:"B′",          name:"complement",    fn:(a,b)=>!b,                       desc:"Everything in U that is NOT in B." },
-  AuB:    { sym:"A ∪ B",       name:"union",         fn:(a,b)=>a||b,                     desc:"In A, or in B, or in both. Everything the two circles cover." },
-  AnB:    { sym:"A ∩ B",       name:"intersection",  fn:(a,b)=>a&&b,                     desc:"Only the overlap — elements that belong to A and to B." },
-  AmB:    { sym:"A − B",       name:"difference",    fn:(a,b)=>a&&!b,                    desc:"In A but not in B. Take A, then remove the overlap." },
-  BmA:    { sym:"B − A",       name:"difference",    fn:(a,b)=>b&&!a,                    desc:"In B but not in A." },
-  AdB:    { sym:"A Δ B",       name:"sym. diff.",    fn:(a,b)=>a!==b,                    desc:"In exactly one of the sets — the union minus the overlap." },
-  notAuB: { sym:"(A ∪ B)′",    name:"not (a∪b)",     fn:(a,b)=>!(a||b),                  desc:"Outside both circles." },
-  notAnB: { sym:"(A ∩ B)′",    name:"not (a∩b)",     fn:(a,b)=>!(a&&b),                  desc:"Everything except the overlap." },
-  nAnB:   { sym:"A′ ∩ B′",     name:"neither",       fn:(a,b)=>!a&&!b,                   desc:"Not in A and not in B — the outside region." },
-  nAuB:   { sym:"A′ ∪ B′",     name:"not both",      fn:(a,b)=>!a||!b,                   desc:"Everything that misses at least one of the sets." },
-  AuBuC:  { sym:"A ∪ B ∪ C",   name:"union of three",fn:(a,b,c)=>a||b||c,                desc:"Anything covered by at least one circle." },
-  AnBnC:  { sym:"A ∩ B ∩ C",   name:"all three",     fn:(a,b,c)=>a&&b&&c,                desc:"The very centre — in A and B and C." },
-  An_BuC: { sym:"A ∩ (B ∪ C)", name:"A and (B or C)",fn:(a,b,c)=>a&&(b||c),              desc:"Start inside A, then keep only what B or C also covers." },
-  AnB_mC: { sym:"(A ∩ B) − C", name:"A and B, not C",fn:(a,b,c)=>a&&b&&!c,               desc:"The A–B overlap with the C part cut away." },
-  AuB_nC: { sym:"(A ∪ B) ∩ C", name:"(A or B) and C",fn:(a,b,c)=>(a||b)&&c,              desc:"Inside C, but only where A or B reaches." },
-  notABC: { sym:"(A ∪ B ∪ C)′",name:"outside all",   fn:(a,b,c)=>!(a||b||c),             desc:"None of the three sets contain it." }
+  U:      { sym:"U",           name:{en:"universal set",bm:"set semesta"}, fn:()=>true,                       desc:{en:"Everything we are talking about. The whole box.",bm:"Semua yang kita bincangkan. Keseluruhan kotak."} },
+  A:      { sym:"A",           name:{en:"set A",bm:"set A"},         fn:(a)=>a,                          desc:{en:"Only what is inside circle A.",bm:"Hanya apa yang ada dalam bulatan A."} },
+  B:      { sym:"B",           name:{en:"set B",bm:"set B"},         fn:(a,b)=>b,                        desc:{en:"Only what is inside circle B.",bm:"Hanya apa yang ada dalam bulatan B."} },
+  empty:  { sym:"∅",           name:{en:"empty set",bm:"set kosong"},     fn:()=>false,                       desc:{en:"Nothing is shaded — the empty set has no elements.",bm:"Tiada apa dilorek — set kosong tiada ahli."} },
+  notA:   { sym:"A′",          name:{en:"complement",bm:"pelengkap"},    fn:(a)=>!a,                         desc:{en:"Everything in U that is NOT in A.",bm:"Semua dalam U yang TIDAK ada dalam A."} },
+  notB:   { sym:"B′",          name:{en:"complement",bm:"pelengkap"},    fn:(a,b)=>!b,                       desc:{en:"Everything in U that is NOT in B.",bm:"Semua dalam U yang TIDAK ada dalam B."} },
+  AuB:    { sym:"A ∪ B",       name:{en:"union",bm:"kesatuan"},         fn:(a,b)=>a||b,                     desc:{en:"In A, or in B, or in both. Everything the two circles cover.",bm:"Dalam A, atau dalam B, atau kedua-duanya. Semua yang diliputi kedua-dua bulatan."} },
+  AnB:    { sym:"A ∩ B",       name:{en:"intersection",bm:"persilangan"},  fn:(a,b)=>a&&b,                     desc:{en:"Only the overlap — elements that belong to A and to B.",bm:"Hanya bahagian bertindih — ahli yang tergolong dalam A dan B."} },
+  AmB:    { sym:"A − B",       name:{en:"difference",bm:"tolak"},    fn:(a,b)=>a&&!b,                    desc:{en:"In A but not in B. Take A, then remove the overlap.",bm:"Dalam A tetapi tiada dalam B. Ambil A, kemudian buang bahagian bertindih."} },
+  BmA:    { sym:"B − A",       name:{en:"difference",bm:"tolak"},    fn:(a,b)=>b&&!a,                    desc:{en:"In B but not in A.",bm:"Dalam B tetapi tiada dalam A."} },
+  AdB:    { sym:"A Δ B",       name:{en:"sym. diff.",bm:"beza simetri"},    fn:(a,b)=>a!==b,                    desc:{en:"In exactly one of the sets — the union minus the overlap.",bm:"Dalam tepat satu set sahaja — kesatuan tolak bahagian bertindih."} },
+  notAuB: { sym:"(A ∪ B)′",    name:{en:"not (a∪b)",bm:"bukan (a∪b)"},     fn:(a,b)=>!(a||b),                  desc:{en:"Outside both circles.",bm:"Di luar kedua-dua bulatan."} },
+  notAnB: { sym:"(A ∩ B)′",    name:{en:"not (a∩b)",bm:"bukan (a∩b)"},     fn:(a,b)=>!(a&&b),                  desc:{en:"Everything except the overlap.",bm:"Semua kecuali bahagian bertindih."} },
+  nAnB:   { sym:"A′ ∩ B′",     name:{en:"neither",bm:"tiada satu pun"},       fn:(a,b)=>!a&&!b,                   desc:{en:"Not in A and not in B — the outside region.",bm:"Tiada dalam A dan tiada dalam B — kawasan luar."} },
+  nAuB:   { sym:"A′ ∪ B′",     name:{en:"not both",bm:"bukan kedua-dua"},      fn:(a,b)=>!a||!b,                   desc:{en:"Everything that misses at least one of the sets.",bm:"Semua yang tidak tergolong dalam sekurang-kurangnya satu set."} },
+  AuBuC:  { sym:"A ∪ B ∪ C",   name:{en:"union of three",bm:"kesatuan tiga set"},fn:(a,b,c)=>a||b||c,                desc:{en:"Anything covered by at least one circle.",bm:"Apa-apa yang diliputi sekurang-kurangnya satu bulatan."} },
+  AnBnC:  { sym:"A ∩ B ∩ C",   name:{en:"all three",bm:"ketiga-tiga"},       fn:(a,b,c)=>a&&b&&c,                desc:{en:"The very centre — in A and B and C.",bm:"Bahagian tengah — dalam A dan B dan C."} },
+  An_BuC: { sym:"A ∩ (B ∪ C)", name:{en:"A and (B or C)",bm:"A dan (B atau C)"},fn:(a,b,c)=>a&&(b||c),              desc:{en:"Start inside A, then keep only what B or C also covers.",bm:"Mula dalam A, kemudian kekalkan hanya yang turut diliputi B atau C."} },
+  AnB_mC: { sym:"(A ∩ B) − C", name:{en:"A and B, not C",bm:"A dan B, bukan C"},fn:(a,b,c)=>a&&b&&!c,               desc:{en:"The A–B overlap with the C part cut away.",bm:"Bahagian bertindih A–B dengan bahagian C dibuang."} },
+  AuB_nC: { sym:"(A ∪ B) ∩ C", name:{en:"(A or B) and C",bm:"(A atau B) dan C"},fn:(a,b,c)=>(a||b)&&c,              desc:{en:"Inside C, but only where A or B reaches.",bm:"Dalam C, tetapi hanya bahagian yang turut disentuh A atau B."} },
+  notABC: { sym:"(A ∪ B ∪ C)′",name:{en:"outside all",bm:"luar semua"},   fn:(a,b,c)=>!(a||b||c),             desc:{en:"None of the three sets contain it.",bm:"Tiada satu pun daripada tiga set mengandunginya."} }
 };
 
 // ===== GEOMETRY per relation =====
@@ -414,10 +538,10 @@ const GEOM = {
   equal:    { n:2, A:{cx:250,cy:175,r:110}, B:{cx:250,cy:175,r:110}, C:{cx:250,cy:175,r:0} },
   three:    { n:3, A:{cx:200,cy:145,r:100}, B:{cx:300,cy:145,r:100}, C:{cx:250,cy:230,r:100} }
 };
-const REL_LABEL = { overlap:"Overlapping", disjoint:"Disjoint", subset:"B ⊂ A", equal:"A = B", three:"Three sets" };
+const REL_LABEL = { overlap:{en:"Overlapping",bm:"Bertindih"}, disjoint:{en:"Disjoint",bm:"Saling eksklusif"}, subset:{en:"B ⊂ A",bm:"B ⊂ A"}, equal:{en:"A = B",bm:"A = B"}, three:{en:"Three sets",bm:"Tiga set"} };
 const LAWS = [
-  { l:"(A ∪ B)′", r:"A′ ∩ B′", lf:(a,b)=>!(a||b), rf:(a,b)=>!a&&!b, say:"The complement of a union is the intersection of the complements." },
-  { l:"(A ∩ B)′", r:"A′ ∪ B′", lf:(a,b)=>!(a&&b), rf:(a,b)=>!a||!b, say:"The complement of an intersection is the union of the complements." }
+  { l:"(A ∪ B)′", r:"A′ ∩ B′", lf:(a,b)=>!(a||b), rf:(a,b)=>!a&&!b, say:{en:"The complement of a union is the intersection of the complements.",bm:"Pelengkap bagi kesatuan ialah persilangan bagi pelengkap-pelengkapnya."} },
+  { l:"(A ∩ B)′", r:"A′ ∪ B′", lf:(a,b)=>!(a&&b), rf:(a,b)=>!a||!b, say:{en:"The complement of an intersection is the union of the complements.",bm:"Pelengkap bagi persilangan ialah kesatuan bagi pelengkap-pelengkapnya."} }
 ];
 const ANCHORS = {
   overlap:  { "10":[137,175],"01":[363,175],"11":[250,175],"00":[62,300] },
@@ -429,38 +553,50 @@ const ANCHORS = {
 
 // ===== STAGES =====
 const stages = [
-  { id:"intro", title:"Basics", heading:"What is a set?",
-    description:"A set is a collection of things. The box is the universal set U — everything we are allowed to talk about.",
+  { id:"intro", title:{en:"Basics",bm:"Asas"}, heading:{en:"What is a set?",bm:"Apakah set?"},
+    description:{en:"A set is a collection of things. The box is the universal set U — everything we are allowed to talk about.",
+                 bm:"Set ialah koleksi benda. Kotak itu ialah set semesta U — semua yang kita dibenarkan bincangkan."},
     sets:2, relation:"overlap", ops:["U","A","B","empty"], defaultOp:"U",
-    note:"Each circle is a set. The rectangle around them is U, the universal set. An element is either inside a circle or outside it — never half-way." },
-  { id:"union", title:"Union & Intersection", heading:"Union and intersection",
-    description:"Two of the most-used operations. Union collects, intersection filters.",
+    note:{en:"Each circle is a set. The rectangle around them is U, the universal set. An element is either inside a circle or outside it — never half-way.",
+          bm:"Setiap bulatan ialah satu set. Segi empat di sekelilingnya ialah U, set semesta. Satu ahli sama ada berada dalam bulatan atau di luarnya — tidak pernah separuh."} },
+  { id:"union", title:{en:"Union & Intersection",bm:"Kesatuan & Persilangan"}, heading:{en:"Union and intersection",bm:"Kesatuan dan persilangan"},
+    description:{en:"Two of the most-used operations. Union collects, intersection filters.",
+                 bm:"Dua operasi yang paling kerap digunakan. Kesatuan mengumpul, persilangan menapis."},
     sets:2, relation:"overlap", ops:["AuB","AnB","A","B"], defaultOp:"AuB",
-    note:"Read ∪ as “or” and ∩ as “and”. Tip: ∪ looks like a cup that holds everything; ∩ is the small bit where the circles meet." },
-  { id:"comp", title:"Complement & Difference", heading:"Complement and difference",
-    description:"What happens when we take things away.",
+    note:{en:"Read ∪ as “or” and ∩ as “and”. Tip: ∪ looks like a cup that holds everything; ∩ is the small bit where the circles meet.",
+          bm:"Baca ∪ sebagai “atau” dan ∩ sebagai “dan”. Tip: ∪ kelihatan seperti cawan yang menampung semua; ∩ ialah bahagian kecil tempat bulatan bertemu."} },
+  { id:"comp", title:{en:"Complement & Difference",bm:"Pelengkap & Tolak"}, heading:{en:"Complement and difference",bm:"Pelengkap dan tolak"},
+    description:{en:"What happens when we take things away.",bm:"Apa yang berlaku apabila kita mengeluarkan sesuatu."},
     sets:2, relation:"overlap", ops:["notA","notB","AmB","BmA","AdB","notAnB"], defaultOp:"notA",
-    note:"A′ means everything in U except A — so A and A′ together always fill the whole box. A − B keeps A but throws away anything B also owns." },
-  { id:"rel", title:"Subset & Disjoint", heading:"How sets can be related",
-    description:"Switch the arrangement below and watch how the same operation changes meaning.",
+    note:{en:"A′ means everything in U except A — so A and A′ together always fill the whole box. A − B keeps A but throws away anything B also owns.",
+          bm:"A′ bermaksud semua dalam U kecuali A — jadi A dan A′ bersama sentiasa memenuhi keseluruhan kotak. A − B mengekalkan A tetapi membuang apa-apa yang turut dimiliki B."} },
+  { id:"rel", title:{en:"Subset & Disjoint",bm:"Subset & Saling Eksklusif"}, heading:{en:"How sets can be related",bm:"Bagaimana set boleh berhubung"},
+    description:{en:"Switch the arrangement below and watch how the same operation changes meaning.",
+                 bm:"Tukar susunan di bawah dan lihat bagaimana operasi yang sama berubah maksudnya."},
     sets:2, relation:"subset", relations:["overlap","subset","disjoint","equal"], ops:["AnB","AuB","AmB","BmA"], defaultOp:"AnB",
-    note:"If B ⊂ A then A ∩ B = B and A ∪ B = A. If the sets are disjoint they share nothing, so A ∩ B = ∅." },
-  { id:"three", title:"Three Sets", heading:"Three-set Venn diagrams",
-    description:"Eight regions now. Work from the inside out and brackets first.",
+    note:{en:"If B ⊂ A then A ∩ B = B and A ∪ B = A. If the sets are disjoint they share nothing, so A ∩ B = ∅.",
+          bm:"Jika B ⊂ A maka A ∩ B = B dan A ∪ B = A. Jika set saling eksklusif, mereka tidak berkongsi apa-apa, jadi A ∩ B = ∅."} },
+  { id:"three", title:{en:"Three Sets",bm:"Tiga Set"}, heading:{en:"Three-set Venn diagrams",bm:"Gambar rajah Venn tiga set"},
+    description:{en:"Eight regions now. Work from the inside out and brackets first.",bm:"Kini lapan kawasan. Kerjakan dari dalam ke luar dan kurungan dahulu."},
     sets:3, relation:"three", ops:["AuBuC","AnBnC","An_BuC","AnB_mC","AuB_nC","notABC"], defaultOp:"AnBnC",
-    note:"Always do the brackets first, exactly like in arithmetic. Shade the bracket lightly in your head, then apply the outer operation." },
-  { id:"demorgan", title:"De Morgan's Laws", heading:"De Morgan's laws",
-    description:"Two identities worth memorising — and here is the visual proof.",
+    note:{en:"Always do the brackets first, exactly like in arithmetic. Shade the bracket lightly in your head, then apply the outer operation.",
+          bm:"Sentiasa selesaikan kurungan dahulu, sama seperti dalam aritmetik. Lorekkan kurungan dalam fikiran anda, kemudian gunakan operasi luar."} },
+  { id:"demorgan", title:{en:"De Morgan's Laws",bm:"Hukum De Morgan"}, heading:{en:"De Morgan's laws",bm:"Hukum De Morgan"},
+    description:{en:"Two identities worth memorising — and here is the visual proof.",bm:"Dua identiti yang perlu dihafal — dan inilah bukti visualnya."},
     special:"demorgan", sets:2, relation:"overlap",
-    note:"Both diagrams shade exactly the same region, which is what “equal” means for sets. In words: the complement flips the operation — ∪ becomes ∩, and ∩ becomes ∪." },
-  { id:"quiz", title:"Quiz", heading:"Check yourself",
-    description:"Click regions to shade them, or pick the right notation. Instant feedback.",
+    note:{en:"Both diagrams shade exactly the same region, which is what “equal” means for sets. In words: the complement flips the operation — ∪ becomes ∩, and ∩ becomes ∪.",
+          bm:"Kedua-dua rajah melorek kawasan yang sama tepat, itulah maksud “sama” bagi set. Dalam erti kata lain: pelengkap menukar operasi — ∪ menjadi ∩, dan ∩ menjadi ∪."} },
+  { id:"quiz", title:{en:"Quiz",bm:"Kuiz"}, heading:{en:"Check yourself",bm:"Uji diri anda"},
+    description:{en:"Click regions to shade them, or pick the right notation. Instant feedback.",bm:"Klik kawasan untuk melorek, atau pilih notasi yang betul. Maklum balas segera."},
     special:"quiz", sets:2, relation:"overlap",
-    note:"No penalty for wrong answers — try, look at the feedback, and go again. Build a streak!" },
-  { id:"blitz", title:"Venn Blitz", heading:"Venn Blitz",
-    description:"Race the clock — tap the region that matches each description before time runs out.",
+    note:{en:"No penalty for wrong answers — try, look at the feedback, and go again. Build a streak!",
+          bm:"Tiada penalti untuk jawapan salah — cuba, lihat maklum balas, dan cuba lagi. Bina larian menang anda!"} },
+  { id:"blitz", title:{en:"Venn Blitz",bm:"Venn Blitz"}, heading:{en:"Venn Blitz",bm:"Venn Blitz"},
+    description:{en:"Race the clock — tap the region that matches each description before time runs out.",
+                 bm:"Berlumba dengan masa — ketik kawasan yang sepadan dengan setiap huraian sebelum masa tamat."},
     special:"blitz", sets:2, relation:"overlap",
-    note:"Every round tests the same regions you built with clicks — union, intersection, complement, difference — and how subset or disjoint arrangements change what a region means. Wrong or missed answers cost time, not lives, so the round keeps moving." }
+    note:{en:"Every round tests the same regions you built with clicks — union, intersection, complement, difference — and how subset or disjoint arrangements change what a region means. Wrong or missed answers cost time, not lives, so the round keeps moving.",
+          bm:"Setiap pusingan menguji kawasan yang sama seperti yang anda bina dengan klik — kesatuan, persilangan, pelengkap, tolak — dan bagaimana susunan subset atau saling eksklusif mengubah maksud sesuatu kawasan. Jawapan salah atau terlepas hanya menolak masa, bukan nyawa, jadi pusingan terus berjalan."} }
 ];
 
 const POOL2 = ["AuB","AnB","notA","notB","AmB","BmA","AdB","notAuB","notAnB","nAnB","nAuB"];
@@ -468,36 +604,55 @@ const POOL3 = ["AuBuC","AnBnC","An_BuC","AnB_mC","AuB_nC","notABC"];
 
 // ===== SCENARIO QUESTIONS =====
 const SCENARIOS = [
-  { subject:"Students surveyed", A:"play football", B:"play chess", C:"play tennis" },
-  { subject:"Customers surveyed", A:"buy coffee", B:"buy tea", C:"buy juice" },
-  { subject:"People surveyed", A:"own a cat", B:"own a dog", C:"own a fish" },
-  { subject:"Students in the class", A:"study French", B:"study Spanish", C:"study German" },
-  { subject:"App users surveyed", A:"use Instagram", B:"use TikTok", C:"use Snapchat" },
-  { subject:"Employees surveyed", A:"know Excel", B:"know Python", C:"know SQL" }
+  { subject:{en:"Students surveyed",bm:"Pelajar yang ditinjau"}, A:{en:"play football",bm:"main bola sepak"}, B:{en:"play chess",bm:"main catur"}, C:{en:"play tennis",bm:"main tenis"} },
+  { subject:{en:"Customers surveyed",bm:"Pelanggan yang ditinjau"}, A:{en:"buy coffee",bm:"beli kopi"}, B:{en:"buy tea",bm:"beli teh"}, C:{en:"buy juice",bm:"beli jus"} },
+  { subject:{en:"People surveyed",bm:"Orang yang ditinjau"}, A:{en:"own a cat",bm:"ada kucing"}, B:{en:"own a dog",bm:"ada anjing"}, C:{en:"own a fish",bm:"ada ikan"} },
+  { subject:{en:"Students in the class",bm:"Pelajar dalam kelas"}, A:{en:"study French",bm:"belajar bahasa Perancis"}, B:{en:"study Spanish",bm:"belajar bahasa Sepanyol"}, C:{en:"study German",bm:"belajar bahasa Jerman"} },
+  { subject:{en:"App users surveyed",bm:"Pengguna aplikasi yang ditinjau"}, A:{en:"use Instagram",bm:"guna Instagram"}, B:{en:"use TikTok",bm:"guna TikTok"}, C:{en:"use Snapchat",bm:"guna Snapchat"} },
+  { subject:{en:"Employees surveyed",bm:"Pekerja yang ditinjau"}, A:{en:"know Excel",bm:"mahir Excel"}, B:{en:"know Python",bm:"mahir Python"}, C:{en:"know SQL",bm:"mahir SQL"} }
 ];
-const SCEN_PHRASE_2 = {
-  AuB:    c => `${c.subject} who ${c.A} or ${c.B} (or both)`,
-  AnB:    c => `${c.subject} who ${c.A} and ${c.B}`,
-  notA:   c => `${c.subject} who do NOT ${c.A}`,
-  notB:   c => `${c.subject} who do NOT ${c.B}`,
-  AmB:    c => `${c.subject} who ${c.A} but do NOT ${c.B}`,
-  BmA:    c => `${c.subject} who ${c.B} but do NOT ${c.A}`,
-  AdB:    c => `${c.subject} who ${c.A} or ${c.B}, but not both`,
-  notAuB: c => `${c.subject} who do neither — not ${c.A} and not ${c.B}`,
-  nAnB:   c => `${c.subject} who do neither — not ${c.A} and not ${c.B}`,
-  notAnB: c => `${c.subject} for whom it's not true they both ${c.A} and ${c.B}`,
-  nAuB:   c => `${c.subject} for whom it's not true they both ${c.A} and ${c.B}`
-};
-const SCEN_PHRASE_3 = {
-  AuBuC:  c => `${c.subject} who ${c.A}, ${c.B}, or ${c.C}`,
-  AnBnC:  c => `${c.subject} who ${c.A} and ${c.B} and ${c.C}`,
-  An_BuC: c => `${c.subject} who ${c.A}, and also ${c.B} or ${c.C}`,
-  AnB_mC: c => `${c.subject} who ${c.A} and ${c.B}, but NOT ${c.C}`,
-  AuB_nC: c => `${c.subject} who ${c.C}, and also ${c.A} or ${c.B}`,
-  notABC: c => `${c.subject} who do none of these — not ${c.A}, ${c.B}, or ${c.C}`
-};
+const SCEN_PHRASE_2 = { en: {
+  AuB:    c => `${tr(c.subject)} who ${tr(c.A)} or ${tr(c.B)} (or both)`,
+  AnB:    c => `${tr(c.subject)} who ${tr(c.A)} and ${tr(c.B)}`,
+  notA:   c => `${tr(c.subject)} who do NOT ${tr(c.A)}`,
+  notB:   c => `${tr(c.subject)} who do NOT ${tr(c.B)}`,
+  AmB:    c => `${tr(c.subject)} who ${tr(c.A)} but do NOT ${tr(c.B)}`,
+  BmA:    c => `${tr(c.subject)} who ${tr(c.B)} but do NOT ${tr(c.A)}`,
+  AdB:    c => `${tr(c.subject)} who ${tr(c.A)} or ${tr(c.B)}, but not both`,
+  notAuB: c => `${tr(c.subject)} who do neither — not ${tr(c.A)} and not ${tr(c.B)}`,
+  nAnB:   c => `${tr(c.subject)} who do neither — not ${tr(c.A)} and not ${tr(c.B)}`,
+  notAnB: c => `${tr(c.subject)} for whom it's not true they both ${tr(c.A)} and ${tr(c.B)}`,
+  nAuB:   c => `${tr(c.subject)} for whom it's not true they both ${tr(c.A)} and ${tr(c.B)}`
+}, bm: {
+  AuB:    c => `${tr(c.subject)} yang ${tr(c.A)} atau ${tr(c.B)} (atau kedua-duanya)`,
+  AnB:    c => `${tr(c.subject)} yang ${tr(c.A)} dan ${tr(c.B)}`,
+  notA:   c => `${tr(c.subject)} yang TIDAK ${tr(c.A)}`,
+  notB:   c => `${tr(c.subject)} yang TIDAK ${tr(c.B)}`,
+  AmB:    c => `${tr(c.subject)} yang ${tr(c.A)} tetapi TIDAK ${tr(c.B)}`,
+  BmA:    c => `${tr(c.subject)} yang ${tr(c.B)} tetapi TIDAK ${tr(c.A)}`,
+  AdB:    c => `${tr(c.subject)} yang ${tr(c.A)} atau ${tr(c.B)}, tetapi bukan kedua-duanya`,
+  notAuB: c => `${tr(c.subject)} yang tidak keduanya — bukan ${tr(c.A)} dan bukan ${tr(c.B)}`,
+  nAnB:   c => `${tr(c.subject)} yang tidak keduanya — bukan ${tr(c.A)} dan bukan ${tr(c.B)}`,
+  notAnB: c => `${tr(c.subject)} yang tidak benar bahawa mereka ${tr(c.A)} dan ${tr(c.B)} serentak`,
+  nAuB:   c => `${tr(c.subject)} yang tidak benar bahawa mereka ${tr(c.A)} dan ${tr(c.B)} serentak`
+}};
+const SCEN_PHRASE_3 = { en: {
+  AuBuC:  c => `${tr(c.subject)} who ${tr(c.A)}, ${tr(c.B)}, or ${tr(c.C)}`,
+  AnBnC:  c => `${tr(c.subject)} who ${tr(c.A)} and ${tr(c.B)} and ${tr(c.C)}`,
+  An_BuC: c => `${tr(c.subject)} who ${tr(c.A)}, and also ${tr(c.B)} or ${tr(c.C)}`,
+  AnB_mC: c => `${tr(c.subject)} who ${tr(c.A)} and ${tr(c.B)}, but NOT ${tr(c.C)}`,
+  AuB_nC: c => `${tr(c.subject)} who ${tr(c.C)}, and also ${tr(c.A)} or ${tr(c.B)}`,
+  notABC: c => `${tr(c.subject)} who do none of these — not ${tr(c.A)}, ${tr(c.B)}, or ${tr(c.C)}`
+}, bm: {
+  AuBuC:  c => `${tr(c.subject)} yang ${tr(c.A)}, ${tr(c.B)}, atau ${tr(c.C)}`,
+  AnBnC:  c => `${tr(c.subject)} yang ${tr(c.A)} dan ${tr(c.B)} dan ${tr(c.C)}`,
+  An_BuC: c => `${tr(c.subject)} yang ${tr(c.A)}, dan juga ${tr(c.B)} atau ${tr(c.C)}`,
+  AnB_mC: c => `${tr(c.subject)} yang ${tr(c.A)} dan ${tr(c.B)}, tetapi TIDAK ${tr(c.C)}`,
+  AuB_nC: c => `${tr(c.subject)} yang ${tr(c.C)}, dan juga ${tr(c.A)} atau ${tr(c.B)}`,
+  notABC: c => `${tr(c.subject)} yang tiada satu pun — bukan ${tr(c.A)}, ${tr(c.B)}, atau ${tr(c.C)}`
+}};
 function scenarioLegend(c, n){
-  return n===3 ? `A = ${c.A} · B = ${c.B} · C = ${c.C}` : `A = ${c.A} · B = ${c.B}`;
+  return n===3 ? `A = ${tr(c.A)} · B = ${tr(c.B)} · C = ${tr(c.C)}` : `A = ${tr(c.A)} · B = ${tr(c.B)}`;
 }
 const parseSet = str => [...new Set(String(str||"").split(/[,\s;]+/).map(t=>t.trim()).filter(Boolean))];
 const keysFor = (opKey,n) => {
@@ -648,10 +803,20 @@ let vLearn = null, vQuiz = null, vLawL = null, vLawR = null, vBlitz = null, isDa
 // ===== THEME =====
 function applyTheme(){
   if (isDark) document.documentElement.setAttribute("data-theme","dark"); else document.documentElement.removeAttribute("data-theme");
-  document.getElementById("themeToggle").textContent = isDark ? "Light" : "Dark";
+  document.getElementById("themeToggle").textContent = isDark ? tr(I18N.themeLight) : tr(I18N.themeDark);
   try { localStorage.setItem("setviz-theme", isDark?"dark":"light"); } catch(e){}
 }
 document.getElementById("themeToggle").addEventListener("click", () => { isDark = !isDark; applyTheme(); });
+
+// ===== LANGUAGE TOGGLE =====
+function applyLang(){
+  document.documentElement.lang = LANG === "bm" ? "ms" : "en";
+  document.getElementById("langToggle").textContent = LANG === "bm" ? "EN" : "BM";
+  try { localStorage.setItem("setviz-lang", LANG); } catch(e){}
+  applyTheme();
+  render();
+}
+document.getElementById("langToggle").addEventListener("click", () => { LANG = LANG === "bm" ? "en" : "bm"; applyLang(); });
 
 function stage(){ return stages[state.stage]; }
 
@@ -661,7 +826,7 @@ function renderStageRail(){
   stages.forEach((s,i) => {
     const li = document.createElement("li"); const btn = document.createElement("button");
     btn.type = "button"; btn.className = `rail-tab${i===state.stage?" active":""}`;
-    btn.innerHTML = `<span class="rail-num">${String(i).padStart(2,"0")}</span><span class="rail-label">${s.title}</span>`;
+    btn.innerHTML = `<span class="rail-num">${String(i).padStart(2,"0")}</span><span class="rail-label">${tr(s.title)}</span>`;
     btn.addEventListener("click", () => go(i)); li.appendChild(btn); rail.appendChild(li);
   });
 }
@@ -687,7 +852,7 @@ function renderOps(s){
   (s.ops||[]).forEach(key => {
     const o = OPS[key]; const btn = document.createElement("button"); btn.type="button";
     btn.className = `op-btn${key===state.op?" active":""}`;
-    btn.innerHTML = `<span class="op-sym math">${o.sym}</span><span class="op-name">${o.name}</span>`;
+    btn.innerHTML = `<span class="op-sym math">${o.sym}</span><span class="op-name">${tr(o.name)}</span>`;
     btn.addEventListener("click", () => { state.op = key; syncLearn(); renderOps(s); syncStatus(); });
     row.appendChild(btn);
   });
@@ -699,13 +864,13 @@ function renderRelations(s){
   card.style.display = ""; row.innerHTML = "";
   s.relations.forEach(r => {
     const btn = document.createElement("button"); btn.type="button"; btn.className = `pill${r===state.relation?" active":""}`;
-    btn.textContent = REL_LABEL[r];
+    btn.textContent = tr(REL_LABEL[r]);
     btn.addEventListener("click", () => { state.relation = r; syncLearn(); renderRelations(s); });
     row.appendChild(btn);
   });
   const note = document.getElementById("relDiagramNote");
   note.textContent = EULER_RELATIONS.has(state.relation)
-    ? "Circles no longer overlap the same way — this is technically an Euler diagram, drawn to match how A and B actually relate."
+    ? tr(I18N.eulerNote)
     : "";
 }
 function syncLearn(){
@@ -716,7 +881,7 @@ function syncLearn(){
 }
 function syncStatus(){
   const o = OPS[state.op];
-  document.getElementById("statusText").textContent = o.desc;
+  document.getElementById("statusText").textContent = tr(o.desc);
   document.getElementById("statusExpl").textContent = "";
   document.getElementById("symbolText").textContent = o.sym;
 }
@@ -724,11 +889,11 @@ function syncStatus(){
 // ===== ELEMENTS PANEL =====
 function renderElemFields(s){
   const wrap = document.getElementById("elemFields"); wrap.innerHTML = "";
-  const fields = [["Universal set U","inU"],["Set A","inA"],["Set B","inB"]];
-  if (s.sets===3) fields.push(["Set C","inC"]);
+  const fields = [[I18N.universalSetLabel,"inU"],[I18N.setALabel,"inA"],[I18N.setBLabel,"inB"]];
+  if (s.sets===3) fields.push([I18N.setCLabel,"inC"]);
   fields.forEach(([label,key]) => {
     const d = document.createElement("div");
-    d.innerHTML = `<label class="field-label">${label}</label><input class="field-input" type="text" value="${state[key]}">`;
+    d.innerHTML = `<label class="field-label">${tr(label)}</label><input class="field-input" type="text" value="${state[key]}">`;
     d.querySelector("input").addEventListener("change", e => { state[key]=e.target.value; syncElements(); renderElemSummary(s); });
     wrap.appendChild(d);
   });
@@ -813,20 +978,20 @@ function checkAnswer(){
       const should=correct.includes(k), did=chosen.includes(k);
       if (should&&did) vQuiz.mark(k,"ok"); else if (did) vQuiz.mark(k,"err"); else if (should) vQuiz.mark(k,"miss"); else vQuiz.mark(k,"");
     });
-    finishQuestion(ok, ok ? "Correct — that is exactly the region." : `Not quite. Green = right, red = shaded by mistake, faint red = missed. ${OPS[state.qOp].desc}`);
+    finishQuestion(ok, ok ? tr(I18N.quizFbShadeOk) : `${tr(I18N.quizFbShadeErr)} ${tr(OPS[state.qOp].desc)}`);
   } else if (state.qType === "count"){
     const d = state.qElements;
     const correct = d.U.filter(v => OPS[state.qOp].fn(d.A.has(v), d.B.has(v), d.C.has(v))).length;
     const given = Number((document.getElementById("qCountInput").value||"").trim());
     const ok = Number.isFinite(given) && given === correct;
-    finishQuestion(ok, ok ? `Correct — n(${OPS[state.qOp].sym}) = ${correct}.` : `Not quite. n(${OPS[state.qOp].sym}) = ${correct}. ${OPS[state.qOp].desc}`);
+    finishQuestion(ok, ok ? `${tr(I18N.quizFbCountOk)} n(${OPS[state.qOp].sym}) = ${correct}.` : `${tr(I18N.quizFbCountErr)} n(${OPS[state.qOp].sym}) = ${correct}. ${tr(OPS[state.qOp].desc)}`);
   } else if (state.qType === "list"){
     const d = state.qElements;
     const correctArr = d.U.filter(v => OPS[state.qOp].fn(d.A.has(v), d.B.has(v), d.C.has(v)));
     const correctSet = new Set(correctArr);
     const givenSet = new Set(parseSet(document.getElementById("qListInput").value));
     const ok = correctSet.size===givenSet.size && [...correctSet].every(v=>givenSet.has(v));
-    finishQuestion(ok, ok ? `Correct — ${OPS[state.qOp].sym} = ${fmtSet(correctArr)}.` : `Not quite. ${OPS[state.qOp].sym} = ${fmtSet(correctArr)}. ${OPS[state.qOp].desc}`);
+    finishQuestion(ok, ok ? `${tr(I18N.quizFbListOk)} ${OPS[state.qOp].sym} = ${fmtSet(correctArr)}.` : `${tr(I18N.quizFbCountErr)} ${OPS[state.qOp].sym} = ${fmtSet(correctArr)}. ${tr(OPS[state.qOp].desc)}`);
   }
 }
 function pickChoice(k){
@@ -834,7 +999,7 @@ function pickChoice(k){
   const n = state.hard?3:2; const sig = x => keysFor(x,n).join("|"); const ok = sig(k)===sig(state.qOp);
   const marks = {}; state.qChoices.forEach(c => { if (sig(c)===sig(state.qOp)) marks[c]="ok"; else if (c===k) marks[c]="err"; });
   state.choiceMarks = marks;
-  finishQuestion(ok, ok ? "Correct! "+OPS[state.qOp].desc : `The answer is ${OPS[state.qOp].sym}. ${OPS[state.qOp].desc}`);
+  finishQuestion(ok, ok ? `${tr(I18N.quizFbNameOk)} ${tr(OPS[state.qOp].desc)}` : `${tr(I18N.quizFbNameErr)} ${OPS[state.qOp].sym}. ${tr(OPS[state.qOp].desc)}`);
   renderQuiz();
 }
 function finishQuestion(ok, msg){
@@ -842,12 +1007,12 @@ function finishQuestion(ok, msg){
   state.feedback = (ok?"✓ ":"✕ ")+msg; state.fbOk = ok; renderQuiz();
 }
 function renderQuiz(){
-  document.getElementById("qScore").textContent = `Score ${state.score} / ${state.total}`;
-  document.getElementById("qStreak").textContent = `Streak ${state.streak}`;
+  document.getElementById("qScore").textContent = `${tr(I18N.scoreLabel)} ${state.score} / ${state.total}`;
+  document.getElementById("qStreak").textContent = `${tr(I18N.streakLabel)} ${state.streak}`;
   setToggle("hardToggle","hardKnob", state.hard);
   setToggle("scenarioToggle","scenarioKnob", state.scenario);
   const qTextEl = document.getElementById("qText"), qContextEl = document.getElementById("qContext");
-  const phraseMap = state.hard ? SCEN_PHRASE_3 : SCEN_PHRASE_2;
+  const phraseMap = (state.hard ? SCEN_PHRASE_3 : SCEN_PHRASE_2)[LANG];
   const phrase = state.qContext ? phraseMap[state.qOp](state.qContext) : "";
   const setNoteEl = document.getElementById("qSetNotation");
   if (state.qType === "count" || state.qType === "list"){
@@ -860,28 +1025,28 @@ function renderQuiz(){
     setNoteEl.style.display = "none"; setNoteEl.innerHTML = "";
   }
   if (state.qType === "count"){
-    document.getElementById("qLead").textContent = "Find:";
+    document.getElementById("qLead").textContent = tr(I18N.quizLeadFind);
     qTextEl.textContent = `n(${OPS[state.qOp].sym})`;
     qTextEl.classList.add("math");
     qTextEl.style.fontStyle = "italic";
     qTextEl.style.fontSize = "28px";
     qContextEl.textContent = "";
   } else if (state.qType === "list"){
-    document.getElementById("qLead").textContent = "List the elements of:";
+    document.getElementById("qLead").textContent = tr(I18N.quizLeadList);
     qTextEl.textContent = OPS[state.qOp].sym;
     qTextEl.classList.add("math");
     qTextEl.style.fontStyle = "italic";
     qTextEl.style.fontSize = "28px";
     qContextEl.textContent = "";
   } else if (state.qContext){
-    document.getElementById("qLead").textContent = state.qType==="shade" ? "Shade the region for:" : `Which expression matches: ${phrase}?`;
+    document.getElementById("qLead").textContent = state.qType==="shade" ? tr(I18N.quizLeadShadeFor) : `${tr(I18N.quizLeadNameMatch)} ${phrase}?`;
     qTextEl.textContent = state.qType==="shade" ? phrase : "= ?";
     qTextEl.classList.toggle("math", state.qType!=="shade");
     qTextEl.style.fontStyle = state.qType==="shade" ? "normal" : "italic";
     qTextEl.style.fontSize = state.qType==="shade" ? "16px" : "28px";
     qContextEl.textContent = scenarioLegend(state.qContext, state.hard?3:2);
   } else {
-    document.getElementById("qLead").textContent = state.qType==="shade" ? "Click the regions to shade" : "Which expression matches the shaded region?";
+    document.getElementById("qLead").textContent = state.qType==="shade" ? tr(I18N.quizLeadShadeClick) : tr(I18N.quizLeadNameShaded);
     qTextEl.textContent = state.qType==="shade" ? OPS[state.qOp].sym : "= ?";
     qTextEl.classList.add("math");
     qTextEl.style.fontStyle = "italic";
@@ -927,24 +1092,37 @@ document.getElementById("qListInput").addEventListener("keydown", e => { if (e.k
 const BZ_ROUND_S = 60;
 const BZ_WAVE_UP = [0, 5, 12]; // cumulative correct answers needed to reach each wave
 const BLITZ_WAVES = [
-  { label:"Warm-up",        relation:"overlap", relations:null,                                    style:"plain",  itemMs:6000, points:10 },
-  { label:"Tricky wording", relation:"overlap", relations:null,                                    style:"tricky", itemMs:4800, points:15 },
-  { label:"Shifting ground",relation:"overlap", relations:["overlap","subset","disjoint","equal"], style:"plain",  itemMs:4200, points:20 }
+  { label:{en:"Warm-up",bm:"Pemanasan"},        relation:"overlap", relations:null,                                    style:"plain",  itemMs:6000, points:10 },
+  { label:{en:"Tricky wording",bm:"Ayat mengelirukan"}, relation:"overlap", relations:null,                                    style:"tricky", itemMs:4800, points:15 },
+  { label:{en:"Shifting ground",bm:"Susunan berubah"},relation:"overlap", relations:["overlap","subset","disjoint","equal"], style:"plain",  itemMs:4200, points:20 }
 ];
-const BLITZ_PHRASE = {
+const BLITZ_PHRASE = { en: {
   "11": (c,style) => style==="tricky"
-    ? `${c.subject} for whom it's true that they ${c.A}, AND also true that they ${c.B}`
-    : `${c.subject} who ${c.A} AND ${c.B}`,
+    ? `${tr(c.subject)} for whom it's true that they ${tr(c.A)}, AND also true that they ${tr(c.B)}`
+    : `${tr(c.subject)} who ${tr(c.A)} AND ${tr(c.B)}`,
   "10": (c,style) => style==="tricky"
-    ? `${c.subject} who ${c.A} — but it is NOT true that they ${c.B}`
-    : `${c.subject} who ${c.A}, but do NOT ${c.B}`,
+    ? `${tr(c.subject)} who ${tr(c.A)} — but it is NOT true that they ${tr(c.B)}`
+    : `${tr(c.subject)} who ${tr(c.A)}, but do NOT ${tr(c.B)}`,
   "01": (c,style) => style==="tricky"
-    ? `${c.subject} who ${c.B} — but it is NOT true that they ${c.A}`
-    : `${c.subject} who ${c.B}, but do NOT ${c.A}`,
+    ? `${tr(c.subject)} who ${tr(c.B)} — but it is NOT true that they ${tr(c.A)}`
+    : `${tr(c.subject)} who ${tr(c.B)}, but do NOT ${tr(c.A)}`,
   "00": (c,style) => style==="tricky"
-    ? `${c.subject} for whom neither "${c.A}" nor "${c.B}" is true`
-    : `${c.subject} who do NEITHER — not ${c.A} and not ${c.B}`
-};
+    ? `${tr(c.subject)} for whom neither "${tr(c.A)}" nor "${tr(c.B)}" is true`
+    : `${tr(c.subject)} who do NEITHER — not ${tr(c.A)} and not ${tr(c.B)}`
+}, bm: {
+  "11": (c,style) => style==="tricky"
+    ? `${tr(c.subject)} yang benar bahawa mereka ${tr(c.A)}, DAN juga benar bahawa mereka ${tr(c.B)}`
+    : `${tr(c.subject)} yang ${tr(c.A)} DAN ${tr(c.B)}`,
+  "10": (c,style) => style==="tricky"
+    ? `${tr(c.subject)} yang ${tr(c.A)} — tetapi TIDAK BENAR bahawa mereka ${tr(c.B)}`
+    : `${tr(c.subject)} yang ${tr(c.A)}, tetapi TIDAK ${tr(c.B)}`,
+  "01": (c,style) => style==="tricky"
+    ? `${tr(c.subject)} yang ${tr(c.B)} — tetapi TIDAK BENAR bahawa mereka ${tr(c.A)}`
+    : `${tr(c.subject)} yang ${tr(c.B)}, tetapi TIDAK ${tr(c.A)}`,
+  "00": (c,style) => style==="tricky"
+    ? `${tr(c.subject)} yang mana bukan "${tr(c.A)}" mahupun "${tr(c.B)}" adalah benar`
+    : `${tr(c.subject)} yang TIDAK KEDUANYA — bukan ${tr(c.A)} dan bukan ${tr(c.B)}`
+}};
 let bz = { phase:"idle", wave:0, score:0, streak:0, bestStreak:0, correct:0, timeLeft:BZ_ROUND_S, key:null, ctx:null, style:"plain", timerId:null, itemTimerId:null };
 
 function bzHighScore(){ try { return Number(localStorage.getItem("setviz-blitz-hs")||0); } catch(e){ return 0; } }
@@ -996,9 +1174,9 @@ function bzNextItem(){
 }
 function bzRenderItem(){
   const wave = BLITZ_WAVES[bz.wave];
-  document.getElementById("bzText").textContent = BLITZ_PHRASE[bz.key](bz.ctx, wave.style);
+  document.getElementById("bzText").textContent = BLITZ_PHRASE[LANG][bz.key](bz.ctx, wave.style);
   document.getElementById("bzContext").textContent = scenarioLegend(bz.ctx, 2);
-  document.getElementById("bzWave").textContent = `Wave ${bz.wave+1} · ${wave.label}`;
+  document.getElementById("bzWave").textContent = `${tr(I18N.waveLabel)} ${bz.wave+1} · ${tr(wave.label)}`;
 }
 function bzResolve(correct, timedOut, clickedKey){
   if (bz.phase !== "playing") return;
@@ -1023,9 +1201,9 @@ function bzResolve(correct, timedOut, clickedKey){
   setTimeout(() => { if (bz.phase === "playing") bzNextItem(); }, 550);
 }
 function bzRenderHUD(){
-  document.getElementById("bzScore").textContent = `Score ${bz.score}`;
-  document.getElementById("bzStreak").textContent = `Streak ${bz.streak}`;
-  document.getElementById("bzBest").textContent = `Best ${bzHighScore()}`;
+  document.getElementById("bzScore").textContent = `${tr(I18N.scoreLabel)} ${bz.score}`;
+  document.getElementById("bzStreak").textContent = `${tr(I18N.streakLabel)} ${bz.streak}`;
+  document.getElementById("bzBest").textContent = `${tr(I18N.bestLabel)} ${bzHighScore()}`;
 }
 function bzEnd(){
   if (bz.phase !== "playing") return;
@@ -1036,7 +1214,7 @@ function bzEnd(){
   if (isNewBest) bzSaveHighScore(bz.score);
   document.getElementById("bzPlay").style.display = "none";
   document.getElementById("bzEnd").style.display = "";
-  document.getElementById("bzEndSummary").textContent = `Score ${bz.score} · Best streak ${bz.bestStreak}${isNewBest ? " · New high score!" : ""}`;
+  document.getElementById("bzEndSummary").textContent = `${tr(I18N.scoreLabel)} ${bz.score} · ${tr(I18N.bzBestStreak)} ${bz.bestStreak}${isNewBest ? tr(I18N.bzNewBest) : ""}`;
   document.getElementById("bzNameInput").value = bzSavedName();
   document.getElementById("bzSubmitScore").disabled = false;
   document.getElementById("bzSubmitMsg").textContent = "";
@@ -1075,10 +1253,10 @@ async function bzSubmitScore(){
   const input = document.getElementById("bzNameInput");
   const name = (input.value||"").trim().slice(0,24);
   const msg = document.getElementById("bzSubmitMsg");
-  if (!name){ msg.textContent = "Enter your name first."; msg.style.color = "var(--bad)"; return; }
+  if (!name){ msg.textContent = tr(I18N.bzEnterName); msg.style.color = "var(--bad)"; return; }
   try { localStorage.setItem("setviz-blitz-name", name); } catch(e){}
   const btn = document.getElementById("bzSubmitScore");
-  btn.disabled = true; msg.textContent = "Submitting…"; msg.style.color = "var(--ink-2)";
+  btn.disabled = true; msg.textContent = tr(I18N.bzSubmitting); msg.style.color = "var(--ink-2)";
   try {
     const res = await fetch(`${SB_URL}/rest/v1/rpc/submit_blitz_score`, {
       method: "POST",
@@ -1087,11 +1265,11 @@ async function bzSubmitScore(){
     });
     if (!res.ok) throw new Error("request failed");
     const isNewBest = await res.json();
-    msg.textContent = isNewBest ? "Submitted — new personal best on the leaderboard!" : "Submitted — but your earlier score was higher, so your leaderboard entry stays as-is.";
+    msg.textContent = isNewBest ? tr(I18N.bzSubmitOkNew) : tr(I18N.bzSubmitOkOld);
     msg.style.color = "var(--ok)";
     bzLoadBoard();
   } catch(e){
-    msg.textContent = "Couldn't reach the leaderboard — check your connection and try again.";
+    msg.textContent = tr(I18N.bzSubmitFail);
     msg.style.color = "var(--bad)"; btn.disabled = false;
   }
 }
@@ -1101,7 +1279,7 @@ function bzStopBoardAutoRefresh(){ clearInterval(bzBoardTimer); bzBoardTimer = n
 async function bzLoadBoard(){
   const list = document.getElementById("bzBoardList");
   bzRenderSessionUI();
-  if (!list.dataset.loaded) list.innerHTML = `<p style="color:var(--ink-3);font-size:12.5px;margin:0;">Loading…</p>`;
+  if (!list.dataset.loaded) list.innerHTML = `<p style="color:var(--ink-3);font-size:12.5px;margin:0;">${tr(I18N.bzLoading)}</p>`;
   try {
     const res = await fetch(`${SB_URL}/rest/v1/blitz_scores?select=name,score,best_streak&session=eq.${encodeURIComponent(SB_SESSION)}&order=score.desc&limit=10`, {
       headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` }
@@ -1109,13 +1287,13 @@ async function bzLoadBoard(){
     if (!res.ok) throw new Error("request failed");
     const rows = await res.json();
     list.dataset.loaded = "1";
-    if (!rows.length){ list.innerHTML = `<p style="color:var(--ink-3);font-size:12.5px;margin:0;">No scores yet for "${SB_SESSION}" — be the first!</p>`; return; }
+    if (!rows.length){ list.innerHTML = `<p style="color:var(--ink-3);font-size:12.5px;margin:0;">${tr(I18N.bzNoScores).replace("%S", SB_SESSION)}</p>`; return; }
     list.innerHTML = rows.map((r,i) => `<div style="display:flex;justify-content:space-between;gap:10px;padding:6px 0;${i<rows.length-1?'border-bottom:1px solid var(--rule);':''}font-size:13px;">
       <span style="color:var(--ink-2);"><b style="color:${i===0?'var(--accent)':'var(--ink-3)'};display:inline-block;width:18px;">${i+1}.</b>${String(r.name).replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]))}</span>
       <span style="font-variant-numeric:tabular-nums;font-weight:700;color:var(--accent);">${r.score}</span>
     </div>`).join("");
   } catch(e){
-    list.innerHTML = `<p style="color:var(--bad);font-size:12.5px;margin:0;">Couldn't load the leaderboard.</p>`;
+    list.innerHTML = `<p style="color:var(--bad);font-size:12.5px;margin:0;">${tr(I18N.bzLoadFail)}</p>`;
   }
 }
 document.getElementById("bzSubmitScore").addEventListener("click", bzSubmitScore);
@@ -1135,22 +1313,23 @@ function renderLaws(){
   const L = LAWS[state.law];
   document.getElementById("lawLTitle").textContent = L.l;
   document.getElementById("lawRTitle").textContent = L.r;
-  document.getElementById("lawVerdict").textContent = "✓ Identical shading — " + L.say;
+  document.getElementById("lawVerdict").textContent = tr(I18N.demorganVerdictPrefix) + tr(L.say);
   if (vLawL){ vLawL.setRelation("overlap"); vLawL.shade(L.lf); }
   if (vLawR){ vLawR.setRelation("overlap"); vLawR.shade(L.rf); }
 }
 
 function render(){
   const s = stage();
+  applyStaticI18n();
   renderStageRail();
 
-  document.getElementById("stageEyebrow").textContent = s.title;
-  document.getElementById("conceptTitle").textContent = s.heading;
-  document.getElementById("conceptDescription").textContent = s.description;
-  document.getElementById("teachingNote").textContent = s.note;
+  document.getElementById("stageEyebrow").textContent = tr(s.title);
+  document.getElementById("conceptTitle").textContent = tr(s.heading);
+  document.getElementById("conceptDescription").textContent = tr(s.description);
+  document.getElementById("teachingNote").textContent = tr(s.note);
   document.getElementById("prevBtn").disabled = state.stage===0;
   document.getElementById("nextBtn").disabled = state.stage===stages.length-1;
-  document.getElementById("nextBtn").textContent = state.stage===stages.length-1 ? "Done" : "Next →";
+  document.getElementById("nextBtn").textContent = state.stage===stages.length-1 ? tr(I18N.doneBtn) : tr(I18N.nextBtn);
 
   const isQuiz = s.special === "quiz", isDual = s.special === "demorgan", isBlitz = s.special === "blitz", isPlain = !s.special;
   document.getElementById("learnPanel").style.display = isPlain ? "" : "none";
@@ -1189,6 +1368,12 @@ function render(){
 }
 
 // ===== INIT =====
+(function initLang(){
+  let saved = null; try { saved = localStorage.getItem("setviz-lang"); } catch(e){}
+  LANG = saved === "bm" ? "bm" : "en";
+  document.documentElement.lang = LANG === "bm" ? "ms" : "en";
+  document.getElementById("langToggle").textContent = LANG === "bm" ? "EN" : "BM";
+})();
 (function initTheme(){
   let saved = null; try { saved = localStorage.getItem("setviz-theme"); } catch(e){}
   const sys = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
