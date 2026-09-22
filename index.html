@@ -265,17 +265,73 @@
                         </label>
                     </div>
                     <div class="p-3 mb-3" style="border-left:3px solid var(--accent);background:var(--paper);border-radius:4px;">
+                        <div id="qSetNotation" class="math" style="font-size:14px;color:var(--ink-2);line-height:1.6;display:none;"></div>
                         <div class="text-xs uppercase mb-1" style="letter-spacing:.12em;color:var(--ink-3);" id="qLead"></div>
                         <div id="qText" class="math" style="font-size:28px;color:var(--ink);"></div>
                         <div id="qContext" class="text-xs mt-1" style="color:var(--ink-3);"></div>
                     </div>
                     <svg id="quizSvg" viewBox="0 0 500 350" width="100%" style="display:block;height:auto;touch-action:manipulation;"></svg>
                     <div id="qChoices" class="grid grid-cols-2 gap-2 mt-3"></div>
+                    <div id="qCountRow" class="mt-3 flex items-center gap-2" style="display:none;">
+                        <label class="field-label m-0" style="white-space:nowrap;">Your answer:</label>
+                        <input id="qCountInput" class="field-input" type="number" inputmode="numeric" style="max-width:100px;">
+                    </div>
+                    <div id="qListRow" class="mt-3 flex items-center gap-2 flex-wrap" style="display:none;">
+                        <label class="field-label m-0" style="white-space:nowrap;">Your answer:</label>
+                        <input id="qListInput" class="field-input" type="text" placeholder="e.g. 2, 4, 6" style="max-width:220px;">
+                    </div>
                     <div id="qFeedback"></div>
                     <div class="flex gap-2 mt-4 flex-wrap">
                         <button id="qCheck" class="btn btn-primary btn-sm">Check answer</button>
                         <button id="qNext" class="btn btn-ghost btn-sm">Next question →</button>
                         <button id="qClear" class="btn-sm" style="background:transparent;border:none;color:var(--ink-3);cursor:pointer;">Clear</button>
+                    </div>
+                </section>
+
+                <!-- Venn Blitz panel -->
+                <section id="blitzPanel" class="card p-4" style="display:none;">
+                    <div class="flex items-center gap-2 flex-wrap mb-3">
+                        <span id="bzScore" class="badge" style="color:var(--accent);"></span>
+                        <span id="bzStreak" class="badge" style="color:var(--ink-2);"></span>
+                        <span id="bzWave" class="badge" style="color:var(--ink-2);"></span>
+                        <span id="bzBest" class="badge ml-auto" style="color:var(--ink-3);"></span>
+                    </div>
+                    <div style="height:8px;border-radius:999px;background:var(--panel-2);overflow:hidden;margin-bottom:14px;">
+                        <div id="bzTimeBar" style="height:100%;background:var(--cta);width:100%;transition:width 120ms linear, background 300ms ease;"></div>
+                    </div>
+                    <div id="bzIdle" class="text-center" style="padding:36px 10px;">
+                        <p class="serif" style="font-size:22px;font-weight:700;margin:0 0 8px;">Ready for Venn Blitz?</p>
+                        <p class="text-sm" style="color:var(--ink-2);margin:0 auto 18px;max-width:40ch;">Tap the region that matches each description before time runs out. Wrong taps cost time — not the round.</p>
+                        <div style="max-width:220px;margin:0 auto 16px;">
+                            <label class="field-label" style="text-align:left;">Class / session code</label>
+                            <input id="bzSessionInput" class="field-input" type="text" placeholder="e.g. 5A" style="text-align:center;">
+                        </div>
+                        <button id="bzStart" class="btn btn-primary px-6 py-3">Start (60s)</button>
+                    </div>
+                    <div id="bzPlay" style="display:none;">
+                        <div class="p-3 mb-3" style="border-left:3px solid var(--accent);background:var(--paper);border-radius:4px;">
+                            <div class="text-xs uppercase mb-1" style="letter-spacing:.12em;color:var(--ink-3);" id="bzLead">Tap the region for:</div>
+                            <div id="bzText" style="font-size:16px;color:var(--ink);font-weight:600;line-height:1.4;"></div>
+                            <div id="bzContext" class="text-xs mt-1" style="color:var(--ink-3);"></div>
+                        </div>
+                        <svg id="blitzSvg" viewBox="0 0 500 350" width="100%" style="display:block;height:auto;touch-action:manipulation;"></svg>
+                    </div>
+                    <div id="bzEnd" style="display:none;text-align:center;padding:26px 10px;">
+                        <p class="serif" style="font-size:24px;font-weight:700;margin:0 0 4px;">Time's up!</p>
+                        <p style="font-size:15px;color:var(--ink-2);margin:0 0 16px;" id="bzEndSummary"></p>
+                        <input id="bzNameInput" class="field-input" type="text" placeholder="Your name" style="max-width:220px;margin:0 auto 10px;text-align:center;display:block;">
+                        <div class="flex gap-2 justify-center flex-wrap">
+                            <button id="bzSubmitScore" class="btn btn-primary px-5 py-2.5">Submit to leaderboard</button>
+                            <button id="bzReplay" class="btn btn-ghost px-5 py-2.5">Play again</button>
+                        </div>
+                        <p id="bzSubmitMsg" class="text-xs mt-2" style="color:var(--ink-2);min-height:16px;"></p>
+                    </div>
+                    <div id="bzBoard" style="display:none;border-top:1px solid var(--rule);margin-top:18px;padding-top:14px;">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="eyebrow m-0">Class leaderboard <span id="bzBoardSession" style="color:var(--ink-3);font-weight:400;text-transform:none;letter-spacing:0;"></span></h3>
+                            <button id="bzRefreshBoard" class="btn-sm" style="background:transparent;border:none;color:var(--ink-3);cursor:pointer;">↻ Refresh</button>
+                        </div>
+                        <div id="bzBoardList"></div>
                     </div>
                 </section>
             </div>
@@ -400,7 +456,11 @@ const stages = [
   { id:"quiz", title:"Quiz", heading:"Check yourself",
     description:"Click regions to shade them, or pick the right notation. Instant feedback.",
     special:"quiz", sets:2, relation:"overlap",
-    note:"No penalty for wrong answers — try, look at the feedback, and go again. Build a streak!" }
+    note:"No penalty for wrong answers — try, look at the feedback, and go again. Build a streak!" },
+  { id:"blitz", title:"Venn Blitz", heading:"Venn Blitz",
+    description:"Race the clock — tap the region that matches each description before time runs out.",
+    special:"blitz", sets:2, relation:"overlap",
+    note:"Every round tests the same regions you built with clicks — union, intersection, complement, difference — and how subset or disjoint arrangements change what a region means. Wrong or missed answers cost time, not lives, so the round keeps moving." }
 ];
 
 const POOL2 = ["AuB","AnB","notA","notB","AmB","BmA","AdB","notAuB","notAnB","nAnB","nAuB"];
@@ -581,9 +641,9 @@ Venn.prototype.uid = "v";
 const state = {
   stage: 0, op: "U", relation: "overlap", law: 0,
   showElems: false, inU:"1,2,3,4,5,6,7,8,9,10", inA:"1,2,3,4,5,6", inB:"4,5,6,7,8", inC:"2,4,6,8,10",
-  hard:false, scenario:false, qOp:"AuB", qType:"shade", qAnswered:false, qChoices:[], qContext:null, score:0, total:0, streak:0, feedback:"", fbOk:true, choiceMarks:{}
+  hard:false, scenario:false, qOp:"AuB", qType:"shade", qAnswered:false, qChoices:[], qContext:null, qElements:null, score:0, total:0, streak:0, feedback:"", fbOk:true, choiceMarks:{}
 };
-let vLearn = null, vQuiz = null, vLawL = null, vLawR = null, isDark = false;
+let vLearn = null, vQuiz = null, vLawL = null, vLawR = null, vBlitz = null, isDark = false;
 
 // ===== THEME =====
 function applyTheme(){
@@ -608,6 +668,7 @@ function renderStageRail(){
 
 function go(i){
   const n = Math.max(0, Math.min(stages.length-1, i)); if (n===state.stage) return;
+  if (stages[state.stage].special === "blitz") bzAbandon();
   const s = stages[n]; state.stage = n; state.feedback = "";
   if (!s.special){ state.relation = s.relation; state.op = s.defaultOp; }
   render(); window.scrollTo({top:0,behavior:"smooth"});
@@ -707,10 +768,22 @@ function setToggle(trackId, knobId, on){
 document.getElementById("elemToggle").addEventListener("click", () => { state.showElems = !state.showElems; render(); });
 
 // ===== QUIZ MODE =====
+function genQuizElements(n){
+  for (let attempt=0; attempt<8; attempt++){
+    const size = n===3 ? 12 : 10;
+    const U = Array.from({length:size}, (_,i) => String(i+1));
+    const A = new Set(U.filter(()=>Math.random()<0.5));
+    const B = new Set(U.filter(()=>Math.random()<0.5));
+    const C = n===3 ? new Set(U.filter(()=>Math.random()<0.5)) : new Set();
+    if (A.size && B.size && (n===2 || C.size)) return {U,A,B,C};
+  }
+  return { U:["1","2","3","4","5","6","7","8","9","10"], A:new Set(["1","2","3","4","5"]), B:new Set(["4","5","6","7","8"]), C:new Set() };
+}
 function newQuestion(){
   const pool = state.hard ? POOL3 : POOL2;
   const key = pool[Math.floor(Math.random()*pool.length)];
-  const type = Math.random() < 0.6 ? "shade" : "name";
+  const r = Math.random();
+  const type = r < 0.25 ? "shade" : r < 0.5 ? "name" : r < 0.75 ? "count" : "list";
   let choices = [];
   if (type === "name"){
     const n = state.hard?3:2; const sig = k => keysFor(k,n).join("|"); const right = sig(key);
@@ -718,24 +791,43 @@ function newQuestion(){
     choices = shuffle([key, ...others.slice(0,3)]);
   }
   state.qOp = key; state.qType = type; state.qAnswered = false; state.qChoices = choices; state.feedback = ""; state.choiceMarks = {};
-  state.qContext = state.scenario ? SCENARIOS[Math.floor(Math.random()*SCENARIOS.length)] : null;
+  const isSet = type==="count" || type==="list";
+  state.qContext = state.scenario && !isSet ? SCENARIOS[Math.floor(Math.random()*SCENARIOS.length)] : null;
+  state.qElements = isSet ? genQuizElements(state.hard?3:2) : null;
   syncQuiz(); renderQuiz();
 }
 function syncQuiz(){
   if (!vQuiz) return;
   vQuiz.setRelation(state.hard ? "three" : "overlap"); vQuiz.clearMarks();
-  if (state.qType === "shade"){ vQuiz.onRegionClick = k => { if (!state.qAnswered) vQuiz.toggleSel(k); }; vQuiz.hit.style.cursor="pointer"; }
-  else { vQuiz.onRegionClick = null; vQuiz.hit.style.cursor="default"; vQuiz.shade(OPS[state.qOp].fn); }
+  if (state.qType === "shade"){ vQuiz.onRegionClick = k => { if (!state.qAnswered) vQuiz.toggleSel(k); }; vQuiz.hit.style.cursor="pointer"; vQuiz.setElements(null); }
+  else if (state.qType === "count" || state.qType === "list"){ vQuiz.onRegionClick = null; vQuiz.hit.style.cursor="default"; vQuiz.shade(()=>false); vQuiz.setElements(state.qElements); }
+  else { vQuiz.onRegionClick = null; vQuiz.hit.style.cursor="default"; vQuiz.shade(OPS[state.qOp].fn); vQuiz.setElements(null); }
 }
+const fmtSet = a => a.length ? "{"+a.join(", ")+"}" : "∅";
 function checkAnswer(){
-  if (state.qAnswered || state.qType !== "shade") return;
-  const n = state.hard?3:2; const correct = keysFor(state.qOp,n), chosen = vQuiz.selected().sort();
-  const ok = correct.length===chosen.length && correct.every((k,i)=>k===chosen[i]);
-  Object.keys(vQuiz.regions).forEach(k => {
-    const should=correct.includes(k), did=chosen.includes(k);
-    if (should&&did) vQuiz.mark(k,"ok"); else if (did) vQuiz.mark(k,"err"); else if (should) vQuiz.mark(k,"miss"); else vQuiz.mark(k,"");
-  });
-  finishQuestion(ok, ok ? "Correct — that is exactly the region." : `Not quite. Green = right, red = shaded by mistake, faint red = missed. ${OPS[state.qOp].desc}`);
+  if (state.qAnswered) return;
+  if (state.qType === "shade"){
+    const n = state.hard?3:2; const correct = keysFor(state.qOp,n), chosen = vQuiz.selected().sort();
+    const ok = correct.length===chosen.length && correct.every((k,i)=>k===chosen[i]);
+    Object.keys(vQuiz.regions).forEach(k => {
+      const should=correct.includes(k), did=chosen.includes(k);
+      if (should&&did) vQuiz.mark(k,"ok"); else if (did) vQuiz.mark(k,"err"); else if (should) vQuiz.mark(k,"miss"); else vQuiz.mark(k,"");
+    });
+    finishQuestion(ok, ok ? "Correct — that is exactly the region." : `Not quite. Green = right, red = shaded by mistake, faint red = missed. ${OPS[state.qOp].desc}`);
+  } else if (state.qType === "count"){
+    const d = state.qElements;
+    const correct = d.U.filter(v => OPS[state.qOp].fn(d.A.has(v), d.B.has(v), d.C.has(v))).length;
+    const given = Number((document.getElementById("qCountInput").value||"").trim());
+    const ok = Number.isFinite(given) && given === correct;
+    finishQuestion(ok, ok ? `Correct — n(${OPS[state.qOp].sym}) = ${correct}.` : `Not quite. n(${OPS[state.qOp].sym}) = ${correct}. ${OPS[state.qOp].desc}`);
+  } else if (state.qType === "list"){
+    const d = state.qElements;
+    const correctArr = d.U.filter(v => OPS[state.qOp].fn(d.A.has(v), d.B.has(v), d.C.has(v)));
+    const correctSet = new Set(correctArr);
+    const givenSet = new Set(parseSet(document.getElementById("qListInput").value));
+    const ok = correctSet.size===givenSet.size && [...correctSet].every(v=>givenSet.has(v));
+    finishQuestion(ok, ok ? `Correct — ${OPS[state.qOp].sym} = ${fmtSet(correctArr)}.` : `Not quite. ${OPS[state.qOp].sym} = ${fmtSet(correctArr)}. ${OPS[state.qOp].desc}`);
+  }
 }
 function pickChoice(k){
   if (state.qAnswered) return;
@@ -757,7 +849,31 @@ function renderQuiz(){
   const qTextEl = document.getElementById("qText"), qContextEl = document.getElementById("qContext");
   const phraseMap = state.hard ? SCEN_PHRASE_3 : SCEN_PHRASE_2;
   const phrase = state.qContext ? phraseMap[state.qOp](state.qContext) : "";
-  if (state.qContext){
+  const setNoteEl = document.getElementById("qSetNotation");
+  if (state.qType === "count" || state.qType === "list"){
+    const d = state.qElements;
+    const rows = [["ξ", fmtSet(d.U)], ["A", fmtSet([...d.A])], ["B", fmtSet([...d.B])]];
+    if (state.hard) rows.push(["C", fmtSet([...d.C])]);
+    setNoteEl.style.display = "";
+    setNoteEl.innerHTML = rows.map(([k,v]) => `<div>${k} = ${v}</div>`).join("");
+  } else {
+    setNoteEl.style.display = "none"; setNoteEl.innerHTML = "";
+  }
+  if (state.qType === "count"){
+    document.getElementById("qLead").textContent = "Find:";
+    qTextEl.textContent = `n(${OPS[state.qOp].sym})`;
+    qTextEl.classList.add("math");
+    qTextEl.style.fontStyle = "italic";
+    qTextEl.style.fontSize = "28px";
+    qContextEl.textContent = "";
+  } else if (state.qType === "list"){
+    document.getElementById("qLead").textContent = "List the elements of:";
+    qTextEl.textContent = OPS[state.qOp].sym;
+    qTextEl.classList.add("math");
+    qTextEl.style.fontStyle = "italic";
+    qTextEl.style.fontSize = "28px";
+    qContextEl.textContent = "";
+  } else if (state.qContext){
     document.getElementById("qLead").textContent = state.qType==="shade" ? "Shade the region for:" : `Which expression matches: ${phrase}?`;
     qTextEl.textContent = state.qType==="shade" ? phrase : "= ?";
     qTextEl.classList.toggle("math", state.qType!=="shade");
@@ -782,9 +898,21 @@ function renderQuiz(){
       choicesBox.appendChild(btn);
     });
   }
+  document.getElementById("qCountRow").style.display = state.qType==="count" ? "" : "none";
+  if (state.qType === "count"){
+    const input = document.getElementById("qCountInput");
+    if (!state.qAnswered) input.value = "";
+    input.disabled = state.qAnswered;
+  }
+  document.getElementById("qListRow").style.display = state.qType==="list" ? "" : "none";
+  if (state.qType === "list"){
+    const input = document.getElementById("qListInput");
+    if (!state.qAnswered) input.value = "";
+    input.disabled = state.qAnswered;
+  }
   const fb = document.getElementById("qFeedback");
   fb.innerHTML = state.feedback ? `<div class="feedback ${state.fbOk?'ok':'err'}">${state.feedback}</div>` : "";
-  document.getElementById("qCheck").style.display = state.qType==="shade" ? "" : "none";
+  document.getElementById("qCheck").style.display = (state.qType==="shade" || state.qType==="count" || state.qType==="list") ? "" : "none";
   document.getElementById("qCheck").disabled = state.qAnswered;
 }
 document.getElementById("hardToggle").addEventListener("click", () => { state.hard = !state.hard; newQuestion(); });
@@ -792,6 +920,206 @@ document.getElementById("scenarioToggle").addEventListener("click", () => { stat
 document.getElementById("qCheck").addEventListener("click", checkAnswer);
 document.getElementById("qNext").addEventListener("click", newQuestion);
 document.getElementById("qClear").addEventListener("click", () => { if (!state.qAnswered && vQuiz) vQuiz.clearMarks(); });
+document.getElementById("qCountInput").addEventListener("keydown", e => { if (e.key==="Enter") checkAnswer(); });
+document.getElementById("qListInput").addEventListener("keydown", e => { if (e.key==="Enter") checkAnswer(); });
+
+// ===== VENN BLITZ =====
+const BZ_ROUND_S = 60;
+const BZ_WAVE_UP = [0, 5, 12]; // cumulative correct answers needed to reach each wave
+const BLITZ_WAVES = [
+  { label:"Warm-up",        relation:"overlap", relations:null,                                    style:"plain",  itemMs:6000, points:10 },
+  { label:"Tricky wording", relation:"overlap", relations:null,                                    style:"tricky", itemMs:4800, points:15 },
+  { label:"Shifting ground",relation:"overlap", relations:["overlap","subset","disjoint","equal"], style:"plain",  itemMs:4200, points:20 }
+];
+const BLITZ_PHRASE = {
+  "11": (c,style) => style==="tricky"
+    ? `${c.subject} for whom it's true that they ${c.A}, AND also true that they ${c.B}`
+    : `${c.subject} who ${c.A} AND ${c.B}`,
+  "10": (c,style) => style==="tricky"
+    ? `${c.subject} who ${c.A} — but it is NOT true that they ${c.B}`
+    : `${c.subject} who ${c.A}, but do NOT ${c.B}`,
+  "01": (c,style) => style==="tricky"
+    ? `${c.subject} who ${c.B} — but it is NOT true that they ${c.A}`
+    : `${c.subject} who ${c.B}, but do NOT ${c.A}`,
+  "00": (c,style) => style==="tricky"
+    ? `${c.subject} for whom neither "${c.A}" nor "${c.B}" is true`
+    : `${c.subject} who do NEITHER — not ${c.A} and not ${c.B}`
+};
+let bz = { phase:"idle", wave:0, score:0, streak:0, bestStreak:0, correct:0, timeLeft:BZ_ROUND_S, key:null, ctx:null, style:"plain", timerId:null, itemTimerId:null };
+
+function bzHighScore(){ try { return Number(localStorage.getItem("setviz-blitz-hs")||0); } catch(e){ return 0; } }
+function bzSaveHighScore(v){ try { localStorage.setItem("setviz-blitz-hs", String(v)); } catch(e){} }
+function bzValidKeys(relation){ const a = ANCHORS[relation]; return Object.keys(a).filter(k=>a[k]!==null); }
+function bzWaveFor(correct){ let w=0; for (let i=BZ_WAVE_UP.length-1;i>=0;i--) if (correct>=BZ_WAVE_UP[i]){ w=i; break; } return w; }
+
+function bzStart(){
+  bz = { phase:"playing", wave:0, score:0, streak:0, bestStreak:0, correct:0, timeLeft:BZ_ROUND_S, key:null, ctx:null, style:"plain", timerId:null, itemTimerId:null };
+  document.getElementById("bzIdle").style.display = "none";
+  document.getElementById("bzEnd").style.display = "none";
+  document.getElementById("bzBoard").style.display = "none";
+  document.getElementById("bzPlay").style.display = "";
+  bzStopBoardAutoRefresh();
+  bz.timerId = setInterval(bzTick, 100);
+  bzNextItem();
+  bzRenderHUD(); bzRenderTimeBar();
+}
+function bzAbandon(){
+  clearInterval(bz.timerId); clearTimeout(bz.itemTimerId);
+  if (bz.phase === "playing") bz.phase = "idle";
+  if (vBlitz) vBlitz.onRegionClick = null;
+  bzStopBoardAutoRefresh();
+}
+function bzTick(){
+  if (bz.phase !== "playing") return;
+  bz.timeLeft -= 0.1;
+  if (bz.timeLeft <= 0){ bz.timeLeft = 0; bzRenderTimeBar(); bzEnd(); return; }
+  bzRenderTimeBar();
+}
+function bzRenderTimeBar(){
+  const bar = document.getElementById("bzTimeBar");
+  bar.style.width = Math.max(0, (bz.timeLeft/BZ_ROUND_S)*100) + "%";
+  bar.style.background = bz.timeLeft < 10 ? "var(--bad)" : "var(--cta)";
+}
+function bzNextItem(){
+  const wave = BLITZ_WAVES[bz.wave];
+  const relation = wave.relations ? wave.relations[Math.floor(Math.random()*wave.relations.length)] : wave.relation;
+  vBlitz.setRelation(relation); vBlitz.clearMarks();
+  const keys = bzValidKeys(relation);
+  bz.key = keys[Math.floor(Math.random()*keys.length)];
+  bz.ctx = SCENARIOS[Math.floor(Math.random()*SCENARIOS.length)];
+  bz.style = wave.style;
+  clearTimeout(bz.itemTimerId);
+  bz.itemTimerId = setTimeout(() => bzResolve(false, true, null), wave.itemMs);
+  vBlitz.onRegionClick = k => bzResolve(k===bz.key, false, k);
+  vBlitz.hit.style.cursor = "pointer";
+  bzRenderItem();
+}
+function bzRenderItem(){
+  const wave = BLITZ_WAVES[bz.wave];
+  document.getElementById("bzText").textContent = BLITZ_PHRASE[bz.key](bz.ctx, wave.style);
+  document.getElementById("bzContext").textContent = scenarioLegend(bz.ctx, 2);
+  document.getElementById("bzWave").textContent = `Wave ${bz.wave+1} · ${wave.label}`;
+}
+function bzResolve(correct, timedOut, clickedKey){
+  if (bz.phase !== "playing") return;
+  clearTimeout(bz.itemTimerId);
+  vBlitz.onRegionClick = null; vBlitz.hit.style.cursor = "default";
+  if (timedOut) vBlitz.mark(bz.key, "miss");
+  else if (correct) vBlitz.mark(bz.key, "ok");
+  else { vBlitz.mark(clickedKey, "err"); vBlitz.mark(bz.key, "miss"); }
+
+  const wave = BLITZ_WAVES[bz.wave];
+  if (correct){
+    bz.correct++; bz.streak++; bz.bestStreak = Math.max(bz.bestStreak, bz.streak);
+    bz.score += wave.points + Math.min(bz.streak, 5) * 2;
+    bz.timeLeft = Math.min(BZ_ROUND_S, bz.timeLeft + 1);
+  } else {
+    bz.streak = 0;
+    bz.timeLeft = Math.max(0, bz.timeLeft - 2);
+  }
+  bz.wave = bzWaveFor(bz.correct);
+  bzRenderHUD(); bzRenderTimeBar();
+  if (bz.timeLeft <= 0){ bzEnd(); return; }
+  setTimeout(() => { if (bz.phase === "playing") bzNextItem(); }, 550);
+}
+function bzRenderHUD(){
+  document.getElementById("bzScore").textContent = `Score ${bz.score}`;
+  document.getElementById("bzStreak").textContent = `Streak ${bz.streak}`;
+  document.getElementById("bzBest").textContent = `Best ${bzHighScore()}`;
+}
+function bzEnd(){
+  if (bz.phase !== "playing") return;
+  clearInterval(bz.timerId); clearTimeout(bz.itemTimerId);
+  bz.phase = "end";
+  if (vBlitz) vBlitz.onRegionClick = null;
+  const isNewBest = bz.score > bzHighScore();
+  if (isNewBest) bzSaveHighScore(bz.score);
+  document.getElementById("bzPlay").style.display = "none";
+  document.getElementById("bzEnd").style.display = "";
+  document.getElementById("bzEndSummary").textContent = `Score ${bz.score} · Best streak ${bz.bestStreak}${isNewBest ? " · New high score!" : ""}`;
+  document.getElementById("bzNameInput").value = bzSavedName();
+  document.getElementById("bzSubmitScore").disabled = false;
+  document.getElementById("bzSubmitMsg").textContent = "";
+  document.getElementById("bzBoard").style.display = "";
+  bzRenderHUD();
+  bzLoadBoard();
+  bzStartBoardAutoRefresh();
+}
+document.getElementById("bzStart").addEventListener("click", bzStart);
+document.getElementById("bzReplay").addEventListener("click", bzStart);
+
+// ===== VENN BLITZ — CLASS LEADERBOARD (Supabase) =====
+const SB_URL = "https://eublbnqvezijpvsxphil.supabase.co";
+const SB_KEY = "sb_publishable_1fj2XagqhNnUsr8hC4HbHA_8HfwQ191";
+function bzSavedName(){ try { return localStorage.getItem("setviz-blitz-name")||""; } catch(e){ return ""; } }
+function bzGetSession(){
+  const urlS = new URLSearchParams(location.search).get("session");
+  if (urlS) return urlS.trim().slice(0,24) || "general";
+  try { return localStorage.getItem("setviz-blitz-session") || "general"; } catch(e){ return "general"; }
+}
+function bzSetSession(v){
+  const s = (v||"").trim().slice(0,24) || "general";
+  try { localStorage.setItem("setviz-blitz-session", s); } catch(e){}
+  return s;
+}
+let SB_SESSION = bzGetSession();
+function bzRenderSessionUI(){
+  document.getElementById("bzSessionInput").value = SB_SESSION;
+  document.getElementById("bzBoardSession").textContent = "· " + SB_SESSION;
+}
+document.getElementById("bzSessionInput").addEventListener("change", e => {
+  SB_SESSION = bzSetSession(e.target.value);
+  bzRenderSessionUI(); bzLoadBoard();
+});
+async function bzSubmitScore(){
+  const input = document.getElementById("bzNameInput");
+  const name = (input.value||"").trim().slice(0,24);
+  const msg = document.getElementById("bzSubmitMsg");
+  if (!name){ msg.textContent = "Enter your name first."; msg.style.color = "var(--bad)"; return; }
+  try { localStorage.setItem("setviz-blitz-name", name); } catch(e){}
+  const btn = document.getElementById("bzSubmitScore");
+  btn.disabled = true; msg.textContent = "Submitting…"; msg.style.color = "var(--ink-2)";
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/rpc/submit_blitz_score`, {
+      method: "POST",
+      headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ p_session: SB_SESSION, p_name: name, p_score: bz.score, p_best_streak: bz.bestStreak, p_wave: bz.wave+1 })
+    });
+    if (!res.ok) throw new Error("request failed");
+    const isNewBest = await res.json();
+    msg.textContent = isNewBest ? "Submitted — new personal best on the leaderboard!" : "Submitted — but your earlier score was higher, so your leaderboard entry stays as-is.";
+    msg.style.color = "var(--ok)";
+    bzLoadBoard();
+  } catch(e){
+    msg.textContent = "Couldn't reach the leaderboard — check your connection and try again.";
+    msg.style.color = "var(--bad)"; btn.disabled = false;
+  }
+}
+let bzBoardTimer = null;
+function bzStartBoardAutoRefresh(){ clearInterval(bzBoardTimer); bzBoardTimer = setInterval(bzLoadBoard, 5000); }
+function bzStopBoardAutoRefresh(){ clearInterval(bzBoardTimer); bzBoardTimer = null; }
+async function bzLoadBoard(){
+  const list = document.getElementById("bzBoardList");
+  bzRenderSessionUI();
+  if (!list.dataset.loaded) list.innerHTML = `<p style="color:var(--ink-3);font-size:12.5px;margin:0;">Loading…</p>`;
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/blitz_scores?select=name,score,best_streak&session=eq.${encodeURIComponent(SB_SESSION)}&order=score.desc&limit=10`, {
+      headers: { "apikey": SB_KEY, "Authorization": `Bearer ${SB_KEY}` }
+    });
+    if (!res.ok) throw new Error("request failed");
+    const rows = await res.json();
+    list.dataset.loaded = "1";
+    if (!rows.length){ list.innerHTML = `<p style="color:var(--ink-3);font-size:12.5px;margin:0;">No scores yet for "${SB_SESSION}" — be the first!</p>`; return; }
+    list.innerHTML = rows.map((r,i) => `<div style="display:flex;justify-content:space-between;gap:10px;padding:6px 0;${i<rows.length-1?'border-bottom:1px solid var(--rule);':''}font-size:13px;">
+      <span style="color:var(--ink-2);"><b style="color:${i===0?'var(--accent)':'var(--ink-3)'};display:inline-block;width:18px;">${i+1}.</b>${String(r.name).replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]))}</span>
+      <span style="font-variant-numeric:tabular-nums;font-weight:700;color:var(--accent);">${r.score}</span>
+    </div>`).join("");
+  } catch(e){
+    list.innerHTML = `<p style="color:var(--bad);font-size:12.5px;margin:0;">Couldn't load the leaderboard.</p>`;
+  }
+}
+document.getElementById("bzSubmitScore").addEventListener("click", bzSubmitScore);
+document.getElementById("bzRefreshBoard").addEventListener("click", bzLoadBoard);
 
 // ===== MAIN RENDER =====
 // ===== DE MORGAN =====
@@ -824,10 +1152,11 @@ function render(){
   document.getElementById("nextBtn").disabled = state.stage===stages.length-1;
   document.getElementById("nextBtn").textContent = state.stage===stages.length-1 ? "Done" : "Next →";
 
-  const isQuiz = s.special === "quiz", isDual = s.special === "demorgan", isPlain = !s.special;
+  const isQuiz = s.special === "quiz", isDual = s.special === "demorgan", isBlitz = s.special === "blitz", isPlain = !s.special;
   document.getElementById("learnPanel").style.display = isPlain ? "" : "none";
   document.getElementById("dualPanel").style.display = isDual ? "" : "none";
   document.getElementById("quizPanel").style.display = isQuiz ? "" : "none";
+  document.getElementById("blitzPanel").style.display = isBlitz ? "" : "none";
   document.getElementById("opsCard").style.display = isPlain ? "" : "none";
   document.getElementById("elemCard").style.display = isPlain ? "" : "none";
 
@@ -843,6 +1172,15 @@ function render(){
     if (!vLawL) vLawL = new Venn(document.getElementById("lawLSvg"));
     if (!vLawR) vLawR = new Venn(document.getElementById("lawRSvg"));
     renderLaws();
+  } else if (isBlitz){
+    document.getElementById("relCard").style.display = "none";
+    if (!vBlitz) vBlitz = new Venn(document.getElementById("blitzSvg"));
+    document.getElementById("bzIdle").style.display = bz.phase==="idle" ? "" : "none";
+    document.getElementById("bzPlay").style.display = bz.phase==="playing" ? "" : "none";
+    document.getElementById("bzEnd").style.display = bz.phase==="end" ? "" : "none";
+    document.getElementById("bzBoard").style.display = bz.phase==="playing" ? "none" : "";
+    bzRenderHUD(); bzRenderTimeBar();
+    if (bz.phase !== "playing"){ bzLoadBoard(); bzStartBoardAutoRefresh(); } else { bzStopBoardAutoRefresh(); }
   } else {
     document.getElementById("relCard").style.display = "none";
     if (!vQuiz) vQuiz = new Venn(document.getElementById("quizSvg"));
