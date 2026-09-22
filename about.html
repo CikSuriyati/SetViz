@@ -140,22 +140,46 @@
   <section class="mb-12">
     <p class="sec-num mb-1">01</p>
     <h2 class="serif mb-3" style="font-weight:700;font-size:26px;letter-spacing:-.02em;">What SetViz is</h2>
-    <p class="text-base leading-7 muted mb-4" style="max-width:62ch;">
-      SetViz is a teaching aid for introductory statistics and discrete mathematics. You pick a set
-      operation and the Venn diagram shades exactly the region that operation describes — so the
-      notation and the picture are always side by side.
-    </p>
-    <p class="text-base leading-7 muted mb-5" style="max-width:62ch;">
-      It is built for the moment a student can recite that ∩ means "and" but still shades the wrong
-      region. Seeing <code>(A ∩ B)′</code> light up is more convincing than being told what it means.
-    </p>
-    <div class="note-panel">
-      <p class="eyebrow mb-2" style="color:var(--accent);">Who it is for</p>
-      <p class="text-sm leading-relaxed muted m-0">
-        Students meeting set notation for the first time, and teachers who want something to project
-        and click through in front of a class. No account, no installation — it runs in a browser and
-        keeps working offline once loaded.
-      </p>
+    <div class="md:flex gap-8 items-start">
+      <div class="flex-1">
+        <p class="text-base leading-7 muted mb-4" style="max-width:62ch;">
+          SetViz is a teaching aid for introductory statistics and discrete mathematics. You pick a set
+          operation and the Venn diagram shades exactly the region that operation describes — so the
+          notation and the picture are always side by side.
+        </p>
+        <p class="text-base leading-7 muted mb-5" style="max-width:62ch;">
+          It is built for the moment a student can recite that ∩ means "and" but still shades the wrong
+          region. Seeing <code>(A ∩ B)′</code> light up is more convincing than being told what it means.
+        </p>
+        <div class="note-panel">
+          <p class="eyebrow mb-2" style="color:var(--accent);">Who it is for</p>
+          <p class="text-sm leading-relaxed muted m-0">
+            Students meeting set notation for the first time, and teachers who want something to project
+            and click through in front of a class. No account, no installation — it runs in a browser and
+            keeps working offline once loaded.
+          </p>
+        </div>
+      </div>
+      <div class="card p-5 flex-none mt-6 md:mt-0" style="width:100%;max-width:280px;">
+        <svg viewBox="0 0 280 200" width="100%" height="auto" role="img" aria-labelledby="aboutVennTitle" aria-describedby="aboutVennDesc">
+          <title id="aboutVennTitle">Venn diagram of sets A and B</title>
+          <desc id="aboutVennDesc">Two overlapping circles labelled A and B inside a rectangle labelled U, with the overlapping region A intersect B shaded.</desc>
+          <rect x="4" y="4" width="272" height="192" rx="6" fill="none" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="3 4"/>
+          <text x="15" y="24" font-family="Fraunces,Georgia,serif" font-style="italic" font-size="14" fill="var(--ink-3)">U</text>
+          <defs>
+            <clipPath id="aboutClipB"><circle cx="164" cy="102" r="62"/></clipPath>
+          </defs>
+          <g clip-path="url(#aboutClipB)">
+            <circle cx="116" cy="102" r="62" fill="var(--shade)" opacity="0.85"/>
+          </g>
+          <circle cx="116" cy="102" r="62" fill="none" stroke="var(--setA)" stroke-width="2.5"/>
+          <circle cx="164" cy="102" r="62" fill="none" stroke="var(--setB)" stroke-width="2.5"/>
+          <text x="76" y="108" font-family="Fraunces,Georgia,serif" font-style="italic" font-weight="700" font-size="24" fill="var(--setA)" text-anchor="middle">A</text>
+          <text x="204" y="108" font-family="Fraunces,Georgia,serif" font-style="italic" font-weight="700" font-size="24" fill="var(--setB)" text-anchor="middle">B</text>
+          <text x="140" y="107" font-family="Fraunces,Georgia,serif" font-style="italic" font-weight="700" font-size="13" fill="var(--ink)" text-anchor="middle">A∩B</text>
+        </svg>
+        <p class="text-xs faint text-center mt-2 mb-0">A ∩ B shaded — one of seven stages</p>
+      </div>
     </div>
   </section>
 
@@ -236,6 +260,7 @@
         <li>Quiz rebuilt with per-region marking, score, streak, and a three-set hard mode</li>
         <li>De Morgan's Laws as a side-by-side visual proof, not just another operation</li>
         <li>Redesigned interface and a rewritten manual</li>
+        <li>Scenario questions — an optional quiz toggle that rephrases prompts as real-world word problems instead of raw notation</li>
       </ul>
     </div>
 

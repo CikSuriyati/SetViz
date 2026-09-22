@@ -196,6 +196,7 @@
                 <section id="relCard" class="card p-4">
                     <h2 class="eyebrow mb-3">How the sets sit</h2>
                     <div id="relRow" class="flex flex-wrap gap-1.5"></div>
+                    <p id="relDiagramNote" class="text-xs mt-2 mb-0" style="color:var(--ink-3);"></p>
                 </section>
                 <section class="note-panel">
                     <h2 class="eyebrow mb-2" style="color:var(--accent);">Teaching note</h2>
@@ -254,7 +255,11 @@
                     <div class="flex items-center gap-2 flex-wrap mb-3">
                         <span id="qScore" class="badge" style="color:var(--accent);"></span>
                         <span id="qStreak" class="badge" style="color:var(--ink-2);"></span>
-                        <label class="ml-auto flex items-center gap-2 text-xs cursor-pointer select-none" style="color:var(--ink-2);">
+                        <label class="flex items-center gap-2 text-xs cursor-pointer select-none ml-auto" style="color:var(--ink-2);">
+                            <span class="toggle-track" id="scenarioToggle"><span class="toggle-knob" id="scenarioKnob"></span></span>
+                            Scenario questions
+                        </label>
+                        <label class="flex items-center gap-2 text-xs cursor-pointer select-none" style="color:var(--ink-2);">
                             <span class="toggle-track" id="hardToggle"><span class="toggle-knob" id="hardKnob"></span></span>
                             Hard mode (3 sets)
                         </label>
@@ -262,6 +267,7 @@
                     <div class="p-3 mb-3" style="border-left:3px solid var(--accent);background:var(--paper);border-radius:4px;">
                         <div class="text-xs uppercase mb-1" style="letter-spacing:.12em;color:var(--ink-3);" id="qLead"></div>
                         <div id="qText" class="math" style="font-size:28px;color:var(--ink);"></div>
+                        <div id="qContext" class="text-xs mt-1" style="color:var(--ink-3);"></div>
                     </div>
                     <svg id="quizSvg" viewBox="0 0 500 350" width="100%" style="display:block;height:auto;touch-action:manipulation;"></svg>
                     <div id="qChoices" class="grid grid-cols-2 gap-2 mt-3"></div>
@@ -399,6 +405,40 @@ const stages = [
 
 const POOL2 = ["AuB","AnB","notA","notB","AmB","BmA","AdB","notAuB","notAnB","nAnB","nAuB"];
 const POOL3 = ["AuBuC","AnBnC","An_BuC","AnB_mC","AuB_nC","notABC"];
+
+// ===== SCENARIO QUESTIONS =====
+const SCENARIOS = [
+  { subject:"Students surveyed", A:"play football", B:"play chess", C:"play tennis" },
+  { subject:"Customers surveyed", A:"buy coffee", B:"buy tea", C:"buy juice" },
+  { subject:"People surveyed", A:"own a cat", B:"own a dog", C:"own a fish" },
+  { subject:"Students in the class", A:"study French", B:"study Spanish", C:"study German" },
+  { subject:"App users surveyed", A:"use Instagram", B:"use TikTok", C:"use Snapchat" },
+  { subject:"Employees surveyed", A:"know Excel", B:"know Python", C:"know SQL" }
+];
+const SCEN_PHRASE_2 = {
+  AuB:    c => `${c.subject} who ${c.A} or ${c.B} (or both)`,
+  AnB:    c => `${c.subject} who ${c.A} and ${c.B}`,
+  notA:   c => `${c.subject} who do NOT ${c.A}`,
+  notB:   c => `${c.subject} who do NOT ${c.B}`,
+  AmB:    c => `${c.subject} who ${c.A} but do NOT ${c.B}`,
+  BmA:    c => `${c.subject} who ${c.B} but do NOT ${c.A}`,
+  AdB:    c => `${c.subject} who ${c.A} or ${c.B}, but not both`,
+  notAuB: c => `${c.subject} who do neither — not ${c.A} and not ${c.B}`,
+  nAnB:   c => `${c.subject} who do neither — not ${c.A} and not ${c.B}`,
+  notAnB: c => `${c.subject} for whom it's not true they both ${c.A} and ${c.B}`,
+  nAuB:   c => `${c.subject} for whom it's not true they both ${c.A} and ${c.B}`
+};
+const SCEN_PHRASE_3 = {
+  AuBuC:  c => `${c.subject} who ${c.A}, ${c.B}, or ${c.C}`,
+  AnBnC:  c => `${c.subject} who ${c.A} and ${c.B} and ${c.C}`,
+  An_BuC: c => `${c.subject} who ${c.A}, and also ${c.B} or ${c.C}`,
+  AnB_mC: c => `${c.subject} who ${c.A} and ${c.B}, but NOT ${c.C}`,
+  AuB_nC: c => `${c.subject} who ${c.C}, and also ${c.A} or ${c.B}`,
+  notABC: c => `${c.subject} who do none of these — not ${c.A}, ${c.B}, or ${c.C}`
+};
+function scenarioLegend(c, n){
+  return n===3 ? `A = ${c.A} · B = ${c.B} · C = ${c.C}` : `A = ${c.A} · B = ${c.B}`;
+}
 const parseSet = str => [...new Set(String(str||"").split(/[,\s;]+/).map(t=>t.trim()).filter(Boolean))];
 const keysFor = (opKey,n) => {
   const fn = OPS[opKey].fn, out = [];
@@ -541,7 +581,7 @@ Venn.prototype.uid = "v";
 const state = {
   stage: 0, op: "U", relation: "overlap", law: 0,
   showElems: false, inU:"1,2,3,4,5,6,7,8,9,10", inA:"1,2,3,4,5,6", inB:"4,5,6,7,8", inC:"2,4,6,8,10",
-  hard:false, qOp:"AuB", qType:"shade", qAnswered:false, qChoices:[], score:0, total:0, streak:0, feedback:"", fbOk:true, choiceMarks:{}
+  hard:false, scenario:false, qOp:"AuB", qType:"shade", qAnswered:false, qChoices:[], qContext:null, score:0, total:0, streak:0, feedback:"", fbOk:true, choiceMarks:{}
 };
 let vLearn = null, vQuiz = null, vLawL = null, vLawR = null, isDark = false;
 
@@ -591,6 +631,7 @@ function renderOps(s){
     row.appendChild(btn);
   });
 }
+const EULER_RELATIONS = new Set(["disjoint","subset"]);
 function renderRelations(s){
   const card = document.getElementById("relCard"); const row = document.getElementById("relRow");
   if (!s.relations || !s.relations.length){ card.style.display = "none"; return; }
@@ -601,6 +642,10 @@ function renderRelations(s){
     btn.addEventListener("click", () => { state.relation = r; syncLearn(); renderRelations(s); });
     row.appendChild(btn);
   });
+  const note = document.getElementById("relDiagramNote");
+  note.textContent = EULER_RELATIONS.has(state.relation)
+    ? "Circles no longer overlap the same way — this is technically an Euler diagram, drawn to match how A and B actually relate."
+    : "";
 }
 function syncLearn(){
   if (!vLearn) return;
@@ -673,6 +718,7 @@ function newQuestion(){
     choices = shuffle([key, ...others.slice(0,3)]);
   }
   state.qOp = key; state.qType = type; state.qAnswered = false; state.qChoices = choices; state.feedback = ""; state.choiceMarks = {};
+  state.qContext = state.scenario ? SCENARIOS[Math.floor(Math.random()*SCENARIOS.length)] : null;
   syncQuiz(); renderQuiz();
 }
 function syncQuiz(){
@@ -707,8 +753,25 @@ function renderQuiz(){
   document.getElementById("qScore").textContent = `Score ${state.score} / ${state.total}`;
   document.getElementById("qStreak").textContent = `Streak ${state.streak}`;
   setToggle("hardToggle","hardKnob", state.hard);
-  document.getElementById("qLead").textContent = state.qType==="shade" ? "Click the regions to shade" : "Which expression matches the shaded region?";
-  document.getElementById("qText").textContent = state.qType==="shade" ? OPS[state.qOp].sym : "= ?";
+  setToggle("scenarioToggle","scenarioKnob", state.scenario);
+  const qTextEl = document.getElementById("qText"), qContextEl = document.getElementById("qContext");
+  const phraseMap = state.hard ? SCEN_PHRASE_3 : SCEN_PHRASE_2;
+  const phrase = state.qContext ? phraseMap[state.qOp](state.qContext) : "";
+  if (state.qContext){
+    document.getElementById("qLead").textContent = state.qType==="shade" ? "Shade the region for:" : `Which expression matches: ${phrase}?`;
+    qTextEl.textContent = state.qType==="shade" ? phrase : "= ?";
+    qTextEl.classList.toggle("math", state.qType!=="shade");
+    qTextEl.style.fontStyle = state.qType==="shade" ? "normal" : "italic";
+    qTextEl.style.fontSize = state.qType==="shade" ? "16px" : "28px";
+    qContextEl.textContent = scenarioLegend(state.qContext, state.hard?3:2);
+  } else {
+    document.getElementById("qLead").textContent = state.qType==="shade" ? "Click the regions to shade" : "Which expression matches the shaded region?";
+    qTextEl.textContent = state.qType==="shade" ? OPS[state.qOp].sym : "= ?";
+    qTextEl.classList.add("math");
+    qTextEl.style.fontStyle = "italic";
+    qTextEl.style.fontSize = "28px";
+    qContextEl.textContent = "";
+  }
   const choicesBox = document.getElementById("qChoices"); choicesBox.innerHTML = "";
   if (state.qType === "name"){
     state.qChoices.forEach(k => {
@@ -725,6 +788,7 @@ function renderQuiz(){
   document.getElementById("qCheck").disabled = state.qAnswered;
 }
 document.getElementById("hardToggle").addEventListener("click", () => { state.hard = !state.hard; newQuestion(); });
+document.getElementById("scenarioToggle").addEventListener("click", () => { state.scenario = !state.scenario; newQuestion(); });
 document.getElementById("qCheck").addEventListener("click", checkAnswer);
 document.getElementById("qNext").addEventListener("click", newQuestion);
 document.getElementById("qClear").addEventListener("click", () => { if (!state.qAnswered && vQuiz) vQuiz.clearMarks(); });
