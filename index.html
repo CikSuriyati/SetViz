@@ -1380,6 +1380,16 @@ function render(){
   isDark = (saved||sys) === "dark"; applyTheme();
 })();
 render();
+
+// ===== DEEP LINK: ?step=<stage id> opens straight into that stage, e.g. ?step=blitz for Venn Blitz =====
+(function initDeepLink(){
+  try {
+    const step = new URLSearchParams(location.search).get("step");
+    if (!step) return;
+    const idx = stages.findIndex(s => s.id === step);
+    if (idx >= 0) go(idx);
+  } catch (e) {}
+})();
 </script>
 </body>
 </html>
